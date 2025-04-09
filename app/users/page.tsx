@@ -28,5 +28,5 @@ async function getEmployees(): Promise<Employee[]> {
 
 export default async function UsersPage() {
   const employees = await getEmployees();
-  return <EmployeesClient employees={employees} />;
+  return <EmployeesClient employees={employees} currentUserId={1} />;
 }
