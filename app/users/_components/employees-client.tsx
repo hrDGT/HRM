@@ -27,7 +27,6 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import type { Employee } from "../page";
 import { UpdateUserModal } from "./update-user-modal";
 

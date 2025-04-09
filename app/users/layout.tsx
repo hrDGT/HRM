@@ -50,7 +50,13 @@ export default function UsersLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="py-4 space-y-3">
-          <div className="flex items-center px-3 gap-2">
+          <Link 
+            href="/users/me"
+            className={cn(
+              "flex items-center px-3 gap-2 hover:bg-white/5 rounded-lg py-1 transition-colors",
+              "cursor-pointer"
+            )}
+          >
             <Avatar className="h-7 w-7 flex-shrink-0">
               <AvatarFallback className="bg-orange-500 text-white text-xs font-bold">
                 R
@@ -59,7 +65,7 @@ export default function UsersLayout({ children }: { children: React.ReactNode })
             <span className={cn("text-sm text-zinc-300 truncate transition-opacity duration-200", isExpanded ? "block" : "hidden")}>
               Rostislav Harlanov
             </span>
-          </div>
+          </Link>
 
           <button
             onClick={() => setIsExpanded((prev) => !prev)}
