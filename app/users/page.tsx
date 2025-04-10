@@ -1,32 +1,54 @@
 import { EmployeesClient } from "./_components/employees-client";
+import { cookies } from "next/headers";
+import { gqlRequest } from "@/lib/gql/graphql-client";
+import { graphql } from "@/gqlcodegen";
+import type { ResultOf } from "@graphql-typed-document-node/core";
+import { EmployeeCard } from "@/lib/users/users-types";
 
-export type Employee = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  department: string;
-  position: string;
-  avatar: string | null;
-  initials: string;
-}
+const GET_EMPLOYEES_QUERY = graphql(`
+  query GetEmployees {
+    users {
+      id
+      email
+      is_verified
+      profile {
+        first_name
+        last_name
+        avatar
+      }
+      department_name
+      position_name
+    }
+  }
+`);
 
-async function getEmployees(): Promise<Employee[]> {
-  return [
-    { id: 1, firstName: "Rostislav", lastName: "Harlanov", email: "thorn_pear@icloud.com", department: "React", position: "Software Engineer", avatar: null, initials: "RH" },
-    { id: 2, firstName: "Vanf", lastName: "Darkholme", email: "tomgar9@outlook.com", department: ".NET", position: "Network Engineer", avatar: null, initials: "VD" },
-    { id: 3, firstName: "Christoper", lastName: "Nolan", email: "christophernolan@gmail.com", department: "Blockchain", position: "DevOps Engineer", avatar: null, initials: "CN" },
-    { id: 4, firstName: "", lastName: "", email: "vovavipse@gmail.com", department: "Blockchain", position: "", avatar: null, initials: "V" },
-    { id: 5, firstName: "Марина", lastName: "", email: "persempre1+1@yandex.ru", department: "DevOps", position: "Data Analyst", avatar: null, initials: "М" },
-    { id: 6, firstName: "Maksimodvj", lastName: "Hancharouiy", email: "maxim.goncharov@gmail.com", department: "Global", position: "Data Analyst", avatar: null, initials: "MH" },
-    { id: 7, firstName: "Artem", lastName: "Lopatin", email: "artsem.lapatsin@innowise.com", department: "Global", position: "Project Manager", avatar: null, initials: "AL" },
-    { id: 8, firstName: "sdsdsdsdsdsdsdvdf", lastName: "", email: "ferdik@mail.ru", department: "Java", position: "Data Analyst", avatar: null, initials: "SD" },
-    { id: 9, firstName: "Artem", lastName: "Zhiznevskiy", email: "zhiznevskiy@gmail.com", department: "Java", position: "Data Analyst", avatar: null, initials: "AZ" },
-    { id: 10, firstName: "Eva", lastName: "", email: "test123456789@gmail.com", department: "Mobile", position: "Software Engineer", avatar: null, initials: "E" },
-  ];
+type GetEmployeesResult = ResultOf<typeof GET_EMPLOYEES_QUERY>;
+
+function toEmployeeCard(user: GetEmployeesResult["users"][number]): EmployeeCard {
+  const firstName = user.profile?.first_name ?? "";
+  const lastName = user.profile?.last_name ?? "";
+  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
+
+  return {
+    id: Number(user.id),
+    firstName,
+    lastName,
+    email: user.email ?? "",
+    department: user.department_name ?? "Unassigned",
+    position: user.position_name ?? "Unassigned",
+    avatar: user.profile?.avatar ?? null,
+    initials,
+    isVerified: user.is_verified,
+  };
 }
 
 export default async function UsersPage() {
-  const employees = await getEmployees();
-  return <EmployeesClient employees={employees} currentUserId={1} />;
+  const result = await gqlRequest(GET_EMPLOYEES_QUERY);
+  const employees: EmployeeCard[] = result.users.map(toEmployeeCard);
+
+  const cookieStore = await cookies();
+  const rawId = cookieStore.get("user_id")?.value;
+  const currentUserId = rawId ? Number(rawId) : 0;
+
+  return <EmployeesClient employees={employees} currentUserId={currentUserId} />;
 }

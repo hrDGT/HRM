@@ -12,21 +12,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
-import type { Employee } from "@/app/users/page";
+import type { EmployeeCard } from "@/lib/users/users-types";
 
 const DEPARTMENTS = ["React", ".NET", "Blockchain", "DevOps", "Global", "Java", "Mobile"];
 const POSITIONS = ["Software Engineer", "Network Engineer", "DevOps Engineer", "Data Analyst", "Project Manager"];
 const ROLES = ["Employee", "Manager", "Admin"];
 
-interface UpdateUserModalProps {
+type UpdateUserModalProps = {
   open: boolean;
   onClose: () => void;
-  employee: Employee;
-  onUpdate: (updated: Employee) => void;
+  employee: EmployeeCard;
+  onUpdate: (updated: EmployeeCard) => void;
 }
 
+type UpdateFormState = Omit<EmployeeCard, "id" | "initials" | "isVerified" | "avatar"> & {
+  password: string;
+  role: string;
+};
+
 export function UpdateUserModal({ open, onClose, employee, onUpdate }: UpdateUserModalProps) {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<UpdateFormState>({
     email: employee.email,
     password: "",
     firstName: employee.firstName,
@@ -40,7 +45,13 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate }: UpdateUse
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleUpdate = () => {
-    onUpdate({ ...employee, ...form });
+    onUpdate({ 
+      ...employee, 
+      ...form,
+      avatar: employee.avatar,
+      initials: employee.initials,
+      isVerified: employee.isVerified,
+    });
     onClose();
   };
 

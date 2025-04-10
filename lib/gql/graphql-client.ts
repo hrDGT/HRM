@@ -2,8 +2,6 @@ import { cookies } from "next/headers";
 import { type TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { print } from "graphql";
 
-import { refreshTokensAction } from "../auth/auth-service";
-
 import { isUnauthorizedError } from "./gql-utils";
 
 export async function gqlRequest<T, V>(
@@ -34,11 +32,27 @@ export async function gqlRequest<T, V>(
   let result = await response.json();
 
   if (isUnauthorizedError(result.errors)) {
-    const newToken = await refreshTokensAction();
+    const appUrl = `http://localhost:${process.env.PORT || 3000}`;
+    const allCookies = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join("; ");
 
-    if (newToken) {
-      response = await makeRequest(newToken);
-      result = await response.json();
+    const refreshResponse = await fetch(`${appUrl}/api/auth/refresh`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: allCookies,
+      },
+    });
+
+    if (refreshResponse.ok) {
+      const refreshData = await refreshResponse.json();
+      const newToken = refreshData.access_token;
+
+      if (newToken) {
+        response = await makeRequest(newToken);
+        result = await response.json();
+      } else {
+        throw new Error("Session expired. Please login again.");
+      }
     } else {
       throw new Error("Session expired. Please login again.");
     }

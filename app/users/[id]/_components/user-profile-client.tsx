@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { Employee } from "../page";
+import type { EmployeeProfile } from "@/lib/users/users-types";
 
 const DEPARTMENTS = ["React", ".NET", "Blockchain", "DevOps", "Global", "Java", "Mobile"];
 const POSITIONS = ["Software Engineer", "Network Engineer", "DevOps Engineer", "Data Analyst", "Project Manager"];
@@ -27,7 +27,7 @@ const TABS = [
 ];
 
 type UserProfileClientProps = {
-  employee: Employee;
+  employee: EmployeeProfile;
   currentUserId: number;
 };
 
@@ -118,7 +118,7 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
               </h1>
               <p className="text-sm text-zinc-400">{form.email}</p>
               {employee.memberSince && (
-                <p className="text-xs text-white-600">A member since {employee.memberSince}</p>
+                <p className="text-xs text-zinc-600">A member since {employee.memberSince}</p>
               )}
             </div>
 
@@ -200,13 +200,8 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
         </div>
       )}
 
-      {activeTab === "skills" && (
-        <div>TODO</div>
-      )}
-
-      {activeTab === "languages" && (
-        <div>TODO</div>
-      )}
+      {activeTab === "skills" && <div>TODO</div>}
+      {activeTab === "languages" && <div>TODO</div>}
     </div>
   );
 }

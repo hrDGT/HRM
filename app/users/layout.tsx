@@ -53,8 +53,7 @@ export default function UsersLayout({ children }: { children: React.ReactNode })
           <Link 
             href="/users/me"
             className={cn(
-              "flex items-center px-3 gap-2 hover:bg-white/5 rounded-lg py-1 transition-colors",
-              "cursor-pointer"
+              "flex items-center px-3 gap-2 hover:bg-white/5 rounded-lg py-1 transition-colors cursor-pointer"
             )}
           >
             <Avatar className="h-7 w-7 flex-shrink-0">

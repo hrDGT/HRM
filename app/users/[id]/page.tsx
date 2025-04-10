@@ -1,49 +1,79 @@
+import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
+import { gqlRequest } from "@/lib/gql/graphql-client";
+import { graphql } from "@/gqlcodegen";
+import type { ResultOf } from "@graphql-typed-document-node/core";
+import { EmployeeProfile } from "@/lib/users/users-types";
 import { UserProfileClient } from "./_components/user-profile-client";
 
-export type Employee = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  department: string;
-  position: string;
-  avatar: string | null;
-  initials: string;
-  memberSince?: string;
-};
+const GET_EMPLOYEE_QUERY = graphql(`
+  query GetEmployee($userId: ID!) {
+    user(userId: $userId) {
+      id
+      email
+      is_verified
+      created_at
+      profile {
+        first_name
+        last_name
+        avatar
+      }
+      department_name
+      position_name
+      role
+      cvs {
+        id
+        created_at
+      }
+    }
+  }
+`);
 
-async function getEmployee(id: number): Promise<Employee | null> {
-  const employees: Employee[] = [
-    { id: 1, firstName: "Rostislav", lastName: "Harlanov", email: "thorn_pear@icloud.com", department: "React", position: "Software Engineer", avatar: null, initials: "RH", memberSince: "Sun Jan 14 2024" },
-    { id: 2, firstName: "Vanf", lastName: "Darkholme", email: "tomgar9@outlook.com", department: ".NET", position: "Network Engineer", avatar: null, initials: "VD", memberSince: "Mon Feb 05 2024" },
-    { id: 3, firstName: "Christoper", lastName: "Nolan", email: "christophernolan@gmail.com", department: "Blockchain", position: "DevOps Engineer", avatar: null, initials: "CN", memberSince: "Wed Mar 20 2024" },
-    { id: 4, firstName: "", lastName: "", email: "vovavipse@gmail.com", department: "Blockchain", position: "", avatar: null, initials: "V", memberSince: "Thu Apr 11 2024" },
-    { id: 5, firstName: "Марина", lastName: "", email: "persempre1+1@yandex.ru", department: "DevOps", position: "Data Analyst", avatar: null, initials: "М", memberSince: "Fri May 03 2024" },
-    { id: 6, firstName: "Maksimodvj", lastName: "Hancharouiy", email: "maxim.goncharov@gmail.com", department: "Global", position: "Data Analyst", avatar: null, initials: "MH", memberSince: "Sat Jun 15 2024" },
-    { id: 7, firstName: "Artem", lastName: "Lopatin", email: "artsem.lapatsin@innowise.com", department: "Global", position: "Project Manager", avatar: null, initials: "AL", memberSince: "Sun Jul 07 2024" },
-    { id: 8, firstName: "sdsdsdsdsdsdsdvdf", lastName: "", email: "ferdik@mail.ru", department: "Java", position: "Data Analyst", avatar: null, initials: "SD", memberSince: "Mon Aug 19 2024" },
-    { id: 9, firstName: "Artem", lastName: "Zhiznevskiy", email: "zhiznevskiy@gmail.com", department: "Java", position: "Data Analyst", avatar: null, initials: "AZ", memberSince: "Tue Sep 10 2024" },
-    { id: 10, firstName: "Eva", lastName: "", email: "test123456789@gmail.com", department: "Mobile", position: "Software Engineer", avatar: null, initials: "E", memberSince: "Wed Oct 02 2024" },
-  ];
+type GetEmployeeResult = ResultOf<typeof GET_EMPLOYEE_QUERY>;
 
-  return employees.find((e) => e.id === id) || null;
+function toEmployeeProfile(user: NonNullable<GetEmployeeResult["user"]>): EmployeeProfile {
+  const firstName = user.profile?.first_name ?? "";
+  const lastName = user.profile?.last_name ?? "";
+  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
+
+  const parseDate = (d: string | null | undefined) => {
+    if (!d) return undefined;
+    try { return new Date(d).toDateString(); } catch { return undefined; }
+  };
+
+  return {
+    id: Number(user.id),
+    firstName,
+    lastName,
+    email: user.email ?? "",
+    department: user.department_name ?? "Unassigned",
+    position: user.position_name ?? "Unassigned",
+    avatar: user.profile?.avatar ?? null,
+    initials,
+    isVerified: user.is_verified,
+    memberSince: parseDate(user.created_at),
+    role: user.role,
+    cvs: user.cvs?.map((cv) => ({
+      id: Number(cv.id),
+      title: "CV",
+      uploadedAt: parseDate(cv.created_at),
+    })),
+  };
 }
 
 export default async function UserProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const employee = await getEmployee(Number(id));
+  const userId = Number(id);
+  if (isNaN(userId)) notFound();
+
+  const result = await gqlRequest(GET_EMPLOYEE_QUERY, { userId: String(userId) });
+  if (!result.user) notFound();
+
+  const employee = toEmployeeProfile(result.user);
 
   const cookieStore = await cookies();
-  const currentUserId = Number(cookieStore.get("userId")?.value);
-
-  if (!employee) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-[#353535] text-zinc-400">
-        <p className="text-sm">Employee not found</p>
-      </div>
-    );
-  }
+  const rawId = cookieStore.get("user_id")?.value;
+  const currentUserId = rawId ? Number(rawId) : 0;
 
   return <UserProfileClient employee={employee} currentUserId={currentUserId} />;
 }

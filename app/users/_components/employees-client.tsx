@@ -27,11 +27,11 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import type { Employee } from "../page";
+import type { EmployeeCard } from "@/lib/users/users-types";
 import { UpdateUserModal } from "./update-user-modal";
 
 type Props = {
-  employees: Employee[];
+  employees: EmployeeCard[];
   currentUserId: string | number;
 };
 
@@ -39,9 +39,9 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
   const [employees, setEmployees] = useState(initialEmployees);
   const [search, setSearch] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
-  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+  const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(null);
 
-  const handleUpdate = (updated: Employee) => {
+  const handleUpdate = (updated: EmployeeCard) => {
     setEmployees((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
   };
 
