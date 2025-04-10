@@ -57,6 +57,9 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
   const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#353535] px-1.5 text-[10px] uppercase tracking-wider text-zinc-500";
   const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
+  const nameDisplay = form.firstName || form.lastName ? `${form.firstName} ${form.lastName}`.trim() : "Unnamed User";
+  const breadcrumbDisplay = form.firstName || form.lastName ? `${form.firstName} ${form.lastName}`.trim() : form.email;
+
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
       <div className="flex items-center gap-2 px-8 py-4 text-sm">
@@ -65,7 +68,7 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
         </Link>
         <ChevronRight size={16} className="text-zinc-600" />
         <span className="text-red-500">
-          {form.firstName || form.lastName ? `${form.firstName} ${form.lastName}`.trim() : form.email}
+          {breadcrumbDisplay}
         </span>
       </div>
 
@@ -114,11 +117,11 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
 
             <div className="text-center space-y-1">
               <h1 className="text-xl font-semibold text-zinc-100">
-                {form.firstName || form.lastName ? `${form.firstName} ${form.lastName}`.trim() : "Unnamed User"}
+                {nameDisplay}
               </h1>
               <p className="text-sm text-zinc-400">{form.email}</p>
               {employee.memberSince && (
-                <p className="text-xs text-zinc-600">A member since {employee.memberSince}</p>
+                <p className="text-xs text-white-600">A member since {employee.memberSince}</p>
               )}
             </div>
 

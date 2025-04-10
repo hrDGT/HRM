@@ -26,7 +26,7 @@ import {
   ChevronUp,
   Users,
 } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { EmployeeCard } from "@/lib/users/users-types";
 import { UpdateUserModal } from "./update-user-modal";
 
@@ -40,6 +40,7 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
   const [search, setSearch] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(null);
+  const router = useRouter();
 
   const handleUpdate = (updated: EmployeeCard) => {
     setEmployees((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
@@ -95,7 +96,10 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
               </TableHead>
               <TableHead
                 className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none"
-                onClick={() => setSortAsc((v) => !v)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSortAsc((v) => !v);
+                }}
               >
                 <span className="flex items-center gap-1">
                   Department
@@ -120,7 +124,10 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
               return (
                 <TableRow
                   key={emp.id}
-                  className="border-white/5 hover:bg-white/[0.03] cursor-pointer transition-colors"
+                  onClick={() => !isCurrentUser && router.push(`/users/${emp.id}`)}
+                  className={`border-white/5 hover:bg-white/[0.03] ${
+                    !isCurrentUser ? "cursor-pointer" : ""
+                  } transition-colors`}
                 >
                   <TableCell className="py-3">
                     <Avatar className="h-8 w-8">
@@ -165,7 +172,10 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
                       {isCurrentUser ? (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <button className="p-1.5 rounded-md hover:bg-white/10 text-zinc-500 hover:text-zinc-200 transition-colors">
+                            <button
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1.5 rounded-md hover:bg-white/10 text-zinc-500 hover:text-zinc-200 transition-colors"
+                            >
                               <MoreVertical size={14} />
                             </button>
                           </DropdownMenuTrigger>
@@ -173,24 +183,36 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
                             align="end"
                             className="bg-[#353535] border-white/10 text-zinc-200 text-sm min-w-[140px]"
                           >
-                            <DropdownMenuItem className="cursor-pointer hover:bg-white/5 focus:bg-white/5">
+                            <DropdownMenuItem
+                              className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/users/${emp.id}`);
+                              }}
+                            >
                               View profile
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
-                              onClick={() => setEditingEmployee(emp)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingEmployee(emp);
+                              }}
                             >
                               Update user
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
-                        <Link
-                          href={`/users/${emp.id}`}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/users/${emp.id}`);
+                          }}
                           className="p-1.5 rounded-md hover:bg-white/10 text-zinc-500 hover:text-zinc-200 transition-colors inline-flex items-center"
                         >
                           <ChevronRight size={14} />
-                        </Link>
+                        </button>
                       )}
                     </div>
                   </TableCell>
