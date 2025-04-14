@@ -1,0 +1,418 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom";
+import React from "react";
+import { UserProfileClient } from "@/app/users/[id]/_components/user-profile-client";
+import type { EmployeeProfile } from "@/lib/users/users-types";
+
+jest.mock("next/link", () => ({
+  __esModule: true,
+  default: function MockLink({ href, children, className, ...props }: any) {
+    return (
+      <a href={href} className={className} data-testid="mock-link" {...props}>
+        {children}
+      </a>
+    );
+  },
+}));
+
+jest.mock("@/components/ui/avatar", () => ({
+  Avatar: ({ children, className }: any) => (
+    <div data-testid="mock-avatar" className={className}>{children}</div>
+  ),
+  AvatarImage: ({ src, alt }: any) => <img data-testid="mock-avatar-image" src={src} alt={alt} />,
+  AvatarFallback: ({ children, className }: any) => (
+    <span data-testid="mock-avatar-fallback" className={className}>{children}</span>
+  ),
+}));
+
+jest.mock("@/components/ui/input", () => ({
+  Input: ({ value, onChange, className, ...props }: any) => (
+    <input
+      data-testid="mock-input"
+      value={value}
+      onChange={onChange}
+      className={className}
+      {...props}
+    />
+  ),
+}));
+
+jest.mock("@/components/ui/label", () => ({
+  Label: ({ children, className }: any) => (
+    <label data-testid="mock-label" className={className}>{children}</label>
+  ),
+}));
+
+jest.mock("@/components/ui/button", () => ({
+  Button: ({ children, onClick, disabled, className, ...props }: any) => (
+    <button
+      data-testid="mock-button"
+      onClick={onClick}
+      disabled={disabled}
+      className={className}
+      {...props}
+    >
+      {children}
+    </button>
+  ),
+}));
+
+jest.mock("@/components/ui/select", () => {
+  const SelectContext = React.createContext<string | undefined>(undefined);
+  
+  return {
+    Select: ({ value, onValueChange, children, disabled, ...props }: any) => (
+      <SelectContext.Provider value={value}>
+        <div data-testid="mock-select-wrapper" data-value={value} data-disabled={disabled} {...props}>
+          {children}
+        </div>
+      </SelectContext.Provider>
+    ),
+    SelectContent: ({ children, className, ...props }: any) => (
+      <div data-testid="mock-select-content" className={className} role="listbox" {...props}>
+        {children}
+      </div>
+    ),
+    SelectItem: ({ children, value, className, ...props }: any) => (
+      <div 
+        data-testid={`mock-select-item-${value}`} 
+        data-value={value} 
+        className={className} 
+        role="option"
+        {...props}
+      >
+        {children}
+      </div>
+    ),
+    SelectTrigger: ({ children, className, ...props }: any) => (
+      <button data-testid="mock-select-trigger" className={className} type="button" {...props}>
+        {children}
+      </button>
+    ),
+    SelectValue: ({ placeholder, ...props }: any) => {
+      const value = React.useContext(SelectContext);
+      return <span data-testid="mock-select-value" {...props}>{value || placeholder}</span>;
+    },
+  };
+});
+
+const mockUpdateProfile = jest.fn();
+const mockUpdateUserMeta = jest.fn();
+const mockUploadAvatar = jest.fn();
+
+jest.mock("@/app/users/[id]/actions", () => ({
+  updateProfile: (...args: any[]) => mockUpdateProfile(...args),
+  updateUserMeta: (...args: any[]) => mockUpdateUserMeta(...args),
+  uploadAvatar: (...args: any[]) => mockUploadAvatar(...args),
+}));
+
+jest.mock("lucide-react", () => ({
+  Upload: () => <svg data-testid="icon-upload" />,
+  ChevronRight: () => <svg data-testid="icon-chevron-right" />,
+}));
+
+jest.mock("@/lib/utils", () => ({
+  cn: (...classes: any[]) => classes.filter(Boolean).join(" "),
+}));
+
+const mockEmployee: EmployeeProfile = {
+  id: 1,
+  email: "alice@example.com",
+  firstName: "Alice",
+  lastName: "Brown",
+  department: "React",
+  position: "Software Engineer",
+  avatar: null,
+  initials: "AB",
+  isVerified: true,
+  memberSince: "2024",
+  role: "Employee",
+};
+
+const mockDepartments = [
+  { id: "1", name: "React" },
+  { id: "2", name: ".NET" },
+];
+
+const mockPositions = [
+  { id: "10", name: "Software Engineer" },
+  { id: "11", name: "DevOps Engineer" },
+];
+
+const defaultProps = {
+  employee: mockEmployee,
+  currentUserId: 1,
+  currentUserRole: "Admin",
+  departments: mockDepartments,
+  positions: mockPositions,
+};
+
+describe("UserProfileClient", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("rendering", () => {
+    it("renders breadcrumb navigation", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      expect(screen.getByText("Employees")).toBeInTheDocument();
+      const breadcrumbs = screen.getAllByText("Alice Brown");
+      expect(breadcrumbs[0]).toHaveClass("text-red-500");
+    });
+
+    it("renders tab navigation", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      expect(screen.getByText("PROFILE")).toBeInTheDocument();
+      expect(screen.getByText("SKILLS")).toBeInTheDocument();
+      expect(screen.getByText("LANGUAGES")).toBeInTheDocument();
+    });
+
+    it("renders profile form with employee data", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      expect(inputs[0]).toHaveValue("Alice");
+      expect(inputs[1]).toHaveValue("Brown");
+    });
+
+    it("renders avatar with initials fallback", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
+    });
+
+    it("shows member since info when available", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      expect(screen.getByText(/A member since 2024/)).toBeInTheDocument();
+    });
+  });
+
+  describe("tab switching", () => {
+    it("shows profile content by default", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      expect(screen.getAllByTestId("mock-input")[0]).toBeInTheDocument();
+      expect(screen.queryByText("TODO")).not.toBeInTheDocument();
+    });
+
+    it("shows skills tab content when clicked", async () => {
+      const user = userEvent.setup();
+      render(<UserProfileClient {...defaultProps} />);
+      
+      await user.click(screen.getByText("SKILLS"));
+      
+      expect(screen.getByText("TODO")).toBeInTheDocument();
+    });
+
+    it("shows languages tab content when clicked", async () => {
+      const user = userEvent.setup();
+      render(<UserProfileClient {...defaultProps} />);
+      
+      await user.click(screen.getByText("LANGUAGES"));
+      
+      expect(screen.getByText("TODO")).toBeInTheDocument();
+    });
+
+    it("highlights active tab", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const profileTab = screen.getByText("PROFILE");
+      expect(profileTab.className).toContain("text-red-500");
+    });
+  });
+
+  describe("form editing", () => {
+    it("enables editing for current user", () => {
+      render(<UserProfileClient {...defaultProps} currentUserId={1} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      expect(inputs[0]).not.toBeDisabled();
+    });
+
+    it("enables editing for Admin role", () => {
+      render(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Admin" />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      expect(inputs[0]).not.toBeDisabled();
+    });
+
+    it("disables editing for other users", () => {
+      render(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Employee" />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      expect(inputs[0]).toBeDisabled();
+    });
+
+    it("updates form state when typing", async () => {
+      const user = userEvent.setup();
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      await user.clear(inputs[0]);
+      await user.type(inputs[0], "Alicia");
+      
+      expect(inputs[0]).toHaveValue("Alicia");
+    });
+  });
+
+  describe("department and position selects", () => {
+    it("displays current department as selected", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[0]).toHaveAttribute("data-value", "1");
+    });
+
+    it("displays current position as selected", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[1]).toHaveAttribute("data-value", "10");
+    });
+
+    it("renders department options", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const contents = screen.getAllByTestId("mock-select-content");
+      const items = Array.from(contents[0].querySelectorAll('[data-testid^="mock-select-item-"]'));
+      
+      expect(items[0]?.textContent).toBe("React");
+      expect(items[1]?.textContent).toBe(".NET");
+    });
+  });
+
+  describe("avatar upload", () => {
+    it("shows upload option for editable profiles", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      expect(screen.getByText("Upload avatar image")).toBeInTheDocument();
+    });
+
+    it("hides upload option for non-editable profiles", () => {
+      render(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Employee" />);
+      
+      expect(screen.queryByText("Upload avatar image")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("save functionality", () => {
+    it("shows update button for editable profiles", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const buttons = screen.getAllByTestId("mock-button");
+      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
+      
+      expect(updateBtn).toBeInTheDocument();
+    });
+
+    it("disables update button when form is not dirty", () => {
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const buttons = screen.getAllByTestId("mock-button");
+      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
+      
+      expect(updateBtn).toBeDisabled();
+    });
+
+    it("enables update button when form is dirty", async () => {
+      const user = userEvent.setup();
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      await user.clear(inputs[0]);
+      await user.type(inputs[0], "Alicia");
+      
+      const buttons = screen.getAllByTestId("mock-button");
+      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
+      
+      expect(updateBtn).not.toBeDisabled();
+    });
+
+    it("calls updateProfile on save", async () => {
+      const user = userEvent.setup();
+      mockUpdateProfile.mockResolvedValue({ first_name: "Alicia", last_name: "Brown" });
+      
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      await user.clear(inputs[0]);
+      await user.type(inputs[0], "Alicia");
+      
+      const buttons = screen.getAllByTestId("mock-button");
+      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
+      
+      await user.click(updateBtn!);
+      
+      await waitFor(() => {
+        expect(mockUpdateProfile).toHaveBeenCalledWith(1, "Alicia", "Brown");
+      });
+    });
+
+    it("displays error message on save failure", async () => {
+      const user = userEvent.setup();
+      mockUpdateProfile.mockRejectedValue(new Error("Save failed"));
+      
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      await user.clear(inputs[0]);
+      await user.type(inputs[0], "Alicia");
+      
+      const buttons = screen.getAllByTestId("mock-button");
+      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
+      
+      await user.click(updateBtn!);
+      
+      await waitFor(() => {
+        expect(screen.getByText("Save failed")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("edge cases", () => {
+    it("handles employee with empty names", () => {
+      render(
+        <UserProfileClient
+          {...defaultProps}
+          employee={{ ...mockEmployee, firstName: "", lastName: "" }}
+        />
+      );
+      
+      expect(screen.getByText("Unnamed User")).toBeInTheDocument();
+    });
+
+    it("handles missing department/position mapping", () => {
+      render(
+        <UserProfileClient
+          {...defaultProps}
+          employee={{ ...mockEmployee, department: "Unknown", position: "Unknown" }}
+        />
+      );
+      
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[0]).toHaveAttribute("data-value", "");
+    });
+
+    it("shows saving state during update", async () => {
+      const user = userEvent.setup();
+      mockUpdateProfile.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
+      
+      render(<UserProfileClient {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      await user.clear(inputs[0]);
+      await user.type(inputs[0], "Alicia");
+      
+      const buttons = screen.getAllByTestId("mock-button");
+      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
+      
+      await user.click(updateBtn!);
+      
+      expect(screen.getByText("Saving...")).toBeInTheDocument();
+    });
+  });
+});

@@ -8,33 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { EmployeeProfile } from "@/lib/users/users-types";
 import { updateProfile, updateUserMeta, uploadAvatar } from "../actions";
-
-const DEPARTMENTS = [
-  { id: 1, name: "React" },
-  { id: 2, name: ".NET" },
-  { id: 3, name: "Blockchain" },
-  { id: 4, name: "DevOps" },
-  { id: 5, name: "Global" },
-  { id: 6, name: "Java" },
-  { id: 7, name: "Mobile" }
-];
-
-const POSITIONS = [
-  { id: 1, name: "Software Engineer" },
-  { id: 2, name: "Network Engineer" },
-  { id: 3, name: "DevOps Engineer" },
-  { id: 4, name: "Data Analyst" },
-  { id: 5, name: "Project Manager" }
-];
 
 const TABS = [
   { id: "profile", label: "PROFILE" },
@@ -45,14 +23,28 @@ const TABS = [
 type UserProfileClientProps = {
   employee: EmployeeProfile;
   currentUserId: number;
+  currentUserRole: string;
+  departments: { id: string; name: string }[];
+  positions: { id: string; name: string }[];
 };
 
-export function UserProfileClient({ employee, currentUserId }: UserProfileClientProps) {
+export function UserProfileClient({
+  employee, currentUserId, currentUserRole,
+  departments, positions,
+}: UserProfileClientProps) {
+
+  const initialDeptId = departments.find(d => d.name === employee.department)?.id ?? null;
+  const initialPosId = positions.find(p => p.name === employee.position)?.id ?? null;
+
   const [activeTab, setActiveTab] = useState("profile");
   const [form, setForm] = useState({
     ...employee,
-    departmentId: (employee as any).departmentId ?? null,
-    positionId: (employee as any).positionId ?? null,
+    departmentId: initialDeptId,
+    positionId: initialPosId,
+  });
+  const [originalValues, setOriginalValues] = useState({
+    departmentId: initialDeptId,
+    positionId: initialPosId,
   });
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -60,9 +52,9 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
   const [avatarFile, setAvatarFile] = useState<{ base64: string; size: number; type: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isOwnProfile = employee.id === currentUserId;
+  const canEdit = employee.id === currentUserId || currentUserRole?.toUpperCase() === "ADMIN";
 
-  const set = (field: string, value: string | number | null) => {
+  const set = (field: string, value: string | null) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     setIsDirty(true);
   };
@@ -70,18 +62,12 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (file.size > 1024 * 1024) {
-      setError("File must be no more than 1MB");
-      return;
-    }
-
+    if (file.size > 1024 * 1024) { setError("File must be no more than 1MB"); return; }
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = reader.result as string;
-      const base64 = dataUrl.split(",")[1];
       setAvatarPreview(dataUrl);
-      setAvatarFile({ base64, size: file.size, type: file.type });
+      setAvatarFile({ base64: dataUrl.split(",")[1], size: file.size, type: file.type });
       setIsDirty(true);
       setError(null);
     };
@@ -97,10 +83,20 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
         setAvatarFile(null);
       }
 
-      const [profileUpdated, userUpdated] = await Promise.all([
-        updateProfile(employee.id, form.firstName, form.lastName),
-        updateUserMeta(employee.id, form.departmentId, form.positionId)
-      ]);
+      const profileUpdated = await updateProfile(employee.id, form.firstName, form.lastName);
+
+      let userUpdated = null;
+      const hasDeptChange = form.departmentId !== originalValues.departmentId;
+      const hasPosChange = form.positionId !== originalValues.positionId;
+
+      if (hasDeptChange || hasPosChange) {
+        userUpdated = await updateUserMeta(
+          employee.id,
+          form.departmentId != null ? Number(form.departmentId) : null,
+          form.positionId != null ? Number(form.positionId) : null,
+        );
+        setOriginalValues({ departmentId: form.departmentId, positionId: form.positionId });
+      }
 
       if (profileUpdated || userUpdated) {
         setForm((prev) => ({
@@ -125,11 +121,9 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
   const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
   const nameDisplay = form.firstName || form.lastName
-    ? `${form.firstName} ${form.lastName}`.trim()
-    : "Unnamed User";
+    ? `${form.firstName} ${form.lastName}`.trim() : "Unnamed User";
   const breadcrumbDisplay = form.firstName || form.lastName
-    ? `${form.firstName} ${form.lastName}`.trim()
-    : form.email;
+    ? `${form.firstName} ${form.lastName}`.trim() : form.email;
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
@@ -144,20 +138,13 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
       <div className="px-8 pb-6">
         <div className="flex gap-8 border-b border-white/10">
           {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "pb-3 text-xs font-semibold tracking-wider transition-colors relative",
-                activeTab === tab.id
-                  ? "text-red-500"
-                  : "text-zinc-500 hover:text-zinc-300"
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+              className={cn("pb-3 text-xs font-semibold tracking-wider transition-colors relative",
+                activeTab === tab.id ? "text-red-500" : "text-zinc-500 hover:text-zinc-300"
               )}
             >
               {tab.label}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />
-              )}
+              {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
             </button>
           ))}
         </div>
@@ -173,21 +160,12 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
                   {form.initials || (form.firstName?.[0] || "") + (form.lastName?.[0] || "")}
                 </AvatarFallback>
               </Avatar>
-
-              {isOwnProfile && (
+              {canEdit && (
                 <>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/png,image/jpeg,image/gif"
-                    className="hidden"
-                    onChange={handleAvatarChange}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer"
-                  >
+                  <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/gif"
+                    className="hidden" onChange={handleAvatarChange} />
+                  <button type="button" onClick={() => fileInputRef.current?.click()}
+                    className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
                     <div className="flex items-center gap-2 text-zinc-200">
                       <Upload size={18} className="text-zinc-400" />
                       <span className="text-sm font-medium">Upload avatar image</span>
@@ -201,56 +179,38 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
             <div className="text-center space-y-1">
               <h1 className="text-xl font-semibold text-zinc-100">{nameDisplay}</h1>
               <p className="text-sm text-zinc-400">{form.email}</p>
-              {employee.memberSince && (
-                <p className="text-xs text-zinc-500">A member since {employee.memberSince}</p>
-              )}
+              {employee.memberSince && <p className="text-xs text-zinc-500">A member since {employee.memberSince}</p>}
             </div>
 
-            {error && (
-              <p className="text-center text-sm text-red-400">{error}</p>
-            )}
+            {error && <p className="text-center text-sm text-red-400">{error}</p>}
 
-            <fieldset
-              disabled={!isOwnProfile}
-              className="grid grid-cols-2 gap-4 pt-4 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
+            <fieldset disabled={!canEdit}
+              className="grid grid-cols-2 gap-4 pt-4 disabled:opacity-60 disabled:cursor-not-allowed">
               <div className={fieldWrapper}>
                 <Label className={fieldLabel}>First Name</Label>
-                <Input
-                  value={form.firstName}
-                  onChange={(e) => set("firstName", e.target.value)}
-                  className={fieldInput}
-                />
+                <Input value={form.firstName} onChange={(e) => set("firstName", e.target.value)} className={fieldInput} />
               </div>
-
               <div className={fieldWrapper}>
                 <Label className={fieldLabel}>Last Name</Label>
-                <Input
-                  value={form.lastName}
-                  onChange={(e) => set("lastName", e.target.value)}
-                  className={fieldInput}
-                />
+                <Input value={form.lastName} onChange={(e) => set("lastName", e.target.value)} className={fieldInput} />
               </div>
 
               <div className={fieldWrapper}>
                 <Label className={fieldLabel}>Department</Label>
                 <Select
-                  value={form.departmentId?.toString() ?? ""}
+                  value={form.departmentId ?? ""}
                   onValueChange={(v) => {
-                    const dept = DEPARTMENTS.find(d => d.id === Number(v));
-                    if (dept) {
-                      set("departmentId", dept.id);
-                      set("department", dept.name);
-                    }
+                    const dept = departments.find(d => d.id === v);
+                    if (dept) { set("departmentId", dept.id); set("department", dept.name); }
                   }}
-                  disabled={!isOwnProfile}
+                  disabled={!canEdit}
                 >
                   <SelectTrigger className={fieldInput}>
                     <SelectValue placeholder="Select department" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#353535] border-white/10 text-zinc-200">
-                    {DEPARTMENTS.map((d) => (
-                      <SelectItem key={d.id} value={d.id.toString()} className="focus:bg-white/5">{d.name}</SelectItem>
+                    {departments.map((d) => (
+                      <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -259,41 +219,34 @@ export function UserProfileClient({ employee, currentUserId }: UserProfileClient
               <div className={fieldWrapper}>
                 <Label className={fieldLabel}>Position</Label>
                 <Select
-                  value={form.positionId?.toString() ?? ""}
+                  value={form.positionId ?? ""}
                   onValueChange={(v) => {
-                    const pos = POSITIONS.find(p => p.id === Number(v));
-                    if (pos) {
-                      set("positionId", pos.id);
-                      set("position", pos.name);
-                    }
+                    const pos = positions.find(p => p.id === v);
+                    if (pos) { set("positionId", pos.id); set("position", pos.name); }
                   }}
-                  disabled={!isOwnProfile}
+                  disabled={!canEdit}
                 >
                   <SelectTrigger className={fieldInput}>
                     <SelectValue placeholder="Select position" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#353535] border-white/10 text-zinc-200">
-                    {POSITIONS.map((p) => (
-                      <SelectItem key={p.id} value={p.id.toString()} className="focus:bg-white/5">{p.name}</SelectItem>
+                    {positions.map((p) => (
+                      <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </fieldset>
 
-            {isOwnProfile && (
+            {canEdit && (
               <div className="flex justify-end pt-4">
                 <div className="w-1/2 flex gap-3">
-                  <Button
-                    onClick={handleUpdate}
-                    disabled={!isDirty || isSaving}
-                    className={cn(
-                      "flex-1 uppercase text-xs tracking-widest rounded-4xl transition-all",
+                  <Button onClick={handleUpdate} disabled={!isDirty || isSaving}
+                    className={cn("flex-1 uppercase text-xs tracking-widest rounded-4xl transition-all",
                       !isDirty || isSaving
                         ? "bg-zinc-500 text-zinc-200 cursor-not-allowed border border-white/5"
                         : "bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10"
-                    )}
-                  >
+                    )}>
                     {isSaving ? "Saving..." : "Update"}
                   </Button>
                 </div>

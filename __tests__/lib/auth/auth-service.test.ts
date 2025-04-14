@@ -1,14 +1,8 @@
 import { cookies } from "next/headers";
-
-import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { refreshTokensAction } from "@/lib/auth/auth-service";
 
 jest.mock("next/headers", () => ({
   cookies: jest.fn(),
-}));
-
-jest.mock("@/lib/auth/auth-cookies", () => ({
-  setAuthCookies: jest.fn(),
 }));
 
 jest.mock("graphql", () => ({
@@ -27,7 +21,7 @@ describe("refreshTokensAction", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv, GRAPHQL_URL: "https://api.example.com/graphql" };
-    jest.spyOn(console, "error").mockImplementation(() => { });
+    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterAll(() => {
@@ -46,7 +40,7 @@ describe("refreshTokensAction", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("successfully fetches new tokens, sets cookies, and returns the new access_token", async () => {
+  it("successfully fetches new tokens and returns the new access_token", async () => {
     const mockRefreshToken = "old-refresh-token";
     const newAccessToken = "new-access-token";
     const newRefreshToken = "new-refresh-token";
@@ -75,13 +69,10 @@ describe("refreshTokensAction", () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${mockRefreshToken}`,
-          Cookie: `refresh_token=${mockRefreshToken}`,
         },
         body: JSON.stringify({ query: "MOCKED_MUTATION_STRING" }),
       })
     );
-
-    expect(setAuthCookies).toHaveBeenCalledWith(newAccessToken, newRefreshToken);
 
     expect(result).toBe(newAccessToken);
   });
@@ -100,7 +91,6 @@ describe("refreshTokensAction", () => {
     const result = await refreshTokensAction();
 
     expect(result).toBeNull();
-    expect(setAuthCookies).not.toHaveBeenCalled();
   });
 
   it("catches errors, logs them, and returns null on fetch failure", async () => {
@@ -115,6 +105,5 @@ describe("refreshTokensAction", () => {
 
     expect(console.error).toHaveBeenCalledWith("Refresh error:", mockError);
     expect(result).toBeNull();
-    expect(setAuthCookies).not.toHaveBeenCalled();
   });
 });

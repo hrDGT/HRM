@@ -2,7 +2,7 @@ import { EmployeesClient } from "./_components/employees-client";
 import { cookies } from "next/headers";
 import { gqlRequest } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
-import type { ResultOf } from "@graphql-typed-document-node/core";
+import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { EmployeeCard } from "@/lib/users/users-types";
 
 const GET_EMPLOYEES_QUERY = graphql(`
@@ -21,6 +21,14 @@ const GET_EMPLOYEES_QUERY = graphql(`
     }
   }
 `);
+
+const GET_CURRENT_USER_ROLE = graphql(`
+  query GetCurrentUserRole($userId: ID!) {
+    user(userId: $userId) {
+      role
+    }
+  }
+`) as TypedDocumentNode<{ user: { role: string | null } | null }, { userId: string }>;
 
 type GetEmployeesResult = ResultOf<typeof GET_EMPLOYEES_QUERY>;
 
@@ -50,5 +58,13 @@ export default async function UsersPage() {
   const rawId = cookieStore.get("user_id")?.value;
   const currentUserId = rawId ? Number(rawId) : 0;
 
-  return <EmployeesClient employees={employees} currentUserId={currentUserId} />;
+  let currentUserRole = "Employee";
+  if (currentUserId > 0) {
+    try {
+      const roleRes = await gqlRequest(GET_CURRENT_USER_ROLE, { userId: String(currentUserId) });
+      currentUserRole = roleRes.user?.role || "Employee";
+    } catch {}
+  }
+
+  return <EmployeesClient employees={employees} currentUserId={currentUserId} currentUserRole={currentUserRole} />;
 }

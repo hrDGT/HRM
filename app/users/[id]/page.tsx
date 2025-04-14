@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
 import { gqlRequest } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
-import type { ResultOf } from "@graphql-typed-document-node/core";
+import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { EmployeeProfile } from "@/lib/users/users-types";
 import { UserProfileClient } from "./_components/user-profile-client";
+import { getDepartments, getPositions } from "./actions";
 
 const GET_EMPLOYEE_QUERY = graphql(`
   query GetEmployee($userId: ID!) {
@@ -28,6 +29,14 @@ const GET_EMPLOYEE_QUERY = graphql(`
     }
   }
 `);
+
+const GET_CURRENT_USER_ROLE = graphql(`
+  query GetCurrentUserRole($userId: ID!) {
+    user(userId: $userId) {
+      role
+    }
+  }
+`) as TypedDocumentNode<{ user: { role: string | null } | null }, { userId: string }>;
 
 type GetEmployeeResult = ResultOf<typeof GET_EMPLOYEE_QUERY>;
 
@@ -66,7 +75,12 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   const userId = Number(id);
   if (isNaN(userId)) notFound();
 
-  const result = await gqlRequest(GET_EMPLOYEE_QUERY, { userId: String(userId) });
+  const [result, departments, positions] = await Promise.all([
+    gqlRequest(GET_EMPLOYEE_QUERY, { userId: String(userId) }),
+    getDepartments(),
+    getPositions(),
+  ]);
+
   if (!result.user) notFound();
 
   const employee = toEmployeeProfile(result.user);
@@ -75,5 +89,21 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   const rawId = cookieStore.get("user_id")?.value;
   const currentUserId = rawId ? Number(rawId) : 0;
 
-  return <UserProfileClient employee={employee} currentUserId={currentUserId} />;
+  let currentUserRole = "Employee";
+  if (currentUserId > 0) {
+    try {
+      const roleRes = await gqlRequest(GET_CURRENT_USER_ROLE, { userId: String(currentUserId) });
+      currentUserRole = roleRes.user?.role || "Employee";
+    } catch {}
+  }
+
+  return (
+    <UserProfileClient
+      employee={employee}
+      currentUserId={currentUserId}
+      currentUserRole={currentUserRole}
+      departments={departments}
+      positions={positions}
+    />
+  );
 }

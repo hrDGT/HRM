@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,28 +23,40 @@ import {
   Search,
   MoreVertical,
   ChevronRight,
-  ArrowUpDown,
   ChevronUp,
   Users,
+  Plus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { EmployeeCard } from "@/lib/users/users-types";
 import { UpdateUserModal } from "./update-user-modal";
+import { CreateUserModal } from "./create-user-modal";
 
 type Props = {
   employees: EmployeeCard[];
   currentUserId: string | number;
+  currentUserRole: string;
 };
 
-export function EmployeesClient({ employees: initialEmployees, currentUserId }: Props) {
+export function EmployeesClient({
+  employees: initialEmployees,
+  currentUserId,
+  currentUserRole,
+}: Props) {
   const [employees, setEmployees] = useState(initialEmployees);
   const [search, setSearch] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
   const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const router = useRouter();
 
   const handleUpdate = (updated: EmployeeCard) => {
     setEmployees((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+  };
+
+  const handleCreate = (newEmployee: EmployeeCard) => {
+    setEmployees((prev) => [newEmployee, ...prev]);
+    setIsCreateOpen(false);
   };
 
   const filtered = employees
@@ -63,12 +76,26 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
       return sortAsc ? da.localeCompare(db) : db.localeCompare(da);
     });
 
+  const showActions = (empId: string | number) => empId === currentUserId || currentUserRole === "Admin";
+
   return (
     <>
       <div className="px-6 pt-5 pb-4 border-white/5">
-        <p className="text-xs text-zinc-500 mb-3 uppercase tracking-widest font-semibold">
-          Employees
-        </p>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold">
+            Employees
+          </p>
+          {currentUserRole === "Admin" && (
+            <Button
+              data-testid="create-user-button"
+              onClick={() => setIsCreateOpen(true)}
+              className="h-7 px-2 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400"
+            >
+              <Plus size={14} className="mr-1.5" />
+              CREATE USER
+            </Button>
+          )}
+        </div>
         <div className="relative max-w-xs">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
           <Input
@@ -106,7 +133,7 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
                   {sortAsc ? (
                     <ChevronUp size={12} className="text-zinc-300" />
                   ) : (
-                    <ArrowUpDown size={12} className="text-zinc-600" />
+                    <ChevronUp size={12} className="text-zinc-300 rotate-180" />
                   )}
                 </span>
               </TableHead>
@@ -120,14 +147,13 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
           <TableBody>
             {filtered.map((emp) => {
               const isCurrentUser = emp.id === currentUserId;
+              const canShowDropdown = showActions(emp.id);
 
               return (
                 <TableRow
                   key={emp.id}
-                  onClick={() => !isCurrentUser && router.push(`/users/${emp.id}`)}
-                  className={`border-white/5 hover:bg-white/[0.03] ${
-                    !isCurrentUser ? "cursor-pointer" : ""
-                  } transition-colors`}
+                  onClick={() => router.push(`/users/${emp.id}`)}
+                  className="border-white/5 hover:bg-white/[0.03] cursor-pointer transition-colors"
                 >
                   <TableCell className="py-3">
                     <Avatar className="h-8 w-8">
@@ -169,15 +195,15 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
 
                   <TableCell className="py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
-                      {isCurrentUser ? (
+                      {canShowDropdown ? (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <button
+                            <span
                               onClick={(e) => e.stopPropagation()}
-                              className="p-1.5 rounded-md hover:bg-white/10 text-zinc-500 hover:text-zinc-200 transition-colors"
+                              className="p-1.5 rounded-md text-zinc-500 hover:text-zinc-200 transition-colors cursor-pointer inline-flex"
                             >
                               <MoreVertical size={14} />
-                            </button>
+                            </span>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
                             align="end"
@@ -204,15 +230,7 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(`/users/${emp.id}`);
-                          }}
-                          className="p-1.5 rounded-md hover:bg-white/10 text-zinc-500 hover:text-zinc-200 transition-colors inline-flex items-center"
-                        >
-                          <ChevronRight size={14} />
-                        </button>
+                        <ChevronRight size={14} className="text-zinc-600" />
                       )}
                     </div>
                   </TableCell>
@@ -238,6 +256,12 @@ export function EmployeesClient({ employees: initialEmployees, currentUserId }: 
           onUpdate={handleUpdate}
         />
       )}
+
+      <CreateUserModal
+        open={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onCreate={handleCreate}
+      />
     </>
   );
 }

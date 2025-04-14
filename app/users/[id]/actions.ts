@@ -47,6 +47,15 @@ type UploadAvatarVariables = {
   };
 };
 
+type GetDepartmentsResult = {
+  departments: { id: string; name: string }[];
+};
+
+type GetPositionsResult = {
+  positions: { id: string; name: string }[];
+};
+
+
 const UPDATE_PROFILE_MUTATION = gql`
   mutation UpdateProfile($profile: UpdateProfileInput!) {
     updateProfile(profile: $profile) {
@@ -75,6 +84,34 @@ const UPLOAD_AVATAR_MUTATION = gql`
   }
 ` as TypedDocumentNode<UploadAvatarResult, UploadAvatarVariables>;
 
+const GET_DEPARTMENTS = gql`
+  query GetDepartments {
+    departments {
+      id
+      name
+    }
+  }
+` as TypedDocumentNode<GetDepartmentsResult, {}>;
+
+const GET_POSITIONS = gql`
+  query GetPositions {
+    positions {
+      id
+      name
+    }
+  }
+` as TypedDocumentNode<GetPositionsResult, {}>;
+
+export async function getDepartments() {
+  const result = await gqlRequest(GET_DEPARTMENTS, {});
+  return result.departments;
+}
+
+export async function getPositions() {
+  const result = await gqlRequest(GET_POSITIONS, {});
+  return result.positions;
+}
+
 export async function updateProfile(userId: number, firstName: string, lastName: string) {
   const result = await gqlRequest(UPDATE_PROFILE_MUTATION, {
     profile: {
@@ -87,9 +124,13 @@ export async function updateProfile(userId: number, firstName: string, lastName:
 }
 
 export async function updateUserMeta(userId: number, departmentId: number | null | undefined, positionId: number | null | undefined) {
+  if (departmentId == null && positionId == null) {
+    return null;
+  }
+
   const payload: Record<string, any> = { userId: String(userId) };
-  if (departmentId != null) payload.departmentId = Number(departmentId);
-  if (positionId != null) payload.positionId = Number(positionId);
+  if (departmentId != null) payload.departmentId = String(departmentId);
+  if (positionId != null) payload.positionId = String(positionId);
 
   const result = await gqlRequest(UPDATE_USER_MUTATION, { user: payload });
   return result.updateUser;
