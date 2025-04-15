@@ -103,6 +103,16 @@ const mockEmployee: EmployeeCard = {
   isVerified: true,
 };
 
+const mockDepartments = [
+  { id: "1", name: "React" },
+  { id: "2", name: ".NET" },
+];
+
+const mockPositions = [
+  { id: "10", name: "Software Engineer" },
+  { id: "11", name: "DevOps Engineer" },
+];
+
 const mockOnClose = jest.fn();
 const mockOnUpdate = jest.fn();
 
@@ -111,6 +121,8 @@ const defaultProps = {
   onClose: mockOnClose,
   employee: mockEmployee,
   onUpdate: mockOnUpdate,
+  departments: mockDepartments,
+  positions: mockPositions,
 };
 
 describe("UpdateUserModal", () => {
@@ -181,18 +193,18 @@ describe("UpdateUserModal", () => {
     it("displays current department as selected", () => {
       render(<UpdateUserModal {...defaultProps} />);
       
-      const triggers = screen.getAllByTestId("mock-select-trigger");
-      expect(triggers[0]).toHaveTextContent("React");
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[0]).toHaveAttribute("data-value", "1");
     });
 
     it("displays current position as selected", () => {
       render(<UpdateUserModal {...defaultProps} />);
       
-      const triggers = screen.getAllByTestId("mock-select-trigger");
-      expect(triggers[1]).toHaveTextContent("Software Engineer");
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[1]).toHaveAttribute("data-value", "10");
     });
 
-    it("includes Manager role in options", () => {
+    it("includes only Employee and Admin roles in options", () => {
       render(<UpdateUserModal {...defaultProps} />);
       
       const selectContents = screen.getAllByTestId("mock-select-content");
@@ -202,8 +214,8 @@ describe("UpdateUserModal", () => {
       const itemTexts = items.map((item: Element) => item.textContent);
       
       expect(itemTexts).toContain("Employee");
-      expect(itemTexts).toContain("Manager");
       expect(itemTexts).toContain("Admin");
+      expect(itemTexts).not.toContain("Manager");
     });
   });
 

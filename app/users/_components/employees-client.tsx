@@ -36,12 +36,16 @@ type Props = {
   employees: EmployeeCard[];
   currentUserId: string | number;
   currentUserRole: string;
+  departments: { id: string; name: string }[];
+  positions: { id: string; name: string }[];
 };
 
 export function EmployeesClient({
   employees: initialEmployees,
   currentUserId,
   currentUserRole,
+  departments,
+  positions,
 }: Props) {
   const [employees, setEmployees] = useState(initialEmployees);
   const [search, setSearch] = useState("");
@@ -254,6 +258,8 @@ export function EmployeesClient({
           onClose={() => setEditingEmployee(null)}
           employee={editingEmployee}
           onUpdate={handleUpdate}
+          departments={departments}
+          positions={positions}
         />
       )}
 
@@ -261,6 +267,8 @@ export function EmployeesClient({
         open={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         onCreate={handleCreate}
+        departments={departments}
+        positions={positions}
       />
     </>
   );

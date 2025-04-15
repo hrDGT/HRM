@@ -14,14 +14,14 @@ import {
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import type { EmployeeCard } from "@/lib/users/users-types";
 
-const DEPARTMENTS = ["React", ".NET", "Blockchain", "DevOps", "Global", "Java", "Mobile"];
-const POSITIONS = ["Software Engineer", "Network Engineer", "DevOps Engineer", "Data Analyst", "Project Manager"];
 const ROLES = ["Employee", "Admin"];
 
 type CreateUserModalProps = {
   open: boolean;
   onClose: () => void;
   onCreate: (user: EmployeeCard) => void;
+  departments: { id: string; name: string }[];
+  positions: { id: string; name: string }[];
 };
 
 type CreateFormState = {
@@ -29,19 +29,19 @@ type CreateFormState = {
   password: string;
   firstName: string;
   lastName: string;
-  department: string;
-  position: string;
+  departmentId: string;
+  positionId: string;
   role: string;
 };
 
-export function CreateUserModal({ open, onClose, onCreate }: CreateUserModalProps) {
+export function CreateUserModal({ open, onClose, onCreate, departments, positions }: CreateUserModalProps) {
   const [form, setForm] = useState<CreateFormState>({
     email: "",
     password: "",
     firstName: "",
     lastName: "",
-    department: DEPARTMENTS[0],
-    position: POSITIONS[0],
+    departmentId: departments[0]?.id ?? "",
+    positionId: positions[0]?.id ?? "",
     role: ROLES[0],
   });
 
@@ -49,14 +49,16 @@ export function CreateUserModal({ open, onClose, onCreate }: CreateUserModalProp
     setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleCreate = () => {
+    const dept = departments.find(d => d.id === form.departmentId);
+    const pos = positions.find(p => p.id === form.positionId);
     const initials = `${form.firstName.charAt(0)}${form.lastName.charAt(0)}`.toUpperCase() || "U";
     onCreate({
       id: Date.now(),
       email: form.email,
       firstName: form.firstName,
       lastName: form.lastName,
-      department: form.department,
-      position: form.position,
+      department: dept?.name ?? "",
+      position: pos?.name ?? "",
       avatar: null,
       initials,
       isVerified: false,
@@ -66,8 +68,8 @@ export function CreateUserModal({ open, onClose, onCreate }: CreateUserModalProp
       password: "",
       firstName: "",
       lastName: "",
-      department: DEPARTMENTS[0],
-      position: POSITIONS[0],
+      departmentId: departments[0]?.id ?? "",
+      positionId: positions[0]?.id ?? "",
       role: ROLES[0],
     });
   };
@@ -101,13 +103,13 @@ export function CreateUserModal({ open, onClose, onCreate }: CreateUserModalProp
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>Department</Label>
-          <Select value={form.department} onValueChange={(v) => set("department", v)}>
+          <Select value={form.departmentId} onValueChange={(v) => set("departmentId", v)}>
             <SelectTrigger className={fieldInput}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
-              {DEPARTMENTS.map((d) => (
-                <SelectItem key={d} value={d} className="focus:bg-white/5">{d}</SelectItem>
+              {departments.map((d) => (
+                <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -115,13 +117,13 @@ export function CreateUserModal({ open, onClose, onCreate }: CreateUserModalProp
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>Position</Label>
-          <Select value={form.position} onValueChange={(v) => set("position", v)}>
+          <Select value={form.positionId} onValueChange={(v) => set("positionId", v)}>
             <SelectTrigger className={fieldInput}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
-              {POSITIONS.map((p) => (
-                <SelectItem key={p} value={p} className="focus:bg-white/5">{p}</SelectItem>
+              {positions.map((p) => (
+                <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>

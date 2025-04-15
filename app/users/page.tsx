@@ -4,6 +4,7 @@ import { gqlRequest } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
 import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { EmployeeCard } from "@/lib/users/users-types";
+import { getDepartments, getPositions } from "./[id]/actions";
 
 const GET_EMPLOYEES_QUERY = graphql(`
   query GetEmployees {
@@ -51,7 +52,12 @@ function toEmployeeCard(user: GetEmployeesResult["users"][number]): EmployeeCard
 }
 
 export default async function UsersPage() {
-  const result = await gqlRequest(GET_EMPLOYEES_QUERY);
+  const [result, departments, positions] = await Promise.all([
+    gqlRequest(GET_EMPLOYEES_QUERY),
+    getDepartments(),
+    getPositions(),
+  ]);
+
   const employees: EmployeeCard[] = result.users.map(toEmployeeCard);
 
   const cookieStore = await cookies();
@@ -66,5 +72,13 @@ export default async function UsersPage() {
     } catch {}
   }
 
-  return <EmployeesClient employees={employees} currentUserId={currentUserId} currentUserRole={currentUserRole} />;
+  return (
+    <EmployeesClient 
+      employees={employees} 
+      currentUserId={currentUserId} 
+      currentUserRole={currentUserRole} 
+      departments={departments}
+      positions={positions}
+    />
+  );
 }

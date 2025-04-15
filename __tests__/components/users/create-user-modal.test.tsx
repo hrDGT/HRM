@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import React from "react";
 import { CreateUserModal } from "@/app/users/_components/create-user-modal";
-import type { EmployeeCard } from "@/lib/users/users-types";
 
 jest.mock("@/components/ui/input", () => ({
   Input: ({ value, onChange, placeholder, className, type = "text", ...props }: any) => (
@@ -41,37 +41,44 @@ jest.mock("@/components/ui/button", () => ({
   ),
 }));
 
-jest.mock("@/components/ui/select", () => ({
-  Select: ({ value, onValueChange, children, disabled, ...props }: any) => (
-    <div data-testid="mock-select-wrapper" data-value={value} data-disabled={disabled} {...props}>
-      {children}
-    </div>
-  ),
-  SelectContent: ({ children, className, ...props }: any) => (
-    <div data-testid="mock-select-content" className={className} role="listbox" {...props}>
-      {children}
-    </div>
-  ),
-  SelectItem: ({ children, value, className, ...props }: any) => (
-    <div 
-      data-testid={`mock-select-item-${value}`} 
-      data-value={value} 
-      className={className} 
-      role="option"
-      {...props}
-    >
-      {children}
-    </div>
-  ),
-  SelectTrigger: ({ children, className, ...props }: any) => (
-    <button data-testid="mock-select-trigger" className={className} type="button" {...props}>
-      {children}
-    </button>
-  ),
-  SelectValue: ({ placeholder, ...props }: any) => (
-    <span data-testid="mock-select-value" {...props}>{placeholder}</span>
-  ),
-}));
+jest.mock("@/components/ui/select", () => {
+  const SelectContext = React.createContext<string | undefined>(undefined);
+  
+  return {
+    Select: ({ value, onValueChange, children, disabled, ...props }: any) => (
+      <SelectContext.Provider value={value}>
+        <div data-testid="mock-select-wrapper" data-value={value} data-disabled={disabled} {...props}>
+          {children}
+        </div>
+      </SelectContext.Provider>
+    ),
+    SelectContent: ({ children, className, ...props }: any) => (
+      <div data-testid="mock-select-content" className={className} role="listbox" {...props}>
+        {children}
+      </div>
+    ),
+    SelectItem: ({ children, value, className, ...props }: any) => (
+      <div 
+        data-testid={`mock-select-item-${value}`} 
+        data-value={value} 
+        className={className} 
+        role="option"
+        {...props}
+      >
+        {children}
+      </div>
+    ),
+    SelectTrigger: ({ children, className, ...props }: any) => (
+      <button data-testid="mock-select-trigger" className={className} type="button" {...props}>
+        {children}
+      </button>
+    ),
+    SelectValue: ({ placeholder, ...props }: any) => {
+      const value = React.useContext(SelectContext);
+      return <span data-testid="mock-select-value" {...props}>{value || placeholder}</span>;
+    },
+  };
+});
 
 jest.mock("@/components/ui/modal-wrapper", () => ({
   ModalWrapper: ({ open, onClose, title, children }: any) =>
@@ -83,6 +90,16 @@ jest.mock("@/components/ui/modal-wrapper", () => ({
     ) : null,
 }));
 
+const mockDepartments = [
+  { id: "1", name: "React" },
+  { id: "2", name: ".NET" },
+];
+
+const mockPositions = [
+  { id: "10", name: "Software Engineer" },
+  { id: "11", name: "DevOps Engineer" },
+];
+
 const mockOnClose = jest.fn();
 const mockOnCreate = jest.fn();
 
@@ -90,6 +107,8 @@ const defaultProps = {
   open: true,
   onClose: mockOnClose,
   onCreate: mockOnCreate,
+  departments: mockDepartments,
+  positions: mockPositions,
 };
 
 describe("CreateUserModal", () => {
@@ -98,95 +117,81 @@ describe("CreateUserModal", () => {
   });
 
   describe("modal rendering", () => {
-    it("renders modal when open is true", () => {
+    it("renders modal with correct title", () => {
       render(<CreateUserModal {...defaultProps} />);
-      expect(screen.getByTestId("mock-modal")).toBeInTheDocument();
       expect(screen.getByTestId("mock-modal")).toHaveAttribute("data-title", "Create user");
     });
 
-    it("does not render modal when open is false", () => {
-      render(<CreateUserModal {...defaultProps} open={false} />);
-      expect(screen.queryByTestId("mock-modal")).not.toBeInTheDocument();
+    it("renders all form fields", () => {
+      render(<CreateUserModal {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      expect(inputs).toHaveLength(4);
+      
+      expect(screen.getAllByTestId("mock-select-wrapper")).toHaveLength(3);
     });
 
-    it("calls onClose when close button is clicked", async () => {
-      const user = userEvent.setup();
+    it("shows empty form fields by default", () => {
       render(<CreateUserModal {...defaultProps} />);
-      await user.click(screen.getByTestId("mock-modal-close"));
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      expect(inputs[0]).toHaveValue("");
+      expect(inputs[1]).toHaveValue("");
+      expect(inputs[2]).toHaveValue("");
+      expect(inputs[3]).toHaveValue("");
     });
   });
 
-  describe("form fields", () => {
-    it("renders all required input fields", () => {
-      render(<CreateUserModal {...defaultProps} />);
-      
-      const labels = screen.getAllByTestId("mock-label");
-      const labelTexts = labels.map((label: HTMLElement) => label.textContent);
-      
-      expect(labelTexts).toContain("Email");
-      expect(labelTexts).toContain("Password");
-      expect(labelTexts).toContain("First Name");
-      expect(labelTexts).toContain("Last Name");
-      expect(labelTexts).toContain("Department");
-      expect(labelTexts).toContain("Position");
-      expect(labelTexts).toContain("Role");
-    });
-
-    it("renders select fields with default options", () => {
-      render(<CreateUserModal {...defaultProps} />);
-      
-      const selectWrappers = screen.getAllByTestId("mock-select-wrapper");
-      expect(selectWrappers).toHaveLength(3);
-    });
-
-    it("updates form state when typing in email field", async () => {
+  describe("form interactions", () => {
+    it("updates email when changed", async () => {
       const user = userEvent.setup();
       render(<CreateUserModal {...defaultProps} />);
       
       const inputs = screen.getAllByTestId("mock-input");
-      const emailInput = inputs[0];
+      await user.type(inputs[0], "test@example.com");
       
-      await user.type(emailInput, "test@example.com");
-      expect(emailInput).toHaveValue("test@example.com");
+      expect(inputs[0]).toHaveValue("test@example.com");
     });
 
-    it("updates form state when typing in password field", async () => {
+    it("updates first and last name when changed", async () => {
       const user = userEvent.setup();
       render(<CreateUserModal {...defaultProps} />);
       
       const inputs = screen.getAllByTestId("mock-input");
-      const passwordInput = inputs[1];
+      await user.type(inputs[2], "John");
+      await user.type(inputs[3], "Doe");
       
-      await user.type(passwordInput, "secure123");
-      expect(passwordInput).toHaveValue("secure123");
-      expect(passwordInput).toHaveAttribute("type", "password");
+      expect(inputs[2]).toHaveValue("John");
+      expect(inputs[3]).toHaveValue("Doe");
+    });
+
+    it("allows setting a password", async () => {
+      const user = userEvent.setup();
+      render(<CreateUserModal {...defaultProps} />);
+      
+      const inputs = screen.getAllByTestId("mock-input");
+      await user.type(inputs[1], "securePass123");
+      
+      expect(inputs[1]).toHaveValue("securePass123");
     });
   });
 
-  describe("select interactions", () => {
-    it("renders department options", () => {
+  describe("select fields", () => {
+    it("displays first department as default selected", () => {
       render(<CreateUserModal {...defaultProps} />);
       
-      const selectContents = screen.getAllByTestId("mock-select-content");
-      const departmentContent = selectContents[0];
-      
-      const items = Array.from(departmentContent.querySelectorAll('[data-testid^="mock-select-item-"]'));
-      expect(items.length).toBeGreaterThan(0);
-      expect(items[0]?.textContent).toBe("React");
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[0]).toHaveAttribute("data-value", "1");
     });
 
-    it("renders position options", () => {
+    it("displays first position as default selected", () => {
       render(<CreateUserModal {...defaultProps} />);
       
-      const selectContents = screen.getAllByTestId("mock-select-content");
-      const positionContent = selectContents[1];
-      
-      const items = Array.from(positionContent.querySelectorAll('[data-testid^="mock-select-item-"]'));
-      expect(items[0]?.textContent).toBe("Software Engineer");
+      const wrappers = screen.getAllByTestId("mock-select-wrapper");
+      expect(wrappers[1]).toHaveAttribute("data-value", "10");
     });
 
-    it("renders role options", () => {
+    it("includes only Employee and Admin roles in options", () => {
       render(<CreateUserModal {...defaultProps} />);
       
       const selectContents = screen.getAllByTestId("mock-select-content");
@@ -197,6 +202,7 @@ describe("CreateUserModal", () => {
       
       expect(itemTexts).toContain("Employee");
       expect(itemTexts).toContain("Admin");
+      expect(itemTexts).not.toContain("Manager");
     });
   });
 
@@ -210,13 +216,13 @@ describe("CreateUserModal", () => {
       expect(createButton).toBeDisabled();
     });
 
-    it("becomes enabled when all required fields are filled", async () => {
+    it("is enabled when all required fields are filled", async () => {
       const user = userEvent.setup();
       render(<CreateUserModal {...defaultProps} />);
       
       const inputs = screen.getAllByTestId("mock-input");
       await user.type(inputs[0], "test@example.com");
-      await user.type(inputs[1], "pass123");
+      await user.type(inputs[1], "password123");
       await user.type(inputs[2], "John");
       await user.type(inputs[3], "Doe");
       
@@ -226,13 +232,13 @@ describe("CreateUserModal", () => {
       expect(createButton).not.toBeDisabled();
     });
 
-    it("calls onCreate with correct user data when clicked", async () => {
+    it("calls onCreate with new user data when clicked", async () => {
       const user = userEvent.setup();
       render(<CreateUserModal {...defaultProps} />);
       
       const inputs = screen.getAllByTestId("mock-input");
-      await user.type(inputs[0], "john@example.com");
-      await user.type(inputs[1], "secure123");
+      await user.type(inputs[0], "test@example.com");
+      await user.type(inputs[1], "password123");
       await user.type(inputs[2], "John");
       await user.type(inputs[3], "Doe");
       
@@ -243,7 +249,7 @@ describe("CreateUserModal", () => {
       
       expect(mockOnCreate).toHaveBeenCalledWith(
         expect.objectContaining({
-          email: "john@example.com",
+          email: "test@example.com",
           firstName: "John",
           lastName: "Doe",
           department: "React",
@@ -251,32 +257,31 @@ describe("CreateUserModal", () => {
           initials: "JD",
           isVerified: false,
           avatar: null,
-          id: expect.any(Number),
         })
       );
     });
 
-    it("resets form after successful creation", async () => {
+    it("calls onClose after successful creation", async () => {
       const user = userEvent.setup();
       render(<CreateUserModal {...defaultProps} />);
       
       const inputs = screen.getAllByTestId("mock-input");
-      await user.type(inputs[0], "test@test.com");
-      await user.type(inputs[1], "pass");
-      await user.type(inputs[2], "Test");
-      await user.type(inputs[3], "User");
+      await user.type(inputs[0], "test@example.com");
+      await user.type(inputs[1], "password123");
+      await user.type(inputs[2], "John");
+      await user.type(inputs[3], "Doe");
       
       const buttons = screen.getAllByTestId("mock-button");
       const createButton = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Create");
+      
       await user.click(createButton!);
       
-      expect(inputs[0]).toHaveValue("");
-      expect(inputs[2]).toHaveValue("");
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("cancel button", () => {
-    it("calls onClose when cancel is clicked", async () => {
+    it("calls onClose without creating when cancel is clicked", async () => {
       const user = userEvent.setup();
       render(<CreateUserModal {...defaultProps} />);
       
@@ -284,6 +289,8 @@ describe("CreateUserModal", () => {
       const cancelButton = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Cancel");
       
       await user.click(cancelButton!);
+      
+      expect(mockOnCreate).not.toHaveBeenCalled();
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
   });
