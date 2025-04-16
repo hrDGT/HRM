@@ -52,6 +52,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
     const dept = departments.find(d => d.id === form.departmentId);
     const pos = positions.find(p => p.id === form.positionId);
     const initials = `${form.firstName.charAt(0)}${form.lastName.charAt(0)}`.toUpperCase() || "U";
+    
     onCreate({
       id: Date.now(),
       email: form.email,
@@ -63,6 +64,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
       initials,
       isVerified: false,
     });
+
     setForm({
       email: "",
       password: "",
