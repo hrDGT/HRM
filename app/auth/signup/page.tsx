@@ -47,7 +47,7 @@ export default function SignupPage() {
           formId="signup-form"
           buttonText="Create account"
           linkText="I have an account"
-          linkHref="/auth/signin"
+          linkHref="/auth/login"
           isPending={isPending}
         />
       </Card>
