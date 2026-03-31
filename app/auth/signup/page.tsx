@@ -8,9 +8,10 @@ import { ControlledPasswordInput } from "@/components/forms/controlled-password-
 import { useSignUpForm } from "@/app/hooks/auth/use-signup-form";
 import { FormHeader } from "@/components/forms/form-header";
 import { FormActions } from "@/components/forms/form-actions";
+import { FormRootError } from "@/components/ui/form-root-error";
 
 export default function SignupPage() {
-  const { form, onSubmit } = useSignUpForm();
+  const { form, onSubmit, isPending, rootError } = useSignUpForm();
 
   return (
     <div className="min-h-screen flex justify-center items-center container mx-auto animate-in fade-in zoom-in-90 slide-in-from-bottom-6 duration-500">
@@ -25,6 +26,7 @@ export default function SignupPage() {
               <ControlledInput name="email" placeholder="Email" autoFocus />
               <ControlledPasswordInput name="password" placeholder="Password" />
             </FieldGroup>
+            <FormRootError message={rootError} />
           </Form>
         </CardContent>
         <FormActions
@@ -32,6 +34,7 @@ export default function SignupPage() {
           buttonText="Create account"
           linkText="I have an account"
           linkHref="/auth/signin"
+          isPending={isPending}
         />
       </Card>
     </div>

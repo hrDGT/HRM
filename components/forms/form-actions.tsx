@@ -8,6 +8,7 @@ interface FormActionsProps {
   buttonText: string;
   linkText: string;
   linkHref: string;
+  isPending: boolean;
 }
 
 export function FormActions({
@@ -15,6 +16,7 @@ export function FormActions({
   buttonText,
   linkText,
   linkHref,
+  isPending,
 }: FormActionsProps) {
   return (
     <CardFooter className="justify-center">
@@ -22,9 +24,10 @@ export function FormActions({
         <Button
           type="submit"
           form={formId}
+          disabled={isPending}
           className="mb-2 rounded-4xl xl:min-h-12 self-center uppercase bg-primary hover:brightness-90"
         >
-          {buttonText}
+          {isPending ? "Loading..." : buttonText}
         </Button>
         <Button asChild variant="link">
           <Link
