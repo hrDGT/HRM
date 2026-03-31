@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import { ApolloWrapper } from "@/lib/apollo/apollo-wrapper";
 
 const robotoSans = Roboto({
   variable: "--font-roboto",
@@ -22,9 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${robotoSans.variable} h-full antialiased`}>
       <body className="font-sans">
-        <ApolloWrapper>
-          <main>{children}</main>
-        </ApolloWrapper>
+        <main>{children}</main>
       </body>
     </html>
   );
