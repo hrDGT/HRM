@@ -6,7 +6,7 @@
     "dev": "next dev",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
-    "build": "next build",
+    "build": "npm run codegen && next build",
     "start": "next start",
     "lint": "eslint"
   },
