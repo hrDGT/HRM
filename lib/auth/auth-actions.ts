@@ -12,18 +12,19 @@ const SIGNUP_MUTATION = graphql(`
   mutation Signup($auth: AuthInput!) {
     signup(auth: $auth) {
       access_token
+      refresh_token
     }
   }
 `);
 
-export async function registerUserAction(
+export async function signUpUserAction(
   _prevState: ActionState,
   data: SignupFormValues
 ): Promise<ActionState> {
   try {
     const result = await gqlRequest(SIGNUP_MUTATION, { auth: data });
 
-    await setAuthCookie(result.signup.access_token);
+    await setAuthCookies(result.signup.access_token, result.signup.refresh_token);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : "Registration failed";
     return { error: errorMessage };

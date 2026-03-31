@@ -11,13 +11,13 @@ import { FormHeader } from "@/components/forms/form-header";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormRootError } from "@/components/ui/form-root-error";
 import { type SignupFormValues } from "@/lib/schemas/auth";
-import { type ActionState, registerUserAction } from "@/lib/auth/auth-actions";
+import { type ActionState, signUpUserAction } from "@/lib/auth/auth-actions";
 
 export default function SignupPage() {
   const [state, formAction, isPending] = useActionState<
     ActionState,
     SignupFormValues
-  >(registerUserAction, null);
+  >(signUpUserAction, null);
 
   const { form } = useSignUpForm();
 
