@@ -6,7 +6,7 @@ const config: CodegenConfig = {
   documents: ['lib/**/*.ts', 'app/**/*.tsx'],
 
   generates: {
-    './src/gql/': {
+    './gqlcodegen/': {
       preset: 'client',
       plugins: [],
       presetConfig: {
