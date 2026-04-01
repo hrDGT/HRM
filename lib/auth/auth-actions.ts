@@ -30,34 +30,23 @@ const LOGIN_QUERY = graphql(`
   }
 `)
 
-export async function signUpUserAction(
-  _prevState: ActionState,
-  data: SignupFormValues
-): Promise<ActionState> {
+export async function signUpUserAction(_prevState: ActionState, data: SignupFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(SIGNUP_MUTATION, { auth: data });
-
     await setAuthCookies(result.signup.access_token, result.signup.refresh_token);
-  } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : "Registration failed";
-    return { error: errorMessage };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Registration failed" };
   }
-
   redirect("/");
 }
 
-export async function loginUserAction(
-  _prevState: ActionState,
-  data: LoginFormValues
-): Promise<ActionState> {
+
+export async function loginUserAction(_prevState: ActionState, data: LoginFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(LOGIN_QUERY, { auth: data });
-    console.log("Full Result from Backend:", JSON.stringify(result, null, 2));
     await setAuthCookies(result.login.access_token, result.login.refresh_token);
-  } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : "Login failed";
-    return { error: errorMessage };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Login failed" };
   }
-
   redirect("/");
 }
