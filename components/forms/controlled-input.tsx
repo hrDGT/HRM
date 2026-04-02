@@ -26,10 +26,12 @@ export function ControlledInput<T extends FieldValues>({
         {...register(name)}
         autoFocus={autoFocus}
         id={name}
+        name={name}
         type={type}
         placeholder={placeholder}
         aria-invalid={fieldState.invalid}
         className="min-h-12 px-3 focus-visible:border-main-text hover:border-main-text"
+        autoComplete="email"
       />
       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
     </Field>

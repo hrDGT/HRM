@@ -38,7 +38,11 @@ export default function LoginPage() {
           <Form id="login-form" onSubmit={handleFormSubmit} form={form}>
             <FieldGroup className="gap-y-4">
               <ControlledInput name="email" placeholder="Email" autoFocus />
-              <ControlledPasswordInput name="password" placeholder="Password" />
+              <ControlledPasswordInput
+                name="password"
+                placeholder="Password"
+                autoComplete="current-password"
+              />
             </FieldGroup>
             <FormRootError message={state?.error} />
           </Form>

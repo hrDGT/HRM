@@ -16,12 +16,14 @@ interface ControlledPasswordInputProps<T extends FieldValues> {
   placeholder?: string;
   type?: string;
   autoFocus?: boolean;
+  autoComplete?: "new-password" | "current-password";
 }
 
 export function ControlledPasswordInput<T extends FieldValues>({
   name,
   placeholder,
   autoFocus,
+  autoComplete,
 }: ControlledPasswordInputProps<T>) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -37,11 +39,12 @@ export function ControlledPasswordInput<T extends FieldValues>({
         <InputGroupInput
           {...register(name)}
           id={name}
+          name={name}
           autoFocus={autoFocus}
           type={showPassword ? "text" : "password"}
           aria-invalid={fieldState.invalid}
           placeholder={placeholder}
-          autoComplete="new-password"
+          autoComplete={autoComplete}
         />
         <InputGroupAddon align="inline-end">
           <Button

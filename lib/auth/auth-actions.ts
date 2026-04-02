@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { gqlRequest } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
 import { setAuthCookies } from "./auth-cookies";
-import { ForgotPasswordValues, type LoginFormValues, type SignupFormValues } from "@/lib/schemas/auth";
+import { ForgotPasswordValues, ResetPasswordValue, type LoginFormValues, type SignupFormValues } from "@/lib/schemas/auth";
 
 export type ActionState = { error?: string } | null;
 
@@ -36,6 +36,12 @@ const FORGOT_PASSWORD_MUTATION = graphql(`
   }
 `)
 
+const RESET_PASSWORD_MUTATION = graphql(`
+  mutation ResetPassword($auth: ResetPasswordInput!) {
+    resetPassword(auth: $auth)
+  }
+`);
+
 export async function signUpUserAction(_prevState: ActionState, data: SignupFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(SIGNUP_MUTATION, { auth: data });
@@ -65,4 +71,26 @@ export async function forgotPasswordAction(_prevState: ActionState, data: Forgot
     return { error: err instanceof Error ? err.message : "Failed to send email" };
   }
   redirect('/auth/login')
+}
+
+export async function resetPasswordAction(
+  token: string,
+  _prevState: ActionState,
+  data: ResetPasswordValue
+): Promise<ActionState> {
+  if (!token) {
+    return { error: "Missing reset token. Please check your email link." };
+  }
+
+  try {
+    await gqlRequest(
+      RESET_PASSWORD_MUTATION,
+      { auth: data },
+      { Authorization: `Bearer ${token}` }
+    );
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to reset password" };
+  }
+
+  redirect("/auth/login");
 }

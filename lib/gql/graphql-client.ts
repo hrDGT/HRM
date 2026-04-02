@@ -4,10 +4,10 @@ import { cookies } from "next/headers";
 import { refreshTokensAction } from "../auth/auth-service";
 import { isUnauthorizedError } from "./gql-utils";
 
-
 export async function gqlRequest<T, V>(
   document: TypedDocumentNode<T, V>,
-  variables?: V
+  variables?: V,
+  customHeaders?: Record<string, string>
 ): Promise<T> {
   const apiUrl = process.env.GRAPHQL_URL;
   if (!apiUrl) throw new Error("GRAPHQL_URL is missing");
@@ -21,6 +21,7 @@ export async function gqlRequest<T, V>(
       headers: {
         "Content-Type": "application/json",
         ...(currentToken && { Authorization: `Bearer ${currentToken}` }),
+        ...customHeaders,
       },
       body: JSON.stringify({ query: print(document), variables }),
       cache: "no-store",
