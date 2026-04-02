@@ -1,27 +1,28 @@
 import * as z from "zod"
 
+const emailField = z.email('Invalid email')
+
+const passwordField = z
+  .string()
+  .min(1, "Password is required")
+  .min(5, "Password must be at least 5 characters long");
+
 export const loginSchema = z.object({
-  email: z.email("Invalid email"),
-  password: z.string().min(1, "Password is required")
-    .min(5, "At least 5 characters"),
+  email: emailField,
+  password: passwordField,
 })
 
 export const signupSchema = z.object({
-  email: z
-    .email("Invalid email"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(5, "At least 5 characters"),
+  email: emailField,
+  password: passwordField,
 })
 
 export const forgotPasswordSchema = z.object({
-  email: z.email('Invalid email')
+  email: emailField
 })
 
 export const resetPasswordSchema = z.object({
-  newPassword: z.string().min(1, "Password is required")
-    .min(5, "At least 5 characters"),
+  newPassword: passwordField,
 })
 
 export type LoginFormValues = z.infer<typeof loginSchema>
