@@ -1,6 +1,6 @@
 "use client";
 
-import { useLoginForm } from "@/app/hooks/auth/use-login-form";
+import { useLoginForm } from "@/hooks/auth/use-login-form";
 import { ControlledInput } from "@/components/forms/controlled-input";
 import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
 import { Form } from "@/components/forms/form";
@@ -51,7 +51,7 @@ export default function LoginForm() {
           formId="login-form"
           buttonText="Log in"
           linkText="Forgot password"
-          linkHref="/auth/forgot-password"
+          linkHref="/forgot-password"
           isPending={isPending}
         />
       </Card>

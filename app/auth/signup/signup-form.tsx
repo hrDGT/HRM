@@ -6,7 +6,7 @@ import { FieldGroup } from "@/components/ui/field";
 import { Form } from "@/components/forms/form";
 import { ControlledInput } from "@/components/forms/controlled-input";
 import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
-import { useSignUpForm } from "@/app/hooks/auth/use-signup-form";
+import { useSignUpForm } from "@/hooks/auth/use-signup-form";
 import { FormHeader } from "@/components/forms/form-header";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormRootError } from "@/components/ui/form-root-error";
