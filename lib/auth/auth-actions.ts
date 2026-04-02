@@ -42,12 +42,15 @@ const RESET_PASSWORD_MUTATION = graphql(`
   }
 `);
 
+const getError = (err: unknown, fallback: string) =>
+  err instanceof Error ? err.message : fallback;
+
 export async function signUpUserAction(_prevState: ActionState, data: SignupFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(SIGNUP_MUTATION, { auth: data });
     await setAuthCookies(result.signup.access_token, result.signup.refresh_token);
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Registration failed" };
+    return { error: getError(err, "Registration failed") };
   }
   redirect("/");
 }
@@ -58,7 +61,7 @@ export async function loginUserAction(_prevState: ActionState, data: LoginFormVa
     const result = await gqlRequest(LOGIN_QUERY, { auth: data });
     await setAuthCookies(result.login.access_token, result.login.refresh_token);
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Login failed" };
+    return { error: getError(err, "Login failed") };
   }
   redirect("/");
 }
@@ -66,9 +69,8 @@ export async function loginUserAction(_prevState: ActionState, data: LoginFormVa
 export async function forgotPasswordAction(_prevState: ActionState, data: ForgotPasswordValues): Promise<ActionState> {
   try {
     await gqlRequest(FORGOT_PASSWORD_MUTATION, { auth: data })
-  }
-  catch (err) {
-    return { error: err instanceof Error ? err.message : "Failed to send email" };
+  } catch (err) {
+    return { error: getError(err, "Failed to send email") };
   }
   redirect('/auth/login')
 }
@@ -89,7 +91,7 @@ export async function resetPasswordAction(
       { Authorization: `Bearer ${token}` }
     );
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Failed to reset password" };
+    return { error: getError(err, "Failed to reset password") };
   }
 
   redirect("/auth/login");
