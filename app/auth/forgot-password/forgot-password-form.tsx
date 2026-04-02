@@ -1,6 +1,7 @@
 "use client";
 
 import { useForgotPasswordForm } from "@/app/hooks/auth/use-forgot-password-form";
+import { useActionFeedback } from "@/app/hooks/use-action-feedback";
 import { ControlledInput } from "@/components/forms/controlled-input";
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
@@ -21,6 +22,8 @@ export default function ForgotPasswordForm() {
   >(forgotPasswordAction, null);
 
   const { form } = useForgotPasswordForm();
+
+  useActionFeedback(state?.success, "Check your email inbox", "/auth/login");
 
   const handleFormSubmit = (values: ForgotPasswordValues) => {
     startTransition(() => {

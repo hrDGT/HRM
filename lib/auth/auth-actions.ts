@@ -6,7 +6,7 @@ import { graphql } from "@/gqlcodegen";
 import { setAuthCookies } from "./auth-cookies";
 import { ForgotPasswordValues, ResetPasswordValue, type LoginFormValues, type SignupFormValues } from "@/lib/schemas/auth";
 
-export type ActionState = { error?: string } | null;
+export type ActionState = { error?: string; success?: boolean } | null;
 
 const SIGNUP_MUTATION = graphql(`
   mutation Signup($auth: AuthInput!) {
@@ -66,13 +66,16 @@ export async function loginUserAction(_prevState: ActionState, data: LoginFormVa
   redirect("/");
 }
 
-export async function forgotPasswordAction(_prevState: ActionState, data: ForgotPasswordValues): Promise<ActionState> {
+export async function forgotPasswordAction(
+  _prevState: ActionState,
+  data: ForgotPasswordValues
+): Promise<ActionState> {
   try {
-    await gqlRequest(FORGOT_PASSWORD_MUTATION, { auth: data })
+    await gqlRequest(FORGOT_PASSWORD_MUTATION, { auth: data });
+    return { success: true };
   } catch (err) {
     return { error: getError(err, "Failed to send email") };
   }
-  redirect('/auth/login')
 }
 
 export async function resetPasswordAction(
@@ -90,9 +93,8 @@ export async function resetPasswordAction(
       { auth: data },
       { Authorization: `Bearer ${token}` }
     );
+    return { success: true };
   } catch (err) {
     return { error: getError(err, "Failed to reset password") };
   }
-
-  redirect("/auth/login");
 }

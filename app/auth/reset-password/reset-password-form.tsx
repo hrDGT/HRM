@@ -1,5 +1,6 @@
 "use client";
 
+import { useActionFeedback } from "@/app/hooks/use-action-feedback";
 import { useForgotPasswordForm } from "@/app/hooks/use-reset-password-form";
 import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
 import { Form } from "@/components/forms/form";
@@ -23,6 +24,8 @@ export default function ResetPasswordForm() {
   >(resetPasswordActionWithToken, null);
 
   const { form } = useForgotPasswordForm();
+
+  useActionFeedback(state?.success, "Password has been reset", "/auth/login");
 
   const handleFormSubmit = (values: ResetPasswordValue) => {
     startTransition(() => {
