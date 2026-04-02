@@ -17,6 +17,7 @@ interface ControlledPasswordInputProps<T extends FieldValues> {
   type?: string;
   autoFocus?: boolean;
   autoComplete?: "new-password" | "current-password";
+  hasProtectIcon?: boolean;
 }
 
 export function ControlledPasswordInput<T extends FieldValues>({
@@ -24,16 +25,17 @@ export function ControlledPasswordInput<T extends FieldValues>({
   placeholder,
   autoFocus,
   autoComplete,
+  hasProtectIcon = true,
 }: ControlledPasswordInputProps<T>) {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(!hasProtectIcon);
 
   const { register, getFieldState, formState } = useFormContext<T>();
   const fieldState = getFieldState(name, formState);
-
+  console.log(hasProtectIcon);
   return (
     <Field data-invalid={fieldState.invalid}>
       <InputGroup
-        className="min-h-12 px-3  focus-visible:border-main-text hover:border-main-text"
+        className="min-h-12 px-3 focus-visible:border-main-text hover:border-main-text"
         data-invalid={fieldState.invalid}
       >
         <InputGroupInput
@@ -55,11 +57,15 @@ export function ControlledPasswordInput<T extends FieldValues>({
             onClick={() => setShowPassword(!showPassword)}
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
-            {showPassword ? (
-              <EyeOff className="size-6 text-secondary-text" strokeWidth={3} />
-            ) : (
-              <Eye className="size-6 text-secondary-text" strokeWidth={3} />
-            )}
+            {hasProtectIcon &&
+              (showPassword ? (
+                <EyeOff
+                  className="size-6 text-secondary-text"
+                  strokeWidth={3}
+                />
+              ) : (
+                <Eye className="size-6 text-secondary-text" strokeWidth={3} />
+              ))}
           </Button>
         </InputGroupAddon>
       </InputGroup>

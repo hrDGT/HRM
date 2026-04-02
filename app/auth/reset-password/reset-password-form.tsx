@@ -48,6 +48,7 @@ export default function ResetPasswordForm() {
               placeholder="Password"
               autoComplete="new-password"
               autoFocus
+              hasProtectIcon={false}
             />
             <FormRootError message={state?.error} />
           </Form>
