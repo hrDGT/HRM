@@ -1,27 +1,28 @@
 "use client";
 
-import { useLoginForm } from "@/app/hooks/auth/use-login-form";
+import { useForgotPasswordForm } from "@/app/hooks/auth/use-forgot-password-form";
 import { ControlledInput } from "@/components/forms/controlled-input";
-import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { FieldGroup } from "@/components/ui/field";
 import { FormRootError } from "@/components/ui/form-root-error";
-import { ActionState, loginUserAction } from "@/lib/auth/auth-actions";
-import { type LoginFormValues } from "@/lib/schemas/auth";
+import {
+  type ActionState,
+  forgotPasswordAction,
+} from "@/lib/auth/auth-actions";
+import { ForgotPasswordValues } from "@/lib/schemas/auth";
 import { startTransition, useActionState } from "react";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const [state, formAction, isPending] = useActionState<
     ActionState,
-    LoginFormValues
-  >(loginUserAction, null);
+    ForgotPasswordValues
+  >(forgotPasswordAction, null);
 
-  const { form } = useLoginForm();
+  const { form } = useForgotPasswordForm();
 
-  const handleFormSubmit = (values: LoginFormValues) => {
+  const handleFormSubmit = (values: ForgotPasswordValues) => {
     startTransition(() => {
       formAction(values);
     });
@@ -31,23 +32,24 @@ export default function LoginPage() {
     <div className="min-h-screen flex justify-center items-center container mx-auto animate-in fade-in zoom-in-90 slide-in-from-bottom-6 duration-500">
       <Card className="w-full sm:max-w-xl">
         <FormHeader
-          title="Welcome back"
-          description="Hello again! Log in to continue"
+          title="Forgot password"
+          description="We will sent you an email with further instructions"
         />
         <CardContent className="xl:mb-14">
-          <Form id="login-form" onSubmit={handleFormSubmit} form={form}>
-            <FieldGroup className="gap-y-4">
-              <ControlledInput name="email" placeholder="Email" autoFocus />
-              <ControlledPasswordInput name="password" placeholder="Password" />
-            </FieldGroup>
+          <Form
+            id="forgot-password-form"
+            onSubmit={handleFormSubmit}
+            form={form}
+          >
+            <ControlledInput name="email" placeholder="Email" autoFocus />
             <FormRootError message={state?.error} />
           </Form>
         </CardContent>
         <FormActions
-          formId="login-form"
-          buttonText="Log in"
-          linkText="Forgot password"
-          linkHref="/auth/forgot-password"
+          formId="forgot-password-form"
+          buttonText="Reset password"
+          linkText="Cancel"
+          linkHref="/auth/login"
           isPending={isPending}
         />
       </Card>

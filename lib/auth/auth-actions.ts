@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { gqlRequest } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
 import { setAuthCookies } from "./auth-cookies";
-import { type LoginFormValues, type SignupFormValues } from "@/lib/schemas/auth";
+import { ForgotPasswordValues, type LoginFormValues, type SignupFormValues } from "@/lib/schemas/auth";
 
 export type ActionState = { error?: string } | null;
 
@@ -30,6 +30,12 @@ const LOGIN_QUERY = graphql(`
   }
 `)
 
+const FORGOT_PASSWORD_MUTATION = graphql(`
+  mutation ForgotPassword($auth: ForgotPasswordInput!) {
+    forgotPassword(auth: $auth)
+  }
+`)
+
 export async function signUpUserAction(_prevState: ActionState, data: SignupFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(SIGNUP_MUTATION, { auth: data });
@@ -49,4 +55,14 @@ export async function loginUserAction(_prevState: ActionState, data: LoginFormVa
     return { error: err instanceof Error ? err.message : "Login failed" };
   }
   redirect("/");
+}
+
+export async function forgotPasswordAction(_prevState: ActionState, data: ForgotPasswordValues): Promise<ActionState> {
+  try {
+    await gqlRequest(FORGOT_PASSWORD_MUTATION, { auth: data })
+  }
+  catch (err) {
+    return { error: err instanceof Error ? err.message : "Failed to send email" };
+  }
+  redirect('/auth/login')
 }
