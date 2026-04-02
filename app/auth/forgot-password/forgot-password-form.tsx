@@ -1,7 +1,7 @@
 "use client";
 
 import { useForgotPasswordForm } from "@/app/hooks/auth/use-forgot-password-form";
-import { useActionFeedback } from "@/app/hooks/use-action-feedback";
+import { useActionFeedback } from "@/app/hooks/auth/use-action-feedback";
 import { ControlledInput } from "@/components/forms/controlled-input";
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
