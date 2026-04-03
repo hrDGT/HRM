@@ -39,7 +39,7 @@ export default function ResetPasswordForm() {
         title="Set a new password"
         description="Almost done! Now create a new password"
       />
-      <CardContent className="xl:mb-14">
+      <CardContent className="mb-14">
         <Form id="reset-password-form" onSubmit={handleFormSubmit} form={form}>
           <ControlledPasswordInput
             name="newPassword"

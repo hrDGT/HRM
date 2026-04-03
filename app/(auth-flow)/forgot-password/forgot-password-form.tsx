@@ -37,7 +37,7 @@ export default function ForgotPasswordForm() {
         title="Forgot password"
         description="We will sent you an email with further instructions"
       />
-      <CardContent className="xl:mb-14">
+      <CardContent className="mb-14">
         <Form id="forgot-password-form" onSubmit={handleFormSubmit} form={form}>
           <ControlledInput name="email" placeholder="Email" autoFocus />
           <FormRootError message={state?.error} />

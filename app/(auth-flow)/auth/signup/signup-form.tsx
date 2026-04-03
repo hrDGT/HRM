@@ -33,7 +33,7 @@ export default function SignupForm() {
         title="Register now"
         description="Welcome! Sign up to continue"
       />
-      <CardContent className="xl:mb-14">
+      <CardContent className="mb-14">
         <Form id="signup-form" onSubmit={handleFormSubmit} form={form}>
           <FieldGroup className="gap-y-4">
             <ControlledInput name="email" placeholder="Email" autoFocus />

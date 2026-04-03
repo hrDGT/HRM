@@ -20,19 +20,19 @@ export function FormActions({
 }: FormActionsProps) {
   return (
     <CardFooter className="justify-center">
-      <Field orientation="vertical" className="xl:max-w-56 ">
+      <Field orientation="vertical" className="max-w-56 ">
         <Button
           type="submit"
           form={formId}
           disabled={isPending}
-          className="mb-2 rounded-4xl xl:min-h-12 self-center uppercase bg-primary hover:brightness-90"
+          className="self-center mb-2 rounded-4xl min-h-12 uppercase bg-primary hover:brightness-90"
         >
           {isPending ? "Loading..." : buttonText}
         </Button>
         <Button asChild variant="link">
           <Link
             href={linkHref}
-            className="inline-flex justify-center items-center uppercase text-sm text-secondary-text font-medium xl:min-h-12"
+            className="inline-flex justify-center items-center uppercase text-sm text-secondary-text font-medium min-h-12"
           >
             {linkText}
           </Link>

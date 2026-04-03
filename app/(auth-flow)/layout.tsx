@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center p-3">
-      <FadeIn className="w-full sm:max-w-xl">{children}</FadeIn>
+      <FadeIn className="w-full max-w-xl">{children}</FadeIn>
     </div>
   );
 }

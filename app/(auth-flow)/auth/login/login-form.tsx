@@ -33,7 +33,7 @@ export default function LoginForm() {
         title="Welcome back"
         description="Hello again! Log in to continue"
       />
-      <CardContent className="xl:mb-14">
+      <CardContent className="mb-14">
         <Form id="login-form" onSubmit={handleFormSubmit} form={form}>
           <FieldGroup className="gap-y-4">
             <ControlledInput name="email" placeholder="Email" autoFocus />
