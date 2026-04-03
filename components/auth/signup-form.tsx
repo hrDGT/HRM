@@ -13,7 +13,7 @@ import { FormRootError } from "@/components/ui/form-root-error";
 import { type SignupFormValues } from "@/lib/schemas/auth";
 import { type ActionState, signUpUserAction } from "@/lib/auth/auth-actions";
 
-export default function SignupForm() {
+export function SignupForm() {
   const [state, formAction, isPending] = useActionState<
     ActionState,
     SignupFormValues

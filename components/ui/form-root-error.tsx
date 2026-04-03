@@ -4,7 +4,7 @@ interface FormRootErrorProps {
   message?: string;
 }
 
-export const FormRootError = ({ message }: FormRootErrorProps) => {
+export function FormRootError({ message }: FormRootErrorProps) {
   if (!message) return null;
 
   return (
@@ -12,4 +12,4 @@ export const FormRootError = ({ message }: FormRootErrorProps) => {
       <FieldError errors={[{ message }]} />
     </div>
   );
-};
+}

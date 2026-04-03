@@ -13,7 +13,7 @@ import { ResetPasswordValue } from "@/lib/schemas/auth";
 import { useSearchParams } from "next/navigation";
 import { startTransition, useActionState } from "react";
 
-export default function ResetPasswordForm() {
+export function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
   const resetPasswordActionWithToken = resetPasswordAction.bind(null, token);

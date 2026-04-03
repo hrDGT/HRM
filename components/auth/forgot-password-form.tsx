@@ -15,7 +15,7 @@ import {
 import { ForgotPasswordValues } from "@/lib/schemas/auth";
 import { startTransition, useActionState } from "react";
 
-export default function ForgotPasswordForm() {
+export function ForgotPasswordForm() {
   const [state, formAction, isPending] = useActionState<
     ActionState,
     ForgotPasswordValues

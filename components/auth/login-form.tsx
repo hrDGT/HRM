@@ -13,7 +13,7 @@ import { ActionState, loginUserAction } from "@/lib/auth/auth-actions";
 import { type LoginFormValues } from "@/lib/schemas/auth";
 import { startTransition, useActionState } from "react";
 
-export default function LoginForm() {
+export function LoginForm() {
   const [state, formAction, isPending] = useActionState<
     ActionState,
     LoginFormValues

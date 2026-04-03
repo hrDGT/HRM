@@ -6,7 +6,7 @@ interface GraphQLError {
   };
 }
 
-export const isUnauthorizedError = (errors: readonly GraphQLError[] | undefined): boolean => {
+export function isUnauthorizedError(errors: readonly GraphQLError[] | undefined): boolean {
   if (!errors) return false;
   return errors.some(
     (err) =>
