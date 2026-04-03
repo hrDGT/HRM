@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${robotoSans.variable} h-full antialiased`}>
       <body className="font-sans">
-        <main>{children}</main>
+        {children}
         <Toaster richColors position="top-right" />
       </body>
     </html>
