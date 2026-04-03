@@ -32,30 +32,24 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center container mx-auto animate-in fade-in zoom-in-90 slide-in-from-bottom-6 duration-500">
-      <Card className="w-full sm:max-w-xl">
-        <FormHeader
-          title="Forgot password"
-          description="We will sent you an email with further instructions"
-        />
-        <CardContent className="xl:mb-14">
-          <Form
-            id="forgot-password-form"
-            onSubmit={handleFormSubmit}
-            form={form}
-          >
-            <ControlledInput name="email" placeholder="Email" autoFocus />
-            <FormRootError message={state?.error} />
-          </Form>
-        </CardContent>
-        <FormActions
-          formId="forgot-password-form"
-          buttonText="Reset password"
-          linkText="Cancel"
-          linkHref="/auth/login"
-          isPending={isPending}
-        />
-      </Card>
-    </div>
+    <Card>
+      <FormHeader
+        title="Forgot password"
+        description="We will sent you an email with further instructions"
+      />
+      <CardContent className="xl:mb-14">
+        <Form id="forgot-password-form" onSubmit={handleFormSubmit} form={form}>
+          <ControlledInput name="email" placeholder="Email" autoFocus />
+          <FormRootError message={state?.error} />
+        </Form>
+      </CardContent>
+      <FormActions
+        formId="forgot-password-form"
+        buttonText="Reset password"
+        linkText="Cancel"
+        linkHref="/auth/login"
+        isPending={isPending}
+      />
+    </Card>
   );
 }

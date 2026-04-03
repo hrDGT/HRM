@@ -28,33 +28,31 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center container mx-auto animate-in fade-in zoom-in-90 slide-in-from-bottom-6 duration-500">
-      <Card className="w-full sm:max-w-xl">
-        <FormHeader
-          title="Welcome back"
-          description="Hello again! Log in to continue"
-        />
-        <CardContent className="xl:mb-14">
-          <Form id="login-form" onSubmit={handleFormSubmit} form={form}>
-            <FieldGroup className="gap-y-4">
-              <ControlledInput name="email" placeholder="Email" autoFocus />
-              <ControlledPasswordInput
-                name="password"
-                placeholder="Password"
-                autoComplete="current-password"
-              />
-            </FieldGroup>
-            <FormRootError message={state?.error} />
-          </Form>
-        </CardContent>
-        <FormActions
-          formId="login-form"
-          buttonText="Log in"
-          linkText="Forgot password"
-          linkHref="/forgot-password"
-          isPending={isPending}
-        />
-      </Card>
-    </div>
+    <Card>
+      <FormHeader
+        title="Welcome back"
+        description="Hello again! Log in to continue"
+      />
+      <CardContent className="xl:mb-14">
+        <Form id="login-form" onSubmit={handleFormSubmit} form={form}>
+          <FieldGroup className="gap-y-4">
+            <ControlledInput name="email" placeholder="Email" autoFocus />
+            <ControlledPasswordInput
+              name="password"
+              placeholder="Password"
+              autoComplete="current-password"
+            />
+          </FieldGroup>
+          <FormRootError message={state?.error} />
+        </Form>
+      </CardContent>
+      <FormActions
+        formId="login-form"
+        buttonText="Log in"
+        linkText="Forgot password"
+        linkHref="/forgot-password"
+        isPending={isPending}
+      />
+    </Card>
   );
 }

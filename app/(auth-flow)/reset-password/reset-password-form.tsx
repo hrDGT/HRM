@@ -34,36 +34,30 @@ export default function ResetPasswordForm() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center container mx-auto animate-in fade-in zoom-in-90 slide-in-from-bottom-6 duration-500">
-      <Card className="w-full sm:max-w-xl">
-        <FormHeader
-          title="Set a new password"
-          description="Almost done! Now create a new password"
-        />
-        <CardContent className="xl:mb-14">
-          <Form
-            id="reset-password-form"
-            onSubmit={handleFormSubmit}
-            form={form}
-          >
-            <ControlledPasswordInput
-              name="newPassword"
-              placeholder="Password"
-              autoComplete="new-password"
-              autoFocus
-              hasProtectIcon={false}
-            />
-            <FormRootError message={state?.error} />
-          </Form>
-        </CardContent>
-        <FormActions
-          formId="reset-password-form"
-          buttonText="Submit"
-          linkText="Back to log in"
-          linkHref="/auth/login"
-          isPending={isPending}
-        />
-      </Card>
-    </div>
+    <Card>
+      <FormHeader
+        title="Set a new password"
+        description="Almost done! Now create a new password"
+      />
+      <CardContent className="xl:mb-14">
+        <Form id="reset-password-form" onSubmit={handleFormSubmit} form={form}>
+          <ControlledPasswordInput
+            name="newPassword"
+            placeholder="Password"
+            autoComplete="new-password"
+            autoFocus
+            hasProtectIcon={false}
+          />
+          <FormRootError message={state?.error} />
+        </Form>
+      </CardContent>
+      <FormActions
+        formId="reset-password-form"
+        buttonText="Submit"
+        linkText="Back to log in"
+        linkHref="/auth/login"
+        isPending={isPending}
+      />
+    </Card>
   );
 }

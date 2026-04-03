@@ -28,33 +28,31 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center container mx-auto animate-in fade-in zoom-in-90 slide-in-from-bottom-6 duration-500">
-      <Card className="w-full sm:max-w-xl">
-        <FormHeader
-          title="Register now"
-          description="Welcome! Sign up to continue"
-        />
-        <CardContent className="xl:mb-14">
-          <Form id="signup-form" onSubmit={handleFormSubmit} form={form}>
-            <FieldGroup className="gap-y-4">
-              <ControlledInput name="email" placeholder="Email" autoFocus />
-              <ControlledPasswordInput
-                name="password"
-                placeholder="Password"
-                autoComplete="new-password"
-              />
-            </FieldGroup>
-            <FormRootError message={state?.error} />
-          </Form>
-        </CardContent>
-        <FormActions
-          formId="signup-form"
-          buttonText="Create account"
-          linkText="I have an account"
-          linkHref="/auth/login"
-          isPending={isPending}
-        />
-      </Card>
-    </div>
+    <Card>
+      <FormHeader
+        title="Register now"
+        description="Welcome! Sign up to continue"
+      />
+      <CardContent className="xl:mb-14">
+        <Form id="signup-form" onSubmit={handleFormSubmit} form={form}>
+          <FieldGroup className="gap-y-4">
+            <ControlledInput name="email" placeholder="Email" autoFocus />
+            <ControlledPasswordInput
+              name="password"
+              placeholder="Password"
+              autoComplete="new-password"
+            />
+          </FieldGroup>
+          <FormRootError message={state?.error} />
+        </Form>
+      </CardContent>
+      <FormActions
+        formId="signup-form"
+        buttonText="Create account"
+        linkText="I have an account"
+        linkHref="/auth/login"
+        isPending={isPending}
+      />
+    </Card>
   );
 }
