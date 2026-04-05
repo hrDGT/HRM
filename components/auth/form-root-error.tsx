@@ -1,4 +1,4 @@
-import { FieldError } from "./field";
+import { FieldError } from "../ui/field";
 
 interface FormRootErrorProps {
   message?: string;

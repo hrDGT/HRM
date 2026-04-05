@@ -9,7 +9,7 @@ import { ControlledPasswordInput } from "@/components/forms/controlled-password-
 import { useSignUpForm } from "@/hooks/auth/use-signup-form";
 import { FormHeader } from "@/components/forms/form-header";
 import { FormActions } from "@/components/forms/form-actions";
-import { FormRootError } from "@/components/ui/form-root-error";
+import { FormRootError } from "./form-root-error";
 import { type SignupFormValues } from "@/lib/schemas/auth";
 import { type ActionState, signUpUserAction } from "@/lib/auth/auth-actions";
 

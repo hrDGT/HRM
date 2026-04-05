@@ -7,7 +7,7 @@ import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { FormRootError } from "@/components/ui/form-root-error";
+import { FormRootError } from "./form-root-error";
 import { ActionState, resetPasswordAction } from "@/lib/auth/auth-actions";
 import { ResetPasswordValue } from "@/lib/schemas/auth";
 import { useSearchParams } from "next/navigation";

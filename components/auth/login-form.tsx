@@ -8,7 +8,7 @@ import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
-import { FormRootError } from "@/components/ui/form-root-error";
+import { FormRootError } from "./form-root-error";
 import { ActionState, loginUserAction } from "@/lib/auth/auth-actions";
 import { type LoginFormValues } from "@/lib/schemas/auth";
 import { startTransition, useActionState } from "react";
