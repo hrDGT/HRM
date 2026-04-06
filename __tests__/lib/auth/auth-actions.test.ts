@@ -29,13 +29,17 @@ describe("Auth Server Actions", () => {
 
     it("successfully signs up, sets cookies, and redirects", async () => {
       (gqlRequest as jest.Mock).mockResolvedValue({
-        signup: { access_token: "access-123", refresh_token: "refresh-123" },
+        signup: {
+          user: { id: "user-123" },
+          access_token: "access-123",
+          refresh_token: "refresh-123"
+        },
       });
 
       const response = await signUpUserAction(null, mockSignupData);
 
       expect(gqlRequest).toHaveBeenCalledTimes(1);
-      expect(setAuthCookies).toHaveBeenCalledWith("access-123", "refresh-123");
+      expect(setAuthCookies).toHaveBeenCalledWith("access-123", "refresh-123", "user-123");
       expect(redirect).toHaveBeenCalledWith("/");
 
       expect(response).toBeUndefined();
@@ -75,7 +79,7 @@ describe("Auth Server Actions", () => {
       await loginUserAction(null, mockLoginData);
 
       expect(gqlRequest).toHaveBeenCalledTimes(1);
-      expect(setAuthCookies).toHaveBeenCalledWith("acc-token", "ref-token");
+      expect(setAuthCookies).toHaveBeenCalledWith("acc-token", "ref-token", "1");
       expect(redirect).toHaveBeenCalledWith("/");
     });
 
@@ -124,7 +128,6 @@ describe("Auth Server Actions", () => {
       (gqlRequest as jest.Mock).mockResolvedValue({ resetPassword: true });
 
       const response = await resetPasswordAction("valid-reset-token", null, mockData);
-
 
       expect(gqlRequest).toHaveBeenCalledWith(
         expect.anything(),

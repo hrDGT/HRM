@@ -11,6 +11,9 @@ export type ActionState = { error?: string; success?: boolean } | null;
 const SIGNUP_MUTATION = graphql(`
   mutation Signup($auth: AuthInput!) {
     signup(auth: $auth) {
+      user {
+        id
+      }
       access_token
       refresh_token
     }
@@ -20,21 +23,20 @@ const SIGNUP_MUTATION = graphql(`
 const LOGIN_QUERY = graphql(`
   query Login($auth: AuthInput!) {
     login(auth: $auth) {
-    user {
+      user {
         id
-        email
       }
       access_token
       refresh_token
     }
   }
-`)
+`);
 
 const FORGOT_PASSWORD_MUTATION = graphql(`
   mutation ForgotPassword($auth: ForgotPasswordInput!) {
     forgotPassword(auth: $auth)
   }
-`)
+`);
 
 const RESET_PASSWORD_MUTATION = graphql(`
   mutation ResetPassword($auth: ResetPasswordInput!) {
@@ -48,18 +50,27 @@ const getError = (err: unknown, fallback: string) =>
 export async function signUpUserAction(_prevState: ActionState, data: SignupFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(SIGNUP_MUTATION, { auth: data });
-    await setAuthCookies(result.signup.access_token, result.signup.refresh_token);
+
+    await setAuthCookies(
+      result.signup.access_token,
+      result.signup.refresh_token,
+      result.signup.user.id
+    );
   } catch (err) {
     return { error: getError(err, "Registration failed") };
   }
   redirect("/");
 }
 
-
 export async function loginUserAction(_prevState: ActionState, data: LoginFormValues): Promise<ActionState> {
   try {
     const result = await gqlRequest(LOGIN_QUERY, { auth: data });
-    await setAuthCookies(result.login.access_token, result.login.refresh_token);
+
+    await setAuthCookies(
+      result.login.access_token,
+      result.login.refresh_token,
+      result.login.user.id
+    );
   } catch (err) {
     return { error: getError(err, "Login failed") };
   }

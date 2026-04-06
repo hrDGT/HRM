@@ -25,9 +25,7 @@ describe("refreshTokensAction", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-
     process.env = { ...originalEnv, GRAPHQL_URL: "https://api.example.com/graphql" };
-
     jest.spyOn(console, "error").mockImplementation(() => { });
   });
 
