@@ -9,6 +9,7 @@
     "build": "npm run codegen && next build",
     "start": "next start",
     "lint": "eslint",
+    "e2e-test": "npx playwright test --ui",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -36,6 +37,7 @@
     "@graphql-codegen/cli": "^6.2.1",
     "@graphql-codegen/client-preset": "^5.2.4",
     "@parcel/watcher": "^2.5.6",
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
