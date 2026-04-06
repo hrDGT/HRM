@@ -32,7 +32,7 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <FormHeader
         title="Forgot password"
         description="We will sent you an email with further instructions"
