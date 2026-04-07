@@ -1,25 +1,20 @@
 "use client";
 
-import { useLoginForm } from "@/hooks/auth/use-login-form";
-import { ControlledInput } from "@/components/forms/controlled-input";
+import { ControlledInput } from "@/components/forms/form-input";
 import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
-import { FormRootError } from "./form-root-error";
-import { ActionState, loginUserAction } from "@/lib/auth/auth-actions";
-import { type LoginFormValues } from "@/lib/schemas/auth";
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useId } from "react";
+import { LoginFormValues, loginSchema } from "./login-schema";
+import { loginUserAction } from "./login-action";
+import { FormRootError } from "../auth-root-error";
 
 export function LoginForm() {
-  const [state, formAction, isPending] = useActionState<
-    ActionState,
-    LoginFormValues
-  >(loginUserAction, null);
-
-  const { form } = useLoginForm();
+  const id = useId();
+  const [state, formAction, isPending] = useActionState(loginUserAction, null);
 
   const handleFormSubmit = (values: LoginFormValues) => {
     startTransition(() => {
@@ -34,7 +29,13 @@ export function LoginForm() {
         description="Hello again! Log in to continue"
       />
       <CardContent className="mb-14">
-        <Form id="login-form" onSubmit={handleFormSubmit} form={form}>
+        <Form
+          className="space-y-2"
+          id={id}
+          schema={loginSchema}
+          defaultValues={{ email: "", password: "" }}
+          onSubmit={handleFormSubmit}
+        >
           <FieldGroup className="gap-y-4">
             <ControlledInput name="email" placeholder="Email" autoFocus />
             <ControlledPasswordInput
@@ -47,7 +48,7 @@ export function LoginForm() {
         </Form>
       </CardContent>
       <FormActions
-        formId="login-form"
+        formId={id}
         buttonText="Log in"
         linkText="Forgot password"
         linkHref="/forgot-password"

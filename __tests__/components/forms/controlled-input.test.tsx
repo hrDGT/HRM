@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useForm, FormProvider } from "react-hook-form";
-import { ControlledInput } from "@/components/forms/controlled-input";
+import { ControlledInput } from "@/components/forms/form-input";
 
 const TestWrapper = ({
   children,

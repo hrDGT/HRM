@@ -4,19 +4,19 @@ import { useFormContext, type FieldValues, type Path } from "react-hook-form";
 import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-interface ControlledInputProps<T extends FieldValues> {
+type Props<T extends FieldValues> = {
   name: Path<T>;
   placeholder?: string;
   type?: string;
   autoFocus?: boolean;
-}
+};
 
 export function ControlledInput<T extends FieldValues>({
   name,
   placeholder,
   type = "text",
   autoFocus,
-}: ControlledInputProps<T>) {
+}: Props<T>) {
   const { register, getFieldState, formState } = useFormContext<T>();
   const fieldState = getFieldState(name, formState);
 

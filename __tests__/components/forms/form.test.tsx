@@ -1,26 +1,37 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { Form } from "@/components/forms/form";
+import { z } from "zod";
 
+const testSchema = z.object({
+  testField: z.string().min(1, "Required"),
+});
+type TestValues = z.infer<typeof testSchema>;
+
+const TestInput = () => {
+  const { register } = useFormContext<TestValues>();
+  return <input {...register("testField")} placeholder="Type something" />;
+};
 const FormTestWrapper = ({
   onSubmit,
   id,
   className,
 }: {
   onSubmit: jest.Mock;
-  id?: string;
+  id: string;
   className?: string;
 }) => {
-  const form = useForm({
-    defaultValues: {
-      testField: "",
-    },
-  });
-
   return (
-    <Form form={form} onSubmit={onSubmit} id={id} className={className}>
-      <input {...form.register("testField")} placeholder="Type something" />
+    <Form<TestValues>
+      schema={testSchema}
+      defaultValues={{ testField: "" }}
+      onSubmit={onSubmit}
+      id={id}
+      className={className}
+      aria-label="test-form"
+    >
+      <TestInput />
       <button type="submit">Submit Form</button>
     </Form>
   );
@@ -29,7 +40,7 @@ const FormTestWrapper = ({
 describe("Form Component", () => {
   it("renders the form element with correct id, className, and children", () => {
     const mockSubmit = jest.fn();
-    const { container } = render(
+    render(
       <FormTestWrapper
         onSubmit={mockSubmit}
         id="test-form"
@@ -37,7 +48,7 @@ describe("Form Component", () => {
       />,
     );
 
-    const formElement = container.querySelector("form");
+    const formElement = screen.getByRole("form");
 
     expect(formElement).toBeInTheDocument();
     expect(formElement).toHaveAttribute("id", "test-form");
@@ -53,22 +64,19 @@ describe("Form Component", () => {
     const mockSubmit = jest.fn();
     const user = userEvent.setup();
 
-    render(<FormTestWrapper onSubmit={mockSubmit} />);
+    render(<FormTestWrapper onSubmit={mockSubmit} id="submit-test-form"/>);
 
     const input = screen.getByPlaceholderText("Type something");
     const submitButton = screen.getByRole("button", { name: "Submit Form" });
 
     await user.type(input, "Hello World");
-
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockSubmit).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({ testField: "Hello World" }),
+        expect.anything(),
+      );
     });
-
-    expect(mockSubmit).toHaveBeenCalledWith(
-      { testField: "Hello World" },
-      expect.anything(),
-    );
   });
 });

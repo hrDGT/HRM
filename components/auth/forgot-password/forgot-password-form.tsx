@@ -1,27 +1,25 @@
 "use client";
 
-import { useForgotPasswordForm } from "@/hooks/auth/use-forgot-password-form";
 import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
-import { ControlledInput } from "@/components/forms/controlled-input";
+import { ControlledInput } from "@/components/forms/form-input";
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { FormRootError } from "./form-root-error";
+import { FormRootError } from "../auth-root-error";
+import { startTransition, useActionState, useId } from "react";
+import { forgotPasswordAction } from "./forgot-password-action";
 import {
-  type ActionState,
-  forgotPasswordAction,
-} from "@/lib/auth/auth-actions";
-import { ForgotPasswordValues } from "@/lib/schemas/auth";
-import { startTransition, useActionState } from "react";
+  forgotPasswordSchema,
+  ForgotPasswordValues,
+} from "./forgot-password-schema";
 
 export function ForgotPasswordForm() {
-  const [state, formAction, isPending] = useActionState<
-    ActionState,
-    ForgotPasswordValues
-  >(forgotPasswordAction, null);
-
-  const { form } = useForgotPasswordForm();
+  const id = useId();
+  const [state, formAction, isPending] = useActionState(
+    forgotPasswordAction,
+    null,
+  );
 
   useActionFeedback(state?.success, "Check your email inbox", "/auth/login");
 
@@ -38,13 +36,19 @@ export function ForgotPasswordForm() {
         description="We will sent you an email with further instructions"
       />
       <CardContent className="mb-14">
-        <Form id="forgot-password-form" onSubmit={handleFormSubmit} form={form}>
+        <Form
+          className="space-y-2"
+          id={id}
+          schema={forgotPasswordSchema}
+          defaultValues={{ email: "" }}
+          onSubmit={handleFormSubmit}
+        >
           <ControlledInput name="email" placeholder="Email" autoFocus />
           <FormRootError message={state?.error} />
         </Form>
       </CardContent>
       <FormActions
-        formId="forgot-password-form"
+        formId={id}
         buttonText="Reset password"
         linkText="Cancel"
         linkHref="/auth/login"

@@ -1,4 +1,7 @@
-import { loginUserAction, signUpUserAction, forgotPasswordAction, resetPasswordAction } from '@/lib/auth/auth-actions';
+import { resetPasswordAction } from '@/components/auth/reset-password/reset-password-action';
+import { forgotPasswordAction } from '@/components/auth/forgot-password/forgot-password-action';
+import { signUpUserAction } from '@/components/auth/signup/signup-action';
+import { loginUserAction } from '@/components/auth/login/login-action';
 import { redirect } from "next/navigation";
 import { gqlRequest } from "@/lib/gql/graphql-client";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";

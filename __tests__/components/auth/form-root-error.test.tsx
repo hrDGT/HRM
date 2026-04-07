@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { FormRootError } from "@/components/auth/form-root-error";
+import { FormRootError } from "@/components/auth/auth-root-error";
 
 jest.mock("@/components/ui/field.tsx", () => ({
   FieldError: ({ errors }: { errors: { message: string }[] }) => (

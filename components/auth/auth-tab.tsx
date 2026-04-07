@@ -18,9 +18,11 @@ export function AuthTab({ title, href }: Props) {
       href={href}
       className={cn(
         "w-full flex justify-center items-center py-3.5 min-h-12 text-sm font-medium uppercase",
-
         "transition-all duration-200 active:translate-y-0.5",
-        isActive ? "text-main-red" : "text-secondary-text hover:text-main-text",
+        {
+          "text-main-red": isActive,
+          "text-secondary-text hover:text-main-text": !isActive,
+        },
       )}
     >
       {title}

@@ -1,37 +1,42 @@
 "use client";
 
 import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
-import { useResetPasswordForm } from "@/hooks/auth/use-reset-password-form";
 import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { FormRootError } from "./form-root-error";
-import { ActionState, resetPasswordAction } from "@/lib/auth/auth-actions";
-import { ResetPasswordValue } from "@/lib/schemas/auth";
 import { useSearchParams } from "next/navigation";
-import { startTransition, useActionState } from "react";
+import { startTransition, useActionState, useId } from "react";
+import {
+  resetPasswordSchema,
+  ResetPasswordValue,
+} from "./reset-password-schema";
+import { FormRootError } from "../auth-root-error";
+import { ActionState } from "@/lib/auth/auth-types";
+import { resetPasswordAction } from "./reset-password-action";
 
 export function ResetPasswordForm() {
+  const id = useId();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
-  const resetPasswordActionWithToken = resetPasswordAction.bind(null, token);
 
-  const [state, formAction, isPending] = useActionState<
-    ActionState,
-    ResetPasswordValue
-  >(resetPasswordActionWithToken, null);
+  const actionWrapper = async (
+    state: ActionState,
+    data: ResetPasswordValue,
+  ) => {
+    return resetPasswordAction(token, state, data);
+  };
 
-  const { form } = useResetPasswordForm();
+  const [state, formAction, isPending] = useActionState(actionWrapper, null);
 
-  useActionFeedback(state?.success, "Password has been reset", "/auth/login");
-
-  const handleFormSubmit = (values: ResetPasswordValue) => {
+  const handleFormSubmit = (data: ResetPasswordValue) => {
     startTransition(() => {
-      formAction(values);
+      formAction(data);
     });
   };
+
+  useActionFeedback(state?.success, "Password has been reset", "/auth/login");
 
   return (
     <Card className="w-full max-w-xl">
@@ -40,7 +45,13 @@ export function ResetPasswordForm() {
         description="Almost done! Now create a new password"
       />
       <CardContent className="mb-14">
-        <Form id="reset-password-form" onSubmit={handleFormSubmit} form={form}>
+        <Form
+          className="space-y-2"
+          id={id}
+          schema={resetPasswordSchema}
+          defaultValues={{ newPassword: "" }}
+          onSubmit={handleFormSubmit}
+        >
           <ControlledPasswordInput
             name="newPassword"
             placeholder="Password"
@@ -52,7 +63,7 @@ export function ResetPasswordForm() {
         </Form>
       </CardContent>
       <FormActions
-        formId="reset-password-form"
+        formId={id}
         buttonText="Submit"
         linkText="Back to log in"
         linkHref="/auth/login"

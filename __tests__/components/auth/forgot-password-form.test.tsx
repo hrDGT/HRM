@@ -1,14 +1,14 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
+import { ForgotPasswordForm } from "@/components/auth/forgot-password/forgot-password-form";
 import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
 
 jest.mock("@/hooks/auth/use-action-feedback", () => ({
   useActionFeedback: jest.fn(),
 }));
 
-jest.mock("@/lib/auth/auth-actions", () => ({
+jest.mock("@/components/auth/forgot-password/forgot-password-action", () => ({
   forgotPasswordAction: jest.fn(),
 }));
 
