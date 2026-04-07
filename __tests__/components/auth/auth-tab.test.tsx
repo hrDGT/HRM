@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { AuthTab } from "@/components/auth/auth-tab";
 import { usePathname } from "next/navigation";
+import { render, screen } from "@testing-library/react";
+
+import { AuthTab } from "@/components/auth/auth-tab";
 
 jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),

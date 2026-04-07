@@ -1,10 +1,11 @@
-import { resetPasswordAction } from '@/components/auth/reset-password/reset-password-action';
-import { forgotPasswordAction } from '@/components/auth/forgot-password/forgot-password-action';
-import { signUpUserAction } from '@/components/auth/signup/signup-action';
-import { loginUserAction } from '@/components/auth/login/login-action';
 import { redirect } from "next/navigation";
-import { gqlRequest } from "@/lib/gql/graphql-client";
+
+import { forgotPasswordAction } from '@/components/auth/forgot-password/forgot-password-action';
+import { loginUserAction } from '@/components/auth/login/login-action';
+import { resetPasswordAction } from '@/components/auth/reset-password/reset-password-action';
+import { signUpUserAction } from '@/components/auth/signup/signup-action';
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
+import { gqlRequest } from "@/lib/gql/graphql-client";
 
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),

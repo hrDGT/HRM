@@ -1,15 +1,17 @@
 "use client";
 
-import { useFormContext, type FieldValues, type Path } from "react-hook-form";
+import { useState } from "react";
+import { type FieldValues, type Path, useFormContext } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
+
 import { Field, FieldError } from "@/components/ui/field";
+
+import { Button } from "../ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "../ui/input-group";
-import { useState } from "react";
-import { Button } from "../ui/button";
-import { Eye, EyeOff } from "lucide-react";
 
 type Props<T extends FieldValues> = {
   name: Path<T>;

@@ -1,9 +1,10 @@
 import React from "react";
+import { useSearchParams } from "next/navigation";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import { ResetPasswordForm } from "@/components/auth/reset-password/reset-password-form";
 import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
-import { useSearchParams } from "next/navigation";
 
 jest.mock("next/navigation", () => ({
   useSearchParams: jest.fn(),

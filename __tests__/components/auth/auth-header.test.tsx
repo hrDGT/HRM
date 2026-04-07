@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { AuthHeader } from "@/components/auth/auth-header";
 import { usePathname } from "next/navigation";
+import { render, screen } from "@testing-library/react";
+
+import { AuthHeader } from "@/components/auth/auth-header";
 
 jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),

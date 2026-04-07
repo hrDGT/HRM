@@ -1,8 +1,9 @@
+import { useFormContext } from "react-hook-form";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useFormContext } from "react-hook-form";
-import { Form } from "@/components/forms/form";
 import { z } from "zod";
+
+import { Form } from "@/components/forms/form";
 
 const testSchema = z.object({
   testField: z.string().min(1, "Required"),
@@ -64,7 +65,7 @@ describe("Form Component", () => {
     const mockSubmit = jest.fn();
     const user = userEvent.setup();
 
-    render(<FormTestWrapper onSubmit={mockSubmit} id="submit-test-form"/>);
+    render(<FormTestWrapper onSubmit={mockSubmit} id="submit-test-form" />);
 
     const input = screen.getByPlaceholderText("Type something");
     const submitButton = screen.getByRole("button", { name: "Submit Form" });

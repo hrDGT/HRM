@@ -2,7 +2,9 @@
 
 import { cookies } from "next/headers";
 import { print } from "graphql";
+
 import { graphql } from "@/gqlcodegen";
+
 import { setAuthCookies } from "./auth-cookies";
 
 const UPDATE_TOKEN_MUTATION = graphql(`

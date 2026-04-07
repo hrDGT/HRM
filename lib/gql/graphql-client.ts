@@ -1,7 +1,9 @@
+import { cookies } from "next/headers";
 import { type TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { print } from "graphql";
-import { cookies } from "next/headers";
+
 import { refreshTokensAction } from "../auth/auth-service";
+
 import { isUnauthorizedError } from "./gql-utils";
 
 export async function gqlRequest<T, V>(

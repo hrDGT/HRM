@@ -1,7 +1,8 @@
-import { renderHook } from "@testing-library/react";
-import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
 import { useRouter } from "next/navigation";
+import { renderHook } from "@testing-library/react";
 import { toast } from "sonner";
+
+import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
 
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),

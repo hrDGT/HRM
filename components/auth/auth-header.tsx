@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+
 import { AuthTab } from "./auth-tab";
 
 const tabs = [

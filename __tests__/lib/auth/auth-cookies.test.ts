@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 
 jest.mock("next/headers", () => ({

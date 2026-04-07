@@ -1,10 +1,11 @@
 "use server"
 
-import { graphql } from "@/gqlcodegen";
-import { ForgotPasswordValues } from "./forgot-password-schema";
+import { ActionState } from "@/lib/auth/auth-types";
 import { gqlRequest } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
-import { ActionState } from "@/lib/auth/auth-types";
+import { graphql } from "@/gqlcodegen";
+
+import { ForgotPasswordValues } from "./forgot-password-schema";
 
 const FORGOT_PASSWORD_MUTATION = graphql(`
   mutation ForgotPassword($auth: ForgotPasswordInput!) {

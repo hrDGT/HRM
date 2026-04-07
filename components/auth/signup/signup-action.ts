@@ -1,12 +1,14 @@
 "use server"
 
-import { type SignupFormValues } from "./signup-schema";
-import { gqlRequest } from "@/lib/gql/graphql-client";
-import { setAuthCookies } from "@/lib/auth/auth-cookies";
-import { getError } from "@/lib/utils";
 import { redirect } from "next/navigation";
+
+import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { type ActionState } from "@/lib/auth/auth-types";
+import { gqlRequest } from "@/lib/gql/graphql-client";
+import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
+
+import { type SignupFormValues } from "./signup-schema";
 
 const SIGNUP_MUTATION = graphql(`
   mutation Signup($auth: AuthInput!) {

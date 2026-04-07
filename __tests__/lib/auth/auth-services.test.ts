@@ -1,6 +1,7 @@
-import { refreshTokensAction } from "@/lib/auth/auth-service";
 import { cookies } from "next/headers";
+
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
+import { refreshTokensAction } from "@/lib/auth/auth-service";
 
 jest.mock("next/headers", () => ({
   cookies: jest.fn(),

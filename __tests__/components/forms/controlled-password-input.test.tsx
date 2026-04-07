@@ -1,7 +1,8 @@
 import { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useForm, FormProvider } from "react-hook-form";
+
 import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
 
 const TestWrapper = ({

@@ -1,8 +1,9 @@
-import { gqlRequest } from "@/lib/gql/graphql-client";
 import { cookies } from "next/headers";
+import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+
 import { refreshTokensAction } from "@/lib/auth/auth-service"
 import { isUnauthorizedError } from "@/lib/gql/gql-utils";
-import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { gqlRequest } from "@/lib/gql/graphql-client";
 
 jest.mock("next/headers", () => ({
   cookies: jest.fn(),

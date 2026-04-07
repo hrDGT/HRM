@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Reset Password Flow', () => {
   const resetUrl = '/reset-password?token=fake-jwt-token-123';

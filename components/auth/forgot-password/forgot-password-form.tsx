@@ -1,13 +1,16 @@
 "use client";
 
-import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
-import { ControlledInput } from "@/components/forms/form-input";
+import { startTransition, useActionState, useId } from "react";
+
 import { Form } from "@/components/forms/form";
 import { FormActions } from "@/components/forms/form-actions";
 import { FormHeader } from "@/components/forms/form-header";
+import { ControlledInput } from "@/components/forms/form-input";
 import { Card, CardContent } from "@/components/ui/card";
+import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
+
 import { FormRootError } from "../auth-root-error";
-import { startTransition, useActionState, useId } from "react";
+
 import { forgotPasswordAction } from "./forgot-password-action";
 import {
   forgotPasswordSchema,

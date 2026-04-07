@@ -1,12 +1,14 @@
 "use server"
 
-import { graphql } from "@/gqlcodegen";
-import { ActionState } from "@/lib/auth/auth-types";
-import { LoginFormValues } from "./login-schema";
-import { gqlRequest } from "@/lib/gql/graphql-client";
-import { setAuthCookies } from "@/lib/auth/auth-cookies";
-import { getError } from "@/lib/utils";
 import { redirect } from "next/navigation";
+
+import { setAuthCookies } from "@/lib/auth/auth-cookies";
+import { ActionState } from "@/lib/auth/auth-types";
+import { gqlRequest } from "@/lib/gql/graphql-client";
+import { getError } from "@/lib/utils";
+import { graphql } from "@/gqlcodegen";
+
+import { LoginFormValues } from "./login-schema";
 
 const LOGIN_QUERY = graphql(`
   query Login($auth: AuthInput!) {
