@@ -3,13 +3,13 @@ import { Button } from "../ui/button";
 import { CardFooter } from "../ui/card";
 import { Field } from "../ui/field";
 
-interface FormActionsProps {
+type Props = {
   formId: string;
   buttonText: string;
   linkText: string;
   linkHref: string;
   isPending: boolean;
-}
+};
 
 export function FormActions({
   formId,
@@ -17,7 +17,7 @@ export function FormActions({
   linkText,
   linkHref,
   isPending,
-}: FormActionsProps) {
+}: Props) {
   return (
     <CardFooter className="justify-center">
       <Field orientation="vertical" className="max-w-56 ">

@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 import Link, { type LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 
-interface AuthTabProps {
+type Props = {
   title: string;
   href: LinkProps["href"];
-}
+};
 
-export function AuthTab({ title, href }: AuthTabProps) {
+export function AuthTab({ title, href }: Props) {
   const pathname = usePathname();
   const isActive = pathname === href.toString();
 

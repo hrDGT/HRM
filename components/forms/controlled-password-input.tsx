@@ -11,14 +11,14 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 
-interface ControlledPasswordInputProps<T extends FieldValues> {
+type Props<T extends FieldValues> = {
   name: Path<T>;
   placeholder?: string;
   type?: string;
   autoFocus?: boolean;
   autoComplete?: "new-password" | "current-password";
   hasProtectIcon?: boolean;
-}
+};
 
 export function ControlledPasswordInput<T extends FieldValues>({
   name,
@@ -26,7 +26,7 @@ export function ControlledPasswordInput<T extends FieldValues>({
   autoFocus,
   autoComplete,
   hasProtectIcon = true,
-}: ControlledPasswordInputProps<T>) {
+}: Props<T>) {
   const [showPassword, setShowPassword] = useState(!hasProtectIcon);
 
   const { register, getFieldState, formState } = useFormContext<T>();
