@@ -78,4 +78,8 @@
     -webkit-text-fill-color: var(--main-text) !important;
     -webkit-box-shadow: 0 0 0px 1000px var(--main-bg) inset !important;
   }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
 }
