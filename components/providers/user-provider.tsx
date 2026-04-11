@@ -14,7 +14,7 @@ export function UserProvider({ children, user }: UserProviderProps) {
   const isInitialized = useRef(false);
 
   if (!isInitialized.current) {
-    useUserStore.setState({ user });
+    useUserStore.getState().setUser(user);
     isInitialized.current = true;
   }
 
