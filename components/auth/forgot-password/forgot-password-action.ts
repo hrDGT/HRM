@@ -1,7 +1,7 @@
 "use server"
 
 import { ActionState } from "@/lib/auth/auth-types";
-import { gqlRequest } from "@/lib/gql/graphql-client";
+import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
 
@@ -18,7 +18,8 @@ export async function forgotPasswordAction(
   data: ForgotPasswordValues
 ): Promise<ActionState> {
   try {
-    await gqlRequest(FORGOT_PASSWORD_MUTATION, { auth: data });
+    await gqlFetch(FORGOT_PASSWORD_MUTATION, { auth: data });
+
     return { success: true };
   } catch (err) {
     return { error: getError(err, "Failed to send email") };

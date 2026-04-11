@@ -1,7 +1,7 @@
 "use server"
 
 import { ActionState } from "@/lib/auth/auth-types";
-import { gqlRequest } from "@/lib/gql/graphql-client";
+import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
 
@@ -23,10 +23,10 @@ export async function resetPasswordAction(
   }
 
   try {
-    await gqlRequest(
+    await gqlFetch(
       RESET_PASSWORD_MUTATION,
       { auth: data },
-      { Authorization: `Bearer ${token}` }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
     return { success: true };
   } catch (err) {

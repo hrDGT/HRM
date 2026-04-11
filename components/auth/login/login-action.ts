@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { ActionState } from "@/lib/auth/auth-types";
-import { gqlRequest } from "@/lib/gql/graphql-client";
+import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
 
@@ -24,7 +24,7 @@ const LOGIN_QUERY = graphql(`
 
 export async function loginUserAction(_prevState: ActionState, data: LoginFormValues): Promise<ActionState> {
   try {
-    const result = await gqlRequest(LOGIN_QUERY, { auth: data });
+    const result = await gqlFetch(LOGIN_QUERY, { auth: data });
 
     await setAuthCookies(
       result.login.access_token,

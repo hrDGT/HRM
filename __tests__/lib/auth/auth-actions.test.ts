@@ -5,14 +5,14 @@ import { loginUserAction } from '@/components/auth/login/login-action';
 import { resetPasswordAction } from '@/components/auth/reset-password/reset-password-action';
 import { signUpUserAction } from '@/components/auth/signup/signup-action';
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
-import { gqlRequest } from "@/lib/gql/graphql-client";
+import { gqlFetch } from "@/lib/gql/graphql-client";
 
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
 
 jest.mock("@/lib/gql/graphql-client", () => ({
-  gqlRequest: jest.fn(),
+  gqlFetch: jest.fn(),
 }));
 
 jest.mock("@/lib/auth/auth-cookies", () => ({
@@ -32,7 +32,7 @@ describe("Auth Server Actions", () => {
     const mockSignupData = { email: "test@example.com", password: "Password123!" };
 
     it("successfully signs up, sets cookies, and redirects", async () => {
-      (gqlRequest as jest.Mock).mockResolvedValue({
+      (gqlFetch as jest.Mock).mockResolvedValue({
         signup: {
           user: { id: "user-123" },
           access_token: "access-123",
@@ -42,7 +42,7 @@ describe("Auth Server Actions", () => {
 
       const response = await signUpUserAction(null, mockSignupData);
 
-      expect(gqlRequest).toHaveBeenCalledTimes(1);
+      expect(gqlFetch).toHaveBeenCalledTimes(1);
       expect(setAuthCookies).toHaveBeenCalledWith("access-123", "refresh-123", "user-123");
       expect(redirect).toHaveBeenCalledWith("/");
 
@@ -50,7 +50,7 @@ describe("Auth Server Actions", () => {
     });
 
     it("returns an error if signup fails", async () => {
-      (gqlRequest as jest.Mock).mockRejectedValue(new Error("Email already exists"));
+      (gqlFetch as jest.Mock).mockRejectedValue(new Error("Email already exists"));
 
       const response = await signUpUserAction(null, mockSignupData);
 
@@ -60,7 +60,7 @@ describe("Auth Server Actions", () => {
     });
 
     it("returns fallback error message if error is not an Error instance", async () => {
-      (gqlRequest as jest.Mock).mockRejectedValue("String error, not Error object");
+      (gqlFetch as jest.Mock).mockRejectedValue("String error, not Error object");
 
       const response = await signUpUserAction(null, mockSignupData);
 
@@ -72,7 +72,7 @@ describe("Auth Server Actions", () => {
     const mockLoginData = { email: "test@example.com", password: "Password123!" };
 
     it("successfully logs in, sets cookies, and redirects", async () => {
-      (gqlRequest as jest.Mock).mockResolvedValue({
+      (gqlFetch as jest.Mock).mockResolvedValue({
         login: {
           user: { id: "1", email: "test@example.com" },
           access_token: "acc-token",
@@ -82,13 +82,13 @@ describe("Auth Server Actions", () => {
 
       await loginUserAction(null, mockLoginData);
 
-      expect(gqlRequest).toHaveBeenCalledTimes(1);
+      expect(gqlFetch).toHaveBeenCalledTimes(1);
       expect(setAuthCookies).toHaveBeenCalledWith("acc-token", "ref-token", "1");
       expect(redirect).toHaveBeenCalledWith("/");
     });
 
     it("returns an error if login fails", async () => {
-      (gqlRequest as jest.Mock).mockRejectedValue(new Error("Invalid credentials"));
+      (gqlFetch as jest.Mock).mockRejectedValue(new Error("Invalid credentials"));
 
       const response = await loginUserAction(null, mockLoginData);
 
@@ -101,16 +101,16 @@ describe("Auth Server Actions", () => {
     const mockData = { email: "test@example.com" };
 
     it("returns success: true on successful request", async () => {
-      (gqlRequest as jest.Mock).mockResolvedValue({ forgotPassword: true });
+      (gqlFetch as jest.Mock).mockResolvedValue({ forgotPassword: true });
 
       const response = await forgotPasswordAction(null, mockData);
 
-      expect(gqlRequest).toHaveBeenCalledTimes(1);
+      expect(gqlFetch).toHaveBeenCalledTimes(1);
       expect(response).toEqual({ success: true });
     });
 
     it("returns an error if request fails", async () => {
-      (gqlRequest as jest.Mock).mockRejectedValue(new Error("User not found"));
+      (gqlFetch as jest.Mock).mockRejectedValue(new Error("User not found"));
 
       const response = await forgotPasswordAction(null, mockData);
 
@@ -125,24 +125,24 @@ describe("Auth Server Actions", () => {
       const response = await resetPasswordAction("", null, mockData);
 
       expect(response).toEqual({ error: "Missing reset token. Please check your email link." });
-      expect(gqlRequest).not.toHaveBeenCalled();
+      expect(gqlFetch).not.toHaveBeenCalled();
     });
 
     it("successfully resets password using the token in Authorization header", async () => {
-      (gqlRequest as jest.Mock).mockResolvedValue({ resetPassword: true });
+      (gqlFetch as jest.Mock).mockResolvedValue({ resetPassword: true });
 
       const response = await resetPasswordAction("valid-reset-token", null, mockData);
 
-      expect(gqlRequest).toHaveBeenCalledWith(
+      expect(gqlFetch).toHaveBeenCalledWith(
         expect.anything(),
         { auth: mockData },
-        { Authorization: "Bearer valid-reset-token" }
+        { headers: { Authorization: "Bearer valid-reset-token" } }
       );
       expect(response).toEqual({ success: true });
     });
 
     it("returns an error if reset mutation fails", async () => {
-      (gqlRequest as jest.Mock).mockRejectedValue(new Error("Token expired"));
+      (gqlFetch as jest.Mock).mockRejectedValue(new Error("Token expired"));
 
       const response = await resetPasswordAction("expired-token", null, mockData);
 
