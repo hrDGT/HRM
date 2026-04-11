@@ -3,7 +3,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
+import { ControlledPasswordInput } from "@/components/forms/ui/controlled-password-input";
 
 const TestWrapper = ({
   children,

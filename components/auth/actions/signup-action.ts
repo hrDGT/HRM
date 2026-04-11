@@ -2,13 +2,12 @@
 
 import { redirect } from "next/navigation";
 
+import { type SignupFormValues } from "@/components/auth/schemas/signup-schema";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { type ActionState } from "@/lib/auth/auth-types";
 import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
-
-import { type SignupFormValues } from "./signup-schema";
 
 const SIGNUP_MUTATION = graphql(`
   mutation Signup($auth: AuthInput!) {

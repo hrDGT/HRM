@@ -2,20 +2,20 @@
 
 import { startTransition, useActionState, useId } from "react";
 
-import { Form } from "@/components/forms/form";
-import { FormActions } from "@/components/forms/form-actions";
-import { FormHeader } from "@/components/forms/form-header";
-import { ControlledInput } from "@/components/forms/form-input";
+import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
+import { Form } from "@/components/forms/ui/form";
+import { FormActions } from "@/components/forms/ui/form-actions";
+import { FormHeader } from "@/components/forms/ui/form-header";
+import { ControlledInput } from "@/components/forms/ui/form-input";
 import { Card, CardContent } from "@/components/ui/card";
-import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
 
-import { FormRootError } from "../auth-root-error";
-
-import { forgotPasswordAction } from "./forgot-password-action";
+import { forgotPasswordAction } from "../actions/forgot-password-action";
 import {
   forgotPasswordSchema,
   ForgotPasswordValues,
-} from "./forgot-password-schema";
+} from "../schemas/forgot-password-schema";
+
+import { FormRootError } from "./auth-root-error";
 
 export function ForgotPasswordForm() {
   const id = useId();

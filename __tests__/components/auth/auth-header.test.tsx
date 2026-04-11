@@ -1,13 +1,13 @@
 import { usePathname } from "next/navigation";
 import { render, screen } from "@testing-library/react";
 
-import { AuthHeader } from "@/components/auth/auth-header";
+import { AuthHeader } from "@/components/auth/ui/auth-header";
 
 jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),
 }));
 
-jest.mock("@/components/auth/auth-tab", () => ({
+jest.mock("@/components/auth/ui/auth-tab", () => ({
   AuthTab: jest.fn(({ title, href }) => (
     <a href={href} data-testid="mock-auth-tab">
       {title}

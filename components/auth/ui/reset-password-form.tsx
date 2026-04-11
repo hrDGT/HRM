@@ -3,21 +3,21 @@
 import { startTransition, useActionState, useId } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
-import { Form } from "@/components/forms/form";
-import { FormActions } from "@/components/forms/form-actions";
-import { FormHeader } from "@/components/forms/form-header";
+import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
+import { ControlledPasswordInput } from "@/components/forms/ui/controlled-password-input";
+import { Form } from "@/components/forms/ui/form";
+import { FormActions } from "@/components/forms/ui/form-actions";
+import { FormHeader } from "@/components/forms/ui/form-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { ActionState } from "@/lib/auth/auth-types";
-import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
 
-import { FormRootError } from "../auth-root-error";
-
-import { resetPasswordAction } from "./reset-password-action";
+import { resetPasswordAction } from "../actions/reset-password-action";
 import {
   resetPasswordSchema,
   ResetPasswordValue,
-} from "./reset-password-schema";
+} from "../schemas/reset-password-schema";
+
+import { FormRootError } from "./auth-root-error";
 
 export function ResetPasswordForm() {
   const id = useId();

@@ -1,5 +1,10 @@
 "use client";
 
+import { useFilteredData } from "@/components/dashboard/hooks/use-filtered-data";
+import { useTableControls } from "@/components/dashboard/hooks/use-table-controls";
+import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
+import { DashboardTableContent } from "@/components/dashboard/ui/dashboard-table-content";
+import { DashboardTableHead } from "@/components/dashboard/ui/dashboard-table-head";
 import {
   Table,
   TableBody,
@@ -7,14 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useFilteredData } from "@/hooks/dashboard/use-filtered-data";
-import { useTableControls } from "@/hooks/dashboard/use-table-controls";
 import { GetDepartmentsQuery } from "@/gqlcodegen/graphql";
 import { useUserStore } from "@/store/use-user-store";
-
-import { DashboardHeader } from "../dashboard/dashboard-header";
-import { DashboardTableContent } from "../dashboard/dashboard-table-content";
-import { DashboardTableHead } from "../dashboard/dashboard-table-head";
 
 type Props = {
   initialDepartments: GetDepartmentsQuery["departments"];

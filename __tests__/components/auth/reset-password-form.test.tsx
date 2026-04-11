@@ -3,18 +3,18 @@ import { useSearchParams } from "next/navigation";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { ResetPasswordForm } from "@/components/auth/reset-password/reset-password-form";
-import { useActionFeedback } from "@/hooks/auth/use-action-feedback";
+import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
+import { ResetPasswordForm } from "@/components/auth/ui/reset-password-form";
 
 jest.mock("next/navigation", () => ({
   useSearchParams: jest.fn(),
 }));
 
-jest.mock("@/hooks/auth/use-action-feedback", () => ({
+jest.mock("@/components/auth/hooks/use-action-feedback", () => ({
   useActionFeedback: jest.fn(),
 }));
 
-jest.mock("@/components/auth/reset-password/reset-password-action", () => ({
+jest.mock("@/components/auth/actions/reset-password-action", () => ({
   resetPasswordAction: jest.fn(),
 }));
 

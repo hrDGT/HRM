@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { FormHeader } from "@/components/forms/form-header";
+import { FormHeader } from "@/components/forms/ui/form-header";
 
 describe("FormHeader Component", () => {
   it("renders the title and description correctly", () => {

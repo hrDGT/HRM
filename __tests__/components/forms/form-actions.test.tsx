@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-import { FormActions } from "@/components/forms/form-actions";
+import { FormActions } from "@/components/forms/ui/form-actions";
 
 describe("FormActions Component", () => {
   const defaultProps = {

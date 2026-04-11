@@ -1,12 +1,12 @@
 import { ChangeEvent } from "react";
 import { Plus, Search } from "lucide-react";
 
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "../ui/input-group";
+} from "@/components/ui/input-group";
 
 type Props = {
   title: string;

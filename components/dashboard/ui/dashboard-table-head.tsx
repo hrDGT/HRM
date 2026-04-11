@@ -1,6 +1,6 @@
 import { ArrowDown } from "lucide-react";
 
-import { TableHead, TableRow } from "@/components/ui/table";
+import { TableHead } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 interface Props<T extends string> {

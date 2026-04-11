@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { Button } from "../ui/button";
-import { CardFooter } from "../ui/card";
-import { Field } from "../ui/field";
+import { Button } from "@/components/ui/button";
+import { CardFooter } from "@/components/ui/card";
+import { Field } from "@/components/ui/field";
 
 type Props = {
   formId: string;

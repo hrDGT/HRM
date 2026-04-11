@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
-import { fetchDepartments } from "@/components/departments/departments-action";
-import { DepartmentsClient } from "@/components/departments/departments-client";
+import { fetchDepartments } from "@/components/departments/actions/departments-action";
+import { DepartmentsClient } from "@/components/departments/ui/departments-client";
 
 export const metadata: Metadata = {
   title: "HRM | Departments",

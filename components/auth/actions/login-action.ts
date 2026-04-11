@@ -2,13 +2,12 @@
 
 import { redirect } from "next/navigation";
 
+import { LoginFormValues } from "@/components/auth/schemas/login-schema";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { ActionState } from "@/lib/auth/auth-types";
 import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
-
-import { LoginFormValues } from "./login-schema";
 
 const LOGIN_QUERY = graphql(`
   query Login($auth: AuthInput!) {

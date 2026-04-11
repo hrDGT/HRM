@@ -4,14 +4,13 @@ import { useState } from "react";
 import { type FieldValues, type Path, useFormContext } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Field, FieldError } from "@/components/ui/field";
-
-import { Button } from "../ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "../ui/input-group";
+} from "@/components/ui/input-group";
 
 type Props<T extends FieldValues> = {
   name: Path<T>;

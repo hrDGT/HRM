@@ -1,4 +1,4 @@
-import { FieldError } from "../ui/field";
+import { FieldError } from "@/components/ui/field";
 
 type Props = {
   message?: string;

@@ -1,7 +1,7 @@
-import { forgotPasswordSchema } from "@/components/auth/forgot-password/forgot-password-schema";
-import { loginSchema } from "@/components/auth/login/login-schema";
-import { resetPasswordSchema } from "@/components/auth/reset-password/reset-password-schema";
-import { signupSchema } from "@/components/auth/signup/signup-schema";
+import { forgotPasswordSchema } from "@/components/auth/schemas/forgot-password-schema";
+import { loginSchema } from "@/components/auth/schemas/login-schema";
+import { resetPasswordSchema } from "@/components/auth/schemas/reset-password-schema";
+import { signupSchema } from "@/components/auth/schemas/signup-schema";
 
 
 describe("Zod Auth Schemas", () => {

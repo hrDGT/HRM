@@ -1,11 +1,10 @@
 "use server"
 
+import { ResetPasswordValue } from "@/components/auth/schemas/reset-password-schema";
 import { ActionState } from "@/lib/auth/auth-types";
 import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
-
-import { ResetPasswordValue } from "./reset-password-schema";
 
 const RESET_PASSWORD_MUTATION = graphql(`
   mutation ResetPassword($auth: ResetPasswordInput!) {

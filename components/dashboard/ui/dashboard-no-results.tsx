@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-
-import { TableCell, TableRow } from "../ui/table";
+import { TableCell, TableRow } from "@/components/ui/table";
 
 interface NoResultsProps {
   isAdmin: boolean;

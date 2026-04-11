@@ -1,13 +1,14 @@
 import { MoreVerticalIcon } from "lucide-react";
 
-import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { TableCell, TableRow } from "../ui/table";
+} from "@/components/ui/dropdown-menu";
+import { TableCell, TableRow } from "@/components/ui/table";
+
+import { Button } from "../../ui/button";
 
 import { DashBoardNoResults } from "./dashboard-no-results";
 

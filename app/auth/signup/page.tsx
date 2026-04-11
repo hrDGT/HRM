@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { SignupForm } from "@/components/auth/signup/signup-form";
+import { SignupForm } from "@/components/auth/ui/signup-form";
 
 export const metadata: Metadata = {
   title: "HRM | Sign Up",

@@ -2,18 +2,18 @@
 
 import { startTransition, useActionState, useId } from "react";
 
-import { ControlledPasswordInput } from "@/components/forms/controlled-password-input";
-import { Form } from "@/components/forms/form";
-import { FormActions } from "@/components/forms/form-actions";
-import { FormHeader } from "@/components/forms/form-header";
-import { ControlledInput } from "@/components/forms/form-input";
+import { ControlledPasswordInput } from "@/components/forms/ui/controlled-password-input";
+import { Form } from "@/components/forms/ui/form";
+import { FormActions } from "@/components/forms/ui/form-actions";
+import { FormHeader } from "@/components/forms/ui/form-header";
+import { ControlledInput } from "@/components/forms/ui/form-input";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 
-import { FormRootError } from "../auth-root-error";
+import { signUpUserAction } from "../actions/signup-action";
+import { SignupFormValues, signupSchema } from "../schemas/signup-schema";
 
-import { signUpUserAction } from "./signup-action";
-import { SignupFormValues, signupSchema } from "./signup-schema";
+import { FormRootError } from "./auth-root-error";
 
 export function SignupForm() {
   const id = useId();

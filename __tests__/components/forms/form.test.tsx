@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { z } from "zod";
 
-import { Form } from "@/components/forms/form";
+import { Form } from "@/components/forms/ui/form";
 
 const testSchema = z.object({
   testField: z.string().min(1, "Required"),

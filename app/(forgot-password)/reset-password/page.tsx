@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 
-import { ResetPasswordForm } from "@/components/auth/reset-password/reset-password-form";
+import { ResetPasswordForm } from "@/components/auth/ui/reset-password-form";
 import { DashboardLoader } from "@/components/ui/loader";
 
 export const metadata: Metadata = {
