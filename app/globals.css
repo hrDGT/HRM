@@ -24,6 +24,9 @@
   --shadow-lg: none;
   --shadow-inner: none;
 
+  --color-action-hover: var(--action-hover);
+  --stroke-action-color: var(--action-stroke);
+
   --ring-width: 0px;
   --ring-offset-width: 0px;
   --color-ring: transparent;
@@ -48,6 +51,8 @@
 
   --border: var(--main-border);
   --input: var(--main-border);
+  --action-hover: rgba(0, 0, 0, 0.04);
+  --action-stroke: rgba(0, 0, 0, 0.54);
 
   --primary: var(--main-red);
   --primary-foreground: #ffffff;
