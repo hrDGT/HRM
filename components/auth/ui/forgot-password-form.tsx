@@ -6,7 +6,7 @@ import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
 import { Form } from "@/components/forms/ui/form";
 import { FormActions } from "@/components/forms/ui/form-actions";
 import { FormHeader } from "@/components/forms/ui/form-header";
-import { ControlledInput } from "@/components/forms/ui/form-input";
+import { FormInput } from "@/components/forms/ui/form-input";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { forgotPasswordAction } from "../actions/forgot-password-action";
@@ -46,7 +46,12 @@ export function ForgotPasswordForm() {
           defaultValues={{ email: "" }}
           onSubmit={handleFormSubmit}
         >
-          <ControlledInput name="email" placeholder="Email" autoFocus />
+          <FormInput
+            name="email"
+            placeholder="Email"
+            autoFocus
+            autocompleteValue="email"
+          />
           <FormRootError message={state?.error} />
         </Form>
       </CardContent>

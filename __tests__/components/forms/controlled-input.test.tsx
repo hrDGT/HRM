@@ -3,7 +3,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { ControlledInput } from "@/components/forms/ui/form-input";
+import { FormInput } from "@/components/forms/ui/form-input";
 
 const TestWrapper = ({
   children,
@@ -28,14 +28,15 @@ const TestWrapper = ({
   return <FormProvider {...methods}>{children}</FormProvider>;
 };
 
-describe("ControlledInput Component", () => {
+describe("FormInput Component", () => {
   it("renders correctly with given props", () => {
     render(
       <TestWrapper>
-        <ControlledInput
+        <FormInput
           name="testName"
           placeholder="Enter your email"
           type="email"
+          autocompleteValue="email"
         />
       </TestWrapper>,
     );
@@ -55,7 +56,11 @@ describe("ControlledInput Component", () => {
 
     render(
       <TestWrapper>
-        <ControlledInput name="testField" placeholder="Type here" />
+        <FormInput
+          name="testField"
+          placeholder="Type here"
+          autocompleteValue=""
+        />
       </TestWrapper>,
     );
 
@@ -68,7 +73,11 @@ describe("ControlledInput Component", () => {
   it("displays an error message and updates attributes when the field is invalid", async () => {
     render(
       <TestWrapper shouldSetError={true}>
-        <ControlledInput name="testField" placeholder="Type here" />
+        <FormInput
+          name="testField"
+          placeholder="Type here"
+          autocompleteValue=""
+        />
       </TestWrapper>,
     );
 

@@ -6,7 +6,7 @@ import { ControlledPasswordInput } from "@/components/forms/ui/controlled-passwo
 import { Form } from "@/components/forms/ui/form";
 import { FormActions } from "@/components/forms/ui/form-actions";
 import { FormHeader } from "@/components/forms/ui/form-header";
-import { ControlledInput } from "@/components/forms/ui/form-input";
+import { FormInput } from "@/components/forms/ui/form-input";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 
@@ -40,7 +40,12 @@ export function SignupForm() {
           onSubmit={handleFormSubmit}
         >
           <FieldGroup className="gap-y-4">
-            <ControlledInput name="email" placeholder="Email" autoFocus />
+            <FormInput
+              name="email"
+              placeholder="Email"
+              autoFocus
+              autocompleteValue="email"
+            />
             <ControlledPasswordInput
               name="password"
               placeholder="Password"

@@ -10,13 +10,15 @@ type Props<T extends FieldValues> = {
   placeholder?: string;
   type?: string;
   autoFocus?: boolean;
+  autocompleteValue: string;
 };
 
-export function ControlledInput<T extends FieldValues>({
+export function FormInput<T extends FieldValues>({
   name,
   placeholder,
   type = "text",
   autoFocus,
+  autocompleteValue,
 }: Props<T>) {
   const { register, getFieldState, formState } = useFormContext<T>();
   const fieldState = getFieldState(name, formState);
@@ -32,7 +34,7 @@ export function ControlledInput<T extends FieldValues>({
         placeholder={placeholder}
         aria-invalid={fieldState.invalid}
         className="min-h-12 px-3 focus-visible:border-main-text hover:border-main-text"
-        autoComplete="email"
+        autoComplete={autocompleteValue}
       />
       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
     </Field>
