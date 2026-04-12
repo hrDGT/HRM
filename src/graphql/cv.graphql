@@ -1,0 +1,36 @@
+query GetCVs {
+    CVs{
+        id,
+        title,
+        fullname,
+        education,
+        description,
+        email
+    }
+}
+
+mutation CreateCV ($input: CVInput!){
+    createCV(cv: $input){
+        id,
+        title,
+        fullname,
+        education,
+        description,
+        email
+    }
+}
+
+mutation UpdateCV ($input: CVUpdateInput!){
+    updateCV(cv: $input){
+        id,
+        title,
+        fullname,
+        education,
+        description,
+        email
+    }
+}
+
+mutation DeleteCV ($id: ID!){
+    deleteCV(id: $id)
+}
