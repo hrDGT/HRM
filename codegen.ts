@@ -6,7 +6,8 @@ const config: CodegenConfig = {
   documents: [
     'lib/**/*.ts',
     'app/**/*.tsx',
-    'components/**/*.{ts,tsx}'
+    'components/**/*.tsx',
+    'components/**/*.ts'
   ],
 
   generates: {
