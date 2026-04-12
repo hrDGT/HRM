@@ -12,28 +12,33 @@ import { Button } from "../../ui/button";
 
 import { DashBoardNoResults } from "./dashboard-no-results";
 
-type Props<T extends { id: string | number }> = {
+type Props<T extends { id: string }> = {
   data: T[];
   isAdmin: boolean;
   actionTitle: string;
   columnsCount: number;
   onReset: () => void;
+  onDelete: (departmentId: string) => void;
   children: (item: T) => React.ReactNode;
 };
 
-export function DashboardTableContent<T extends { id: string | number }>({
+export function DashboardTableContent<T extends { id: string }>({
   data,
   isAdmin,
   actionTitle,
   columnsCount,
   onReset,
+  onDelete,
   children,
 }: Props<T>) {
   return (
     <>
       {data.length > 0 ? (
         data.map((item) => (
-          <TableRow key={item.id} className="border-main-border font-normal">
+          <TableRow
+            key={item.id}
+            className="border-main-border font-normal min-h-16.25"
+          >
             {children(item)}
 
             {isAdmin && (
@@ -57,7 +62,10 @@ export function DashboardTableContent<T extends { id: string | number }>({
                     <DropdownMenuItem className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base">
                       Update {actionTitle}
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base">
+                    <DropdownMenuItem
+                      className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
+                      onClick={() => onDelete(item.id)}
+                    >
                       Delete {actionTitle}
                     </DropdownMenuItem>
                   </DropdownMenuContent>

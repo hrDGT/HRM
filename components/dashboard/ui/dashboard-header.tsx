@@ -28,7 +28,7 @@ export function DashboardHeader({
       <h1 className="text-base text-secondary-text opacity-60 ml-4 mb-4">
         {title}
       </h1>
-      <div className="flex justify-between items-center gap-x-4 mx-4 mb-4">
+      <div className="flex justify-between items-center gap-x-4 mx-4 mb-4 min-h-12">
         <InputGroup className="inline-flex gap-x-2.5 w-full max-w-80 rounded-4xl max-h-10 p-3 focus-visible:border-main-text hover:border-main-text">
           <InputGroupInput
             value={searchValue}
