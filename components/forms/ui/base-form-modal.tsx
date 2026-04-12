@@ -2,7 +2,6 @@
 
 import { ReactNode, useState } from "react";
 import { DefaultValues, FieldValues } from "react-hook-form";
-import { Plus } from "lucide-react";
 import { X } from "lucide-react";
 import { ZodType } from "zod";
 
@@ -11,6 +10,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -26,6 +26,11 @@ interface BaseFormModalProps<T extends FieldValues> {
   onSubmit: (data: T, closeModal: () => void) => void;
   isPending: boolean;
   children: ReactNode;
+  submitButtonTitleOnFetch?: string;
+  submitButtonTitle?: string;
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function BaseFormModal<T extends FieldValues>({
@@ -35,8 +40,23 @@ export function BaseFormModal<T extends FieldValues>({
   onSubmit,
   isPending,
   children,
+  submitButtonTitleOnFetch = "Saving...",
+  submitButtonTitle = "Save",
+  trigger,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: BaseFormModalProps<T>) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const controlled = controlledOnOpenChange !== undefined;
+  const isOpen = controlled ? Boolean(controlledOpen) : internalOpen;
+
+  const setIsOpen = (next: boolean) => {
+    if (controlled) {
+      controlledOnOpenChange(next);
+    } else {
+      setInternalOpen(next);
+    }
+  };
 
   const handleFormSubmit = (data: T) => {
     onSubmit(data, () => setIsOpen(false));
@@ -44,23 +64,26 @@ export function BaseFormModal<T extends FieldValues>({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2">
-          <Plus className="size-5" />
-          <span className="hidden md:block">{actionTitle}</span>
-        </Button>
-      </DialogTrigger>
+      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
 
       <DialogContent
-        className="bg-white max-w-8/10  md:max-w-2xl"
+        className="bg-white max-w-8/10 md:max-w-2xl"
         showCloseButton={false}
-        aria-describedby={actionTitle}
       >
         <DialogHeader>
           <DialogTitle className="text-xl">{actionTitle}</DialogTitle>
-          <DialogClose asChild className="absolute right-2 top-2 size-6 p-0">
-            <Button type="button" className="text-main-text p-2">
-              <X />
+
+          <DialogDescription className="sr-only">
+            {actionTitle} modal
+          </DialogDescription>
+
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              className="absolute right-2 top-2 size-8 p-0 text-main-text rounded-full hover:bg-action-hover"
+            >
+              <X className="size-5" />
             </Button>
           </DialogClose>
         </DialogHeader>
@@ -89,7 +112,7 @@ export function BaseFormModal<T extends FieldValues>({
               disabled={isPending}
               className="min-w-40 rounded-xl max-h-10 hover:bg-action-hover"
             >
-              {isPending ? "Saving..." : "Create"}
+              {isPending ? submitButtonTitleOnFetch : submitButtonTitle}
             </Button>
           </DialogFooter>
         </Form>

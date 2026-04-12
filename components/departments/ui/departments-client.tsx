@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
 import { DashboardTableContent } from "@/components/dashboard/ui/dashboard-table-content";
 import { DashboardTableHead } from "@/components/dashboard/ui/dashboard-table-head";
@@ -14,6 +16,8 @@ import { GetDepartmentsQuery } from "@/gqlcodegen/graphql";
 
 import { useDepartmentsLogic } from "../hooks/use-department-logic";
 
+import { UpdateDepartmentModal } from "./update-department-modal";
+
 type Props = {
   initialDepartments: GetDepartmentsQuery["departments"];
   isAdmin: boolean;
@@ -21,6 +25,11 @@ type Props = {
 
 export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
   const state = useDepartmentsLogic(initialDepartments, isAdmin);
+
+  const [editingDept, setEditingDept] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   return (
     <section className="max-w-7xl w-full mx-auto">
@@ -50,11 +59,22 @@ export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
             columnsCount={1}
             onReset={state.resetSearch}
             onDelete={state.handleDelete}
+            onEdit={setEditingDept}
           >
             {(dept) => <TableCell className="p-4">{dept.name}</TableCell>}
           </DashboardTableContent>
         </TableBody>
       </Table>
+
+      {editingDept && (
+        <UpdateDepartmentModal
+          department={editingDept}
+          open={true}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setEditingDept(null);
+          }}
+        />
+      )}
     </section>
   );
 }

@@ -19,6 +19,7 @@ type Props<T extends { id: string }> = {
   columnsCount: number;
   onReset: () => void;
   onDelete: (departmentId: string) => void;
+  onEdit: (item: T) => void;
   children: (item: T) => React.ReactNode;
 };
 
@@ -29,6 +30,7 @@ export function DashboardTableContent<T extends { id: string }>({
   columnsCount,
   onReset,
   onDelete,
+  onEdit,
   children,
 }: Props<T>) {
   return (
@@ -43,7 +45,7 @@ export function DashboardTableContent<T extends { id: string }>({
 
             {isAdmin && (
               <TableCell className="text-right py-4">
-                <DropdownMenu>
+                <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
@@ -54,16 +56,21 @@ export function DashboardTableContent<T extends { id: string }>({
                       <span className="sr-only">Open menu</span>
                     </Button>
                   </DropdownMenuTrigger>
+
                   <DropdownMenuContent
                     className="bg-white w-full py-2"
                     align="end"
                     onCloseAutoFocus={(e) => e.preventDefault()}
                   >
-                    <DropdownMenuItem className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base">
-                      Update {actionTitle}
-                    </DropdownMenuItem>
                     <DropdownMenuItem
                       className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
+                      onSelect={() => onEdit(item)}
+                    >
+                      Update {actionTitle}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base text-main-red focus:text-main-red"
                       onClick={() => onDelete(item.id)}
                     >
                       Delete {actionTitle}

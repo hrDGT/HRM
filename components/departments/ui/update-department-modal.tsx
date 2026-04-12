@@ -1,31 +1,41 @@
+"use client";
+
 import { useTransition } from "react";
-import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { BaseFormModal } from "@/components/forms/ui/base-form-modal";
 import { FormInput } from "@/components/forms/ui/form-input";
-import { Button } from "@/components/ui/button";
 
-import { createDepartmentAction } from "../actions/create-departments-action";
+import { updateDepartmentAction } from "../actions/update-departments-action";
 import {
   departmentsSchema,
   DepartmentsSchemaValues,
 } from "../schemas/departments-schema";
 
-export function CreateDepartmentModal() {
+interface Props {
+  department: { id: string; name: string };
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function UpdateDepartmentModal({
+  department,
+  open,
+  onOpenChange,
+}: Props) {
   const [isPending, startTransition] = useTransition();
 
-  const handleCreate = (
+  const handleUpdate = (
     data: DepartmentsSchemaValues,
     closeModal: () => void,
   ) => {
     startTransition(async () => {
-      const result = await createDepartmentAction(data.name);
+      const result = await updateDepartmentAction(department.id, data.name);
 
       if (result?.error) {
         toast.error(result.error);
       } else {
-        toast.success("Department created successfully");
+        toast.success("Department updated successfully");
         closeModal();
       }
     });
@@ -33,19 +43,15 @@ export function CreateDepartmentModal() {
 
   return (
     <BaseFormModal
-      actionTitle="Create Department"
+      actionTitle="Update Department"
       schema={departmentsSchema}
-      defaultValues={{ name: "" }}
-      onSubmit={handleCreate}
+      defaultValues={{ name: department.name }}
+      onSubmit={handleUpdate}
       isPending={isPending}
-      submitButtonTitleOnFetch="Creating..."
-      submitButtonTitle="Create"
-      trigger={
-        <Button className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2">
-          <Plus className="size-5" />
-          <span className="hidden md:block">Create department</span>
-        </Button>
-      }
+      submitButtonTitleOnFetch="Updating..."
+      submitButtonTitle="Update"
+      open={open}
+      onOpenChange={onOpenChange}
     >
       <FormInput
         name="name"
