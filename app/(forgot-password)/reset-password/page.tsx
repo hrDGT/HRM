@@ -1,8 +1,6 @@
-import { Suspense } from "react";
 import { Metadata } from "next";
 
 import { ResetPasswordForm } from "@/components/auth/ui/reset-password-form";
-import { DashboardLoader } from "@/components/ui/loader";
 
 export const metadata: Metadata = {
   title: "HRM | Reset Password",
@@ -10,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function ResetPasswordPage() {
-  return (
-    <Suspense fallback={<DashboardLoader />}>
-      <ResetPasswordForm />
-    </Suspense>
-  );
+  return <ResetPasswordForm />;
 }
