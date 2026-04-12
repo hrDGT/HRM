@@ -1,7 +1,7 @@
-import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
+import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
 import { graphql } from "@/gqlcodegen";
 
-export const GET_DEPARTMENTS = graphql(`
+export const GET_DEPARTMENTS_QUERY = graphql(`
   query GetDepartments {
     departments {
       id
@@ -12,10 +12,10 @@ export const GET_DEPARTMENTS = graphql(`
 
 export async function fetchDepartments() {
   const response = await gqlRequestAuthed(
-    GET_DEPARTMENTS,
+    GET_DEPARTMENTS_QUERY,
     undefined,
     {
-      cache: "no-store",
+      next: { revalidate: 0 },
     }
   );
 
