@@ -29,7 +29,6 @@ export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
         searchValue={state.searchValue}
         onChange={state.handleSearchChange}
         isAdmin={state.isAdmin}
-        actionTitle="Create department"
       />
       <Table>
         <TableHeader>

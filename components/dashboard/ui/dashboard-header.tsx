@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { CreateDepartmentModal } from "@/components/departments/ui/create-department-modal";
 import {
   InputGroup,
   InputGroupAddon,
@@ -13,7 +13,6 @@ type Props = {
   searchValue: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   isAdmin: boolean;
-  actionTitle: string;
 };
 
 export function DashboardHeader({
@@ -21,7 +20,6 @@ export function DashboardHeader({
   searchValue,
   onChange,
   isAdmin,
-  actionTitle,
 }: Props) {
   return (
     <header className="sticky top-0 bg-main-bg z-10 pt-4">
@@ -42,12 +40,7 @@ export function DashboardHeader({
             <Search className="size-5 stroke-action-color" />
           </InputGroupAddon>
         </InputGroup>
-        {isAdmin && (
-          <Button className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2">
-            <Plus className="size-5" />
-            <span className="hidden md:block">{actionTitle}</span>
-          </Button>
-        )}
+        {isAdmin && <CreateDepartmentModal />}
       </div>
     </header>
   );
