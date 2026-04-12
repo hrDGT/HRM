@@ -41,7 +41,11 @@ export function CreateDepartmentModal() {
       submitButtonTitleOnFetch="Creating..."
       submitButtonTitle="Create"
       trigger={
-        <Button className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2">
+        <Button
+          type="button"
+          aria-label="Create department"
+          className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2"
+        >
           <Plus className="size-5" />
           <span className="hidden md:block">Create department</span>
         </Button>
