@@ -10,6 +10,7 @@
   --color-secondary-text: var(--secondary-text);
   --color-main-red: var(--main-red);
   --color-main-border: var(--main-border);
+  --color-skeleton-bg: var(--skeleton-bg);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -48,6 +49,7 @@
   --background: var(--main-bg);
   --foreground: var(--main-text);
   --muted-foreground: var(--secondary-text);
+  --skeleton-bg: rgba(46, 46, 46, 0.11);
 
   --border: var(--main-border);
   --input: var(--main-border);
@@ -64,6 +66,7 @@
 @layer base {
   html {
     font-family: var(--font-roboto), sans-serif;
+    scrollbar-gutter: stable;
   }
   body {
     background-color: var(--background);
