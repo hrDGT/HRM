@@ -1,7 +1,5 @@
 "use client";
 
-import { useFilteredData } from "@/components/dashboard/hooks/use-filtered-data";
-import { useTableControls } from "@/components/dashboard/hooks/use-table-controls";
 import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
 import { DashboardTableContent } from "@/components/dashboard/ui/dashboard-table-content";
 import { DashboardTableHead } from "@/components/dashboard/ui/dashboard-table-head";
@@ -13,41 +11,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { GetDepartmentsQuery } from "@/gqlcodegen/graphql";
-import { useUserStore } from "@/store/use-user-store";
+
+import { useDepartmentsLogic } from "../hooks/use-department-logic";
 
 type Props = {
   initialDepartments: GetDepartmentsQuery["departments"];
+  isAdmin: boolean;
 };
 
-type DepartmentItem = GetDepartmentsQuery["departments"][0];
-
-export function DepartmentsClient({ initialDepartments }: Props) {
-  const isAdmin = useUserStore((state) => state.isAdmin);
-
-  const {
-    sortField,
-    sortOrder,
-    searchValue,
-    handleSort,
-    handleSearchChange,
-    resetSearch,
-  } = useTableControls<DepartmentItem>("name");
-
-  const filteredAndSortedDepartments = useFilteredData({
-    data: initialDepartments,
-    searchValue,
-    searchField: "name",
-    sortField,
-    sortOrder,
-  });
+export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
+  const state = useDepartmentsLogic(initialDepartments, isAdmin);
 
   return (
     <section className="max-w-7xl w-full mx-auto">
       <DashboardHeader
         title="Departments"
-        searchValue={searchValue}
-        onChange={handleSearchChange}
-        isAdmin={isAdmin}
+        searchValue={state.searchValue}
+        onChange={state.handleSearchChange}
+        isAdmin={state.isAdmin}
         actionTitle="Create department"
       />
       <Table>
@@ -56,19 +37,20 @@ export function DepartmentsClient({ initialDepartments }: Props) {
             <DashboardTableHead
               headTitle="Name"
               field="name"
-              currentSortField={sortField as string}
-              sortOrder={sortOrder}
-              onSort={handleSort}
+              currentSortField={state.sortField}
+              sortOrder={state.sortOrder}
+              onSort={state.handleSort}
             />
           </TableRow>
         </TableHeader>
         <TableBody>
           <DashboardTableContent
-            data={filteredAndSortedDepartments}
-            isAdmin={isAdmin}
+            data={state.filteredDepartments}
+            isAdmin={state.isAdmin}
             actionTitle="department"
             columnsCount={1}
-            onReset={resetSearch}
+            onReset={state.resetSearch}
+            onDelete={state.handleDelete}
           >
             {(dept) => <TableCell className="p-4">{dept.name}</TableCell>}
           </DashboardTableContent>
