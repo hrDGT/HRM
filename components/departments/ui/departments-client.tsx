@@ -98,7 +98,11 @@ export function DepartmentsClient({
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
-                          onClick={() => state.handleDelete(dept.id)}
+                          onSelect={() => {
+                            setTimeout(() => {
+                              state.handleDelete(dept.id);
+                            }, 0);
+                          }}
                         >
                           Delete department
                         </DropdownMenuItem>
