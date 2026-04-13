@@ -1,9 +1,30 @@
+"use client";
+
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 
 import { createDepartmentAction } from "@/components/departments/actions/create-departments-action";
 import { CreateDepartmentModal } from "@/components/departments/ui/create-department-modal";
+
+jest.mock("next-intl", () => ({
+  useTranslations: jest.fn((namespace) => (key: string) => {
+    const translations: Record<string, Record<string, string>> = {
+      Departments: {
+        createButton: "Create department",
+        createModalTitle: "Create Department",
+        "toasts.created": "Department created successfully",
+        "validation.nameMin": "Name must be at least 2 characters",
+      },
+      Common: {
+        "fields.name": "Name",
+        "actions.create": "Create",
+        "actions.cancel": "Cancel",
+      },
+    };
+    return translations[namespace]?.[key] || key;
+  }),
+}));
 
 jest.mock("@/components/departments/actions/create-departments-action", () => ({
   createDepartmentAction: jest.fn(),

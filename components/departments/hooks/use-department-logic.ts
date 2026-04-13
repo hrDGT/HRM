@@ -1,4 +1,7 @@
+'use client'
+
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { useFilteredData } from "@/components/dashboard/hooks/use-filtered-data";
@@ -10,6 +13,7 @@ import { deleteDepartmentAction } from "../actions/delete-departments-action";
 type DepartmentItem = GetDepartmentsQuery["departments"][0];
 
 export function useDepartmentsLogic(initialDepartments: DepartmentItem[], isAdmin: boolean) {
+  const t = useTranslations("Departments");
 
   const {
     sortField, sortOrder, searchValue,
@@ -32,7 +36,7 @@ export function useDepartmentsLogic(initialDepartments: DepartmentItem[], isAdmi
       if (result?.error) {
         toast.error(result.error);
       } else {
-        toast.success("Department deleted successfully");
+        toast.success(t("toasts.deleted"));
       }
     });
   };

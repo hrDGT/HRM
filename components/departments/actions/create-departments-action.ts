@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
 import { getError } from "@/lib/utils";
@@ -16,6 +17,7 @@ const CREATE_DEPARTMENT_MUTATION = graphql(`
 `);
 
 export async function createDepartmentAction(name: string) {
+  const t = await getTranslations("Departments.toasts");
   try {
     await gqlRequestAuthed(CREATE_DEPARTMENT_MUTATION, {
       department: { name }
@@ -24,6 +26,6 @@ export async function createDepartmentAction(name: string) {
 
     return { success: true };
   } catch (err) {
-    return { error: getError(err, "Failed to create department") };
+    return { error: getError(err, t("createError")) };
   }
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
 import { getError } from "@/lib/utils";
@@ -15,6 +16,7 @@ const DELETE_DEPARTMENT_MUTATION = graphql(`
 `);
 
 export async function deleteDepartmentAction(departmentId: string) {
+  const t = await getTranslations("Departments.toasts");
   try {
     await gqlRequestAuthed(DELETE_DEPARTMENT_MUTATION, {
       department: { departmentId }
@@ -23,6 +25,6 @@ export async function deleteDepartmentAction(departmentId: string) {
 
     return { success: true };
   } catch (err) {
-    return { error: getError(err, "Failed to delete department") };
+    return { error: getError(err, t("deleteError")) };
   }
 }

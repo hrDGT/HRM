@@ -2,6 +2,7 @@
 
 import { ReactNode, useState } from "react";
 import { DefaultValues, FieldValues } from "react-hook-form";
+import { useTranslations } from "next-intl"; // Импортируем хук
 import { X } from "lucide-react";
 import { ZodType } from "zod";
 
@@ -40,13 +41,15 @@ export function BaseFormModal<T extends FieldValues>({
   onSubmit,
   isPending,
   children,
-  submitButtonTitleOnFetch = "Saving...",
-  submitButtonTitle = "Save",
+  submitButtonTitleOnFetch,
+  submitButtonTitle,
   trigger,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: BaseFormModalProps<T>) {
+  const t = useTranslations("Common");
   const [internalOpen, setInternalOpen] = useState(false);
+
   const controlled = controlledOnOpenChange !== undefined;
   const isOpen = controlled ? Boolean(controlledOpen) : internalOpen;
 
@@ -74,7 +77,7 @@ export function BaseFormModal<T extends FieldValues>({
           <DialogTitle className="text-xl">{actionTitle}</DialogTitle>
 
           <DialogDescription className="sr-only">
-            {actionTitle} modal
+            {actionTitle}
           </DialogDescription>
 
           <DialogClose asChild>
@@ -104,7 +107,7 @@ export function BaseFormModal<T extends FieldValues>({
               disabled={isPending}
               className="min-w-40 rounded-xl max-h-10 hover:bg-action-hover"
             >
-              Cancel
+              {t("actions.cancel")}
             </Button>
             <Button
               type="submit"

@@ -1,6 +1,16 @@
-import { departmentsSchema } from "@/components/departments/schemas/departments-schema";
+import { getDepartmentsSchema } from "@/components/departments/schemas/departments-schema";
 
 describe("Departments Zod Schema", () => {
+  const t = (key: string) => {
+    const messages: Record<string, string> = {
+      "validation.nameMin": "Name must be at least 2 characters",
+      "validation.nameMax": "Name is too long",
+    };
+    return messages[key] || key;
+  };
+
+  const departmentsSchema = getDepartmentsSchema(t);
+
   it("successfully parses a valid department name", () => {
     const result = departmentsSchema.safeParse({ name: "Human Resources" });
     expect(result.success).toBe(true);
@@ -26,5 +36,8 @@ describe("Departments Zod Schema", () => {
   it("fails if the name is missing or empty", () => {
     const result = departmentsSchema.safeParse({ name: "" });
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0].message).toBe("Name must be at least 2 characters");
+    }
   });
 });

@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 
@@ -12,6 +16,7 @@ export function DashBoardNoResults({
   onReset,
   columnsCount,
 }: NoResultsProps) {
+  const t = useTranslations("Common");
   return (
     <TableRow className="hover:bg-transparent">
       <TableCell
@@ -19,9 +24,11 @@ export function DashBoardNoResults({
         className="h-[60vh] whitespace-normal align-middle"
       >
         <div className="flex flex-col items-center justify-center h-full w-full py-10 text-center">
-          <h3 className="text-2xl text-main-text mb-2">No results found</h3>
+          <h3 className="text-2xl text-main-text mb-2">
+            {t("noResults.title")}
+          </h3>
           <p className="text-base text-secondary-text mb-6">
-            Try another search, check the spelling or use a broader term
+            {t("noResults.description")}
           </p>
 
           {onReset && (
@@ -30,7 +37,7 @@ export function DashBoardNoResults({
               onClick={onReset}
               className="uppercase text-secondary-text hover:underline text-sm font-medium tracking-wide"
             >
-              Reset Search
+              {t("actions.resetSearch")}
             </Button>
           )}
         </div>

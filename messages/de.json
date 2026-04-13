@@ -1,0 +1,41 @@
+{
+  "Departments": {
+    "title": "Abteilungen",
+    "createButton": "Abteilung erstellen",
+    "createModalTitle": "Abteilung erstellen",
+    "updateModalTitle": "Abteilung bearbeiten",
+    "updateAction": "Abteilung bearbeiten",
+    "deleteAction": "Abteilung löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Abteilung erfolgreich erstellt",
+      "createError": "Abteilung konnte nicht erstellt werden",
+      "updated": "Abteilung erfolgreich aktualisiert",
+      "updateError": "Abteilung konnte nicht aktualisiert werden",
+      "deleted": "Abteilung erfolgreich gelöscht",
+      "deleteError": "Abteilung konnte nicht gelöscht werden"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Name"
+    },
+    "actions": {
+      "create": "Erstellen",
+      "update": "Aktualisieren",
+      "cancel": "Abbrechen",
+      "search": "Suchen",
+      "resetSearch": "Suche zurücksetzen",
+      "creating": "Wird erstellt...",
+      "updating": "Wird aktualisiert..."
+    },
+    "noResults": {
+      "title": "Keine Ergebnisse gefunden",
+      "description": "Versuchen Sie es mit einem anderen Suchbegriff, prüfen Sie die Schreibweise oder verwenden Sie einen allgemeineren Begriff"
+    }
+  }
+}

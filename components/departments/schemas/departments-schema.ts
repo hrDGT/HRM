@@ -1,10 +1,11 @@
 import z from "zod";
 
-export const departmentsSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name is too long")
-});
+export const getDepartmentsSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z
+      .string()
+      .min(2, t("validation.nameMin"))
+      .max(50, t("validation.nameMax"))
+  });
 
-export type DepartmentsSchemaValues = z.infer<typeof departmentsSchema>
+export type DepartmentsSchemaValues = z.infer<ReturnType<typeof getDepartmentsSchema>>;

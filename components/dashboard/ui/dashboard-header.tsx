@@ -1,4 +1,7 @@
+"use client";
+
 import { ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 
 import { CreateDepartmentModal } from "@/components/departments/ui/create-department-modal";
@@ -21,6 +24,7 @@ export function DashboardHeader({
   onChange,
   isAdmin,
 }: Props) {
+  const t = useTranslations("Common");
   return (
     <header className="sticky top-0 bg-main-bg z-10 pt-4">
       <h1 className="text-base text-secondary-text opacity-60 ml-4 mb-4">
@@ -31,7 +35,7 @@ export function DashboardHeader({
           <InputGroupInput
             value={searchValue}
             onChange={onChange}
-            placeholder="Search"
+            placeholder={t("actions.search")}
             className="placeholder:text-secondary-text placeholder:opacity-60 text-base"
             type="search"
             name="search"

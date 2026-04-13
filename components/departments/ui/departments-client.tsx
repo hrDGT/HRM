@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { MoreVerticalIcon } from "lucide-react";
 
 import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
@@ -38,11 +39,13 @@ export function DepartmentsClient({
   const state = useDepartmentsLogic(initialDepartments, isAdmin);
 
   const [editingDept, setEditingDept] = useState<Department | null>(null);
+  const t = useTranslations("Departments");
+  const tCommon = useTranslations("Common");
 
   return (
     <section className="max-w-7xl w-full mx-auto">
       <DashboardHeader
-        title="Departments"
+        title={t("title")}
         searchValue={state.searchValue}
         onChange={state.handleSearchChange}
         isAdmin={state.isAdmin}
@@ -52,7 +55,7 @@ export function DepartmentsClient({
         <TableHeader>
           <TableRow className="border-main-border">
             <DashboardTableHead
-              headTitle="Name"
+              headTitle={tCommon("fields.name")}
               field="name"
               currentSortField={state.sortField}
               sortOrder={state.sortOrder}
@@ -81,7 +84,7 @@ export function DepartmentsClient({
                           disabled={state.isPending}
                         >
                           <MoreVerticalIcon className="size-5 stroke-action-color" />
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">{t("openMenu")}</span>
                         </Button>
                       </DropdownMenuTrigger>
 
@@ -94,7 +97,7 @@ export function DepartmentsClient({
                           className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
                           onSelect={() => setEditingDept(dept)}
                         >
-                          Update department
+                          {t("updateAction")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
@@ -104,7 +107,7 @@ export function DepartmentsClient({
                             }, 0);
                           }}
                         >
-                          Delete department
+                          {t("deleteAction")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

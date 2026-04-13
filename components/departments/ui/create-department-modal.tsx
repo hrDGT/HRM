@@ -1,4 +1,7 @@
+"use client";
+
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -8,12 +11,16 @@ import { Button } from "@/components/ui/button";
 
 import { createDepartmentAction } from "../actions/create-departments-action";
 import {
-  departmentsSchema,
   DepartmentsSchemaValues,
+  getDepartmentsSchema,
 } from "../schemas/departments-schema";
 
 export function CreateDepartmentModal() {
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Departments");
+  const tCommon = useTranslations("Common");
+
+  const departmentsSchema = getDepartmentsSchema(t);
 
   const handleCreate = (
     data: DepartmentsSchemaValues,
@@ -25,7 +32,7 @@ export function CreateDepartmentModal() {
       if (result?.error) {
         toast.error(result.error);
       } else {
-        toast.success("Department created successfully");
+        toast.success(t("toasts.created"));
         closeModal();
       }
     });
@@ -33,27 +40,27 @@ export function CreateDepartmentModal() {
 
   return (
     <BaseFormModal
-      actionTitle="Create Department"
+      actionTitle={t("createModalTitle")}
       schema={departmentsSchema}
       defaultValues={{ name: "" }}
       onSubmit={handleCreate}
       isPending={isPending}
-      submitButtonTitleOnFetch="Creating..."
-      submitButtonTitle="Create"
+      submitButtonTitleOnFetch={tCommon("actions.creating")}
+      submitButtonTitle={tCommon("actions.create")}
       trigger={
         <Button
           type="button"
-          aria-label="Create department"
+          aria-label={t("createButton")}
           className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2"
         >
           <Plus className="size-5" />
-          <span className="hidden md:block">Create department</span>
+          <span className="hidden md:block">{t("createButton")}</span>
         </Button>
       }
     >
       <FormInput
         name="name"
-        placeholder="Name"
+        placeholder={tCommon("fields.name")}
         autoFocus
         autocompleteValue="off"
       />

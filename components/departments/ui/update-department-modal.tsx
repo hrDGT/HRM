@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { BaseFormModal } from "@/components/forms/ui/base-form-modal";
@@ -8,8 +9,8 @@ import { FormInput } from "@/components/forms/ui/form-input";
 
 import { updateDepartmentAction } from "../actions/update-departments-action";
 import {
-  departmentsSchema,
   DepartmentsSchemaValues,
+  getDepartmentsSchema,
 } from "../schemas/departments-schema";
 
 interface Props {
@@ -24,6 +25,10 @@ export function UpdateDepartmentModal({
   onOpenChange,
 }: Props) {
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Departments");
+  const tCommon = useTranslations("Common");
+
+  const departmentsSchema = getDepartmentsSchema(t);
 
   const handleUpdate = (
     data: DepartmentsSchemaValues,
@@ -35,7 +40,7 @@ export function UpdateDepartmentModal({
       if (result?.error) {
         toast.error(result.error);
       } else {
-        toast.success("Department updated successfully");
+        toast.success(t("toasts.updated"));
         closeModal();
       }
     });
@@ -43,19 +48,19 @@ export function UpdateDepartmentModal({
 
   return (
     <BaseFormModal
-      actionTitle="Update Department"
+      actionTitle={t("updateModalTitle")}
       schema={departmentsSchema}
       defaultValues={{ name: department.name }}
       onSubmit={handleUpdate}
       isPending={isPending}
-      submitButtonTitleOnFetch="Updating..."
-      submitButtonTitle="Update"
+      submitButtonTitleOnFetch={tCommon("actions.updating")}
+      submitButtonTitle={tCommon("actions.update")}
       open={open}
       onOpenChange={onOpenChange}
     >
       <FormInput
         name="name"
-        placeholder="Name"
+        placeholder={tCommon("fields.name")}
         autoFocus
         autocompleteValue="off"
       />
