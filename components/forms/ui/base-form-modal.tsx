@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { DefaultValues, FieldValues } from "react-hook-form";
-import { useTranslations } from "next-intl"; // Импортируем хук
+import { DefaultValues, FieldValues, useFormContext } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { ZodType } from "zod";
 
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Form } from "./form";
+import { ModalSubmitButton } from "./modal-submit-button";
 
 interface BaseFormModalProps<T extends FieldValues> {
   actionTitle: string;
@@ -60,7 +61,6 @@ export function BaseFormModal<T extends FieldValues>({
       setInternalOpen(next);
     }
   };
-
   const handleFormSubmit = (data: T) => {
     onSubmit(data, () => setIsOpen(false));
   };
@@ -70,7 +70,7 @@ export function BaseFormModal<T extends FieldValues>({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
 
       <DialogContent
-        className="bg-white max-w-8/10 md:max-w-2xl"
+        className="bg-white max-w-8/10 md:max-w-xl"
         showCloseButton={false}
       >
         <DialogHeader>
@@ -105,18 +105,15 @@ export function BaseFormModal<T extends FieldValues>({
               variant="outline"
               onClick={() => setIsOpen(false)}
               disabled={isPending}
-              className="min-w-40 rounded-xl max-h-10 hover:bg-action-hover"
+              className="min-w-50 min-h-12 text-secondary-text rounded-4xl uppercase hover:bg-action-hover"
             >
               {t("actions.cancel")}
             </Button>
-            <Button
-              type="submit"
-              variant="outline"
-              disabled={isPending}
-              className="min-w-40 rounded-xl max-h-10 hover:bg-action-hover"
-            >
-              {isPending ? submitButtonTitleOnFetch : submitButtonTitle}
-            </Button>
+            <ModalSubmitButton
+              isPending={isPending}
+              title={submitButtonTitle || t("actions.create")}
+              titleOnFetch={submitButtonTitleOnFetch || t("actions.creating")}
+            />
           </DialogFooter>
         </Form>
       </DialogContent>

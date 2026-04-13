@@ -33,7 +33,7 @@ export function FormInput<T extends FieldValues>({
         type={type}
         placeholder={placeholder}
         aria-invalid={fieldState.invalid}
-        className="min-h-12 px-3 focus-visible:border-main-text hover:border-main-text"
+        className="min-h-12 px-3 text-base focus-visible:border-main-text hover:border-main-text"
         autoComplete={autocompleteValue}
       />
       {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

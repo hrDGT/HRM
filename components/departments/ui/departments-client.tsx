@@ -80,7 +80,7 @@ export function DepartmentsClient({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-8 rounded-full hover:bg-action-hover"
+                          className="size-8 rounded-full transition-opacity disabled:opacity-50 hover:bg-action-hover"
                           disabled={state.isPending}
                         >
                           <MoreVerticalIcon className="size-5 stroke-action-color" />

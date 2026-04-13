@@ -26,7 +26,7 @@ export function FormActions({
           type="submit"
           form={formId}
           disabled={isPending}
-          className="self-center mb-2 rounded-4xl min-h-12 uppercase bg-primary hover:brightness-90"
+          className="self-center mb-2 rounded-4xl min-h-12 uppercase bg-primary hover:bg-main-red-hover shadow-btn"
         >
           {isPending ? "Loading..." : buttonText}
         </Button>

@@ -9,6 +9,7 @@
   --color-main-text: var(--main-text);
   --color-secondary-text: var(--secondary-text);
   --color-main-red: var(--main-red);
+  --color-main-red-hover: var(--main-red-hover);
   --color-main-border: var(--main-border);
   --color-skeleton-bg: var(--skeleton-bg);
 
@@ -19,6 +20,12 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-destructive: var(--destructive);
+
+  --color-disabled-bg: var(--disabled-bg);
+  --color-disabled-text: var(--disabled-text);
+
+  --shadow-btn: var(--shadow-btn);
+
   --shadow-sm: none;
   --shadow: none;
   --shadow-md: none;
@@ -45,7 +52,7 @@
   --main-border: rgba(0, 0, 0, 0.23);
   --secondary-text: rgba(0, 0, 0, 0.6);
   --main-red: rgba(198, 48, 49, 1);
-
+  --main-red-hover: rgb(138, 33, 34);
   --background: var(--main-bg);
   --foreground: var(--main-text);
   --muted-foreground: var(--secondary-text);
@@ -61,6 +68,13 @@
 
   --destructive: var(--main-red);
   --destructive-foreground: #ffffff;
+
+  --disabled-bg: rgba(0, 0, 0, 0.12);
+  --disabled-text: rgba(0, 0, 0, 0.26);
+
+  --shadow-btn:
+    0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
 @layer base {

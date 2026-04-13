@@ -48,6 +48,7 @@ export function ControlledPasswordInput<T extends FieldValues>({
           aria-invalid={fieldState.invalid}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          className="text-base"
         />
         <InputGroupAddon align="inline-end">
           <Button
