@@ -1,6 +1,8 @@
 {
   "Departments": {
     "title": "Abteilungen",
+    "deleteModalTitle": "Abteilung löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Abteilung löschen:",
     "createButton": "Abteilung erstellen",
     "createModalTitle": "Abteilung erstellen",
     "updateModalTitle": "Abteilung bearbeiten",
@@ -9,11 +11,11 @@
     "openMenu": "Menü öffnen",
     "toasts": {
       "created": "Abteilung erfolgreich erstellt",
-      "createError": "Abteilung konnte nicht erstellt werden",
+      "createError": "Fehler beim Erstellen der Abteilung",
       "updated": "Abteilung erfolgreich aktualisiert",
-      "updateError": "Abteilung konnte nicht aktualisiert werden",
+      "updateError": "Fehler beim Aktualisieren der Abteilung",
       "deleted": "Abteilung erfolgreich gelöscht",
-      "deleteError": "Abteilung konnte nicht gelöscht werden"
+      "deleteError": "Fehler beim Löschen der Abteilung"
     },
     "validation": {
       "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
@@ -27,15 +29,21 @@
     "actions": {
       "create": "Erstellen",
       "update": "Aktualisieren",
-      "cancel": "Abbrechen",
+      "cancel": "Stornieren",
       "search": "Suchen",
       "resetSearch": "Suche zurücksetzen",
       "creating": "Wird erstellt...",
-      "updating": "Wird aktualisiert..."
+      "updating": "Wird aktualisiert...",
+      "confirm": "Bestätigen",
+      "confirming": "Wird bestätigt..."
+    },
+    "alerts": {
+      "deleteTitle": "Löschen bestätigen",
+      "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
     },
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
-      "description": "Versuchen Sie es mit einem anderen Suchbegriff, prüfen Sie die Schreibweise oder verwenden Sie einen allgemeineren Begriff"
+      "description": "Versuchen Sie eine andere Suche, überprüfen Sie die Rechtschreibung oder verwenden Sie einen allgemeineren Begriff"
     }
   }
 }

@@ -103,5 +103,10 @@ test('Departments CRUD', async ({ page, context }) => {
   await updatedRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
   await page.getByRole('menuitem', { name: t('Departments.deleteAction') }).click();
 
+  const alertModal = page.getByRole('dialog');
+  await expect(alertModal).toBeVisible();
+
+  await alertModal.getByRole('button', { name: t('Common.actions.confirm'), exact: true }).click();
+
   await expect(updatedRow.first()).toBeHidden({ timeout: 15000 });
 });

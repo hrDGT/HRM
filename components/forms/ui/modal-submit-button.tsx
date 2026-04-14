@@ -20,7 +20,7 @@ export function ModalSubmitButton({ isPending, title, titleOnFetch }: Props) {
       type="submit"
       variant="outline"
       disabled={isPending || !isDirty}
-      className="min-w-50 min-h-12 rounded-4xl max-h-10 bg-main-red border-none text-white uppercase shadow-btn hover:bg-main-red-hover"
+      className="min-w-50 min-h-12 rounded-4xl max-h-10 bg-main-red border-transparent text-white uppercase shadow-btn hover:bg-main-red-hover"
     >
       {isPending ? titleOnFetch : title}
     </Button>

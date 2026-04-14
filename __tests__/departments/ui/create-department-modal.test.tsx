@@ -19,6 +19,7 @@ jest.mock("next-intl", () => ({
       Common: {
         "fields.name": "Name",
         "actions.create": "Create",
+        "actions.creating": "Creating...",
         "actions.cancel": "Cancel",
       },
     };

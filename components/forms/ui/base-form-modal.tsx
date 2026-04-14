@@ -86,7 +86,7 @@ export function BaseFormModal<T extends FieldValues>({
               variant="ghost"
               className="absolute right-2 top-2 size-8 p-0 text-main-text rounded-full hover:bg-action-hover"
             >
-              <X className="size-5" />
+              <X className="size-5.5 stroke-action-color" />
             </Button>
           </DialogClose>
         </DialogHeader>

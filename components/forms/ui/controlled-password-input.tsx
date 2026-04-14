@@ -32,7 +32,6 @@ export function ControlledPasswordInput<T extends FieldValues>({
 
   const { register, getFieldState, formState } = useFormContext<T>();
   const fieldState = getFieldState(name, formState);
-  console.log(hasProtectIcon);
   return (
     <Field data-invalid={fieldState.invalid}>
       <InputGroup

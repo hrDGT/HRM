@@ -7,6 +7,7 @@ import { MoreVerticalIcon } from "lucide-react";
 import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
 import { DashBoardNoResults } from "@/components/dashboard/ui/dashboard-no-results";
 import { DashboardTableHead } from "@/components/dashboard/ui/dashboard-table-head";
+import { BaseAlertModal } from "@/components/ui/base-alert-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -39,6 +40,7 @@ export function DepartmentsClient({
   const state = useDepartmentsLogic(initialDepartments, isAdmin);
 
   const [editingDept, setEditingDept] = useState<Department | null>(null);
+  const [deletingDept, setDeletingDept] = useState<Department | null>(null);
   const t = useTranslations("Departments");
   const tCommon = useTranslations("Common");
 
@@ -101,11 +103,7 @@ export function DepartmentsClient({
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
-                          onSelect={() => {
-                            setTimeout(() => {
-                              state.handleDelete(dept.id);
-                            }, 0);
-                          }}
+                          onSelect={() => setDeletingDept(dept)}
                         >
                           {t("deleteAction")}
                         </DropdownMenuItem>
@@ -130,6 +128,23 @@ export function DepartmentsClient({
           department={editingDept}
           open={true}
           onOpenChange={(isOpen) => !isOpen && setEditingDept(null)}
+        />
+      )}
+
+      {deletingDept && (
+        <BaseAlertModal
+          open={true}
+          onOpenChange={(isOpen) => !isOpen && setDeletingDept(null)}
+          title={t("deleteModalTitle")}
+          description={t("deleteConfirmation")}
+          itemName={deletingDept.name}
+          confirmText={tCommon("actions.confirm")}
+          confirmingText={tCommon("actions.confirming")}
+          isPending={state.isPending}
+          onConfirm={() => {
+            state.handleDelete(deletingDept.id);
+            setDeletingDept(null);
+          }}
         />
       )}
     </section>
