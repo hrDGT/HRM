@@ -22,7 +22,6 @@ test('Departments CRUD', async ({ page, context }) => {
     },
   ]);
 
-  // ================= LOGIN =================
   await page.goto('/auth/login');
   await page.waitForLoadState('domcontentloaded');
 
@@ -47,7 +46,6 @@ test('Departments CRUD', async ({ page, context }) => {
 
   await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
 
-  // ================= DEPARTMENTS =================
   await page.goto('/departments');
 
   await expect(
@@ -57,7 +55,6 @@ test('Departments CRUD', async ({ page, context }) => {
   const createBtn = page.getByRole('button', { name: t('Departments.createButton') });
   await expect(createBtn).toBeVisible();
 
-  // ================= CREATE =================
   await createBtn.click();
 
   const dialog = page.getByRole('dialog');
@@ -77,7 +74,6 @@ test('Departments CRUD', async ({ page, context }) => {
   });
   await expect(createdRow.first()).toBeVisible({ timeout: 15000 });
 
-  // ================= UPDATE =================
   await createdRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
   await page.getByRole('menuitem', { name: t('Departments.updateAction') }).click();
 
@@ -99,7 +95,6 @@ test('Departments CRUD', async ({ page, context }) => {
   });
   await expect(updatedRow.first()).toBeVisible({ timeout: 15000 });
 
-  // ================= DELETE =================
   await updatedRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
   await page.getByRole('menuitem', { name: t('Departments.deleteAction') }).click();
 
