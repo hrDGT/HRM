@@ -8,7 +8,7 @@ import { useFilteredData } from "@/components/dashboard/hooks/use-filtered-data"
 import { useTableControls } from "@/components/dashboard/hooks/use-table-controls";
 import { GetPositionsQuery } from "@/gqlcodegen/graphql";
 
-import { deletePositionAction } from "../actions/delete-position-action";
+import { deletePositionAction } from "../actions/delete-positions-action";
 
 
 type PositionItem = GetPositionsQuery["positions"][0];
