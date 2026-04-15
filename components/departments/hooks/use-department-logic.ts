@@ -6,19 +6,17 @@ import { toast } from "sonner";
 
 import { useFilteredData } from "@/components/dashboard/hooks/use-filtered-data";
 import { useTableControls } from "@/components/dashboard/hooks/use-table-controls";
-import { GetDepartmentsQuery } from "@/gqlcodegen/graphql";
 
 import { deleteDepartmentAction } from "../actions/delete-departments-action";
+import { Department } from "../ui/departments-client";
 
-type DepartmentItem = GetDepartmentsQuery["departments"][0];
-
-export function useDepartmentsLogic(initialDepartments: DepartmentItem[], isAdmin: boolean) {
+export function useDepartmentsLogic(initialDepartments: Department[], isAdmin: boolean) {
   const t = useTranslations("Departments");
 
   const {
     sortField, sortOrder, searchValue,
     handleSort, handleSearchChange, resetSearch,
-  } = useTableControls<DepartmentItem>("name");
+  } = useTableControls<Department>("name");
 
   const filteredAndSortedDepartments = useFilteredData({
     data: initialDepartments,

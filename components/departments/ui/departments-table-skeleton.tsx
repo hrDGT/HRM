@@ -1,4 +1,4 @@
-import { DataTable, TableColumn } from "@/components/ui/data-table";
+import { DataTable, type TableColumn } from "@/components/ui/data-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TableHead } from "@/components/ui/table";
 
