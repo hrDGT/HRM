@@ -1,4 +1,4 @@
-import { AuthHeader } from "@/components/auth/auth-header";
+import { AuthHeader } from "@/components/auth/ui/auth-header";
 import { FadeIn } from "@/components/ui/fade-in";
 
 export default function AuthLayout({

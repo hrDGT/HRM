@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
-import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { type TypedDocumentNode } from "@graphql-typed-document-node/core";
 
-import { refreshTokensAction } from "@/lib/auth/auth-service"
+import { refreshTokensAction } from "@/lib/auth/auth-service";
 import { isUnauthorizedError } from "@/lib/gql/gql-utils";
-import { gqlRequest } from "@/lib/gql/graphql-client";
+import { gqlFetch, gqlRequestAuthed } from "@/lib/gql/graphql-client";
 
 jest.mock("next/headers", () => ({
   cookies: jest.fn(),
@@ -21,16 +21,15 @@ jest.mock("@/lib/gql/gql-utils", () => ({
   isUnauthorizedError: jest.fn(),
 }));
 
-global.fetch = jest.fn();
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
 
-describe("gqlRequest Utility", () => {
+describe("GraphQL Client Utilities", () => {
   const originalEnv = process.env;
-
   const dummyDocument = {} as TypedDocumentNode<unknown, unknown>;
 
   beforeEach(() => {
     jest.clearAllMocks();
-
     process.env = { ...originalEnv, GRAPHQL_URL: "https://api.example.com/graphql" };
 
     (cookies as jest.Mock).mockResolvedValue({
@@ -44,91 +43,150 @@ describe("gqlRequest Utility", () => {
     process.env = originalEnv;
   });
 
-  it("throws an error if GRAPHQL_URL is missing", async () => {
-    delete process.env.GRAPHQL_URL;
-
-    await expect(gqlRequest(dummyDocument)).rejects.toThrow("GRAPHQL_URL is missing");
-  });
-
-  it("makes a successful request and returns data", async () => {
-    const mockData = { user: { id: 1, name: "John Doe" } };
-
-    (global.fetch as jest.Mock).mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ data: mockData }),
+  describe("gqlFetch (Base Client)", () => {
+    it("throws an error if GRAPHQL_URL is missing", async () => {
+      delete process.env.GRAPHQL_URL;
+      await expect(gqlFetch(dummyDocument)).rejects.toThrow("GRAPHQL_URL is missing");
     });
 
-    const result = await gqlRequest(dummyDocument, { id: 1 }, { "X-Custom": "Header" });
+    it("makes a successful request and returns data without touching cookies", async () => {
+      const mockData = { user: { id: 1 } };
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      "https://api.example.com/graphql",
-      expect.objectContaining({
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer valid-token",
-          "X-Custom": "Header",
-        },
-        body: JSON.stringify({ query: "MOCKED_GRAPHQL_QUERY", variables: { id: 1 } }),
-      })
-    );
-
-    expect(result).toEqual(mockData);
-  });
-
-  it("throws an error if the GraphQL response contains standard errors", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({
-      json: jest.fn().mockResolvedValue({
-        errors: [{ message: "Some GraphQL Error" }],
-      }),
-    });
-
-    (isUnauthorizedError as jest.Mock).mockReturnValue(false);
-
-    await expect(gqlRequest(dummyDocument)).rejects.toThrow("Some GraphQL Error");
-  });
-
-  it("refreshes the token and retries the request when an unauthorized error occurs", async () => {
-    const mockData = { success: true };
-
-    (global.fetch as jest.Mock)
-      .mockResolvedValueOnce({
-        json: jest.fn().mockResolvedValue({ errors: [{ message: "Unauthorized" }] }),
-      })
-      .mockResolvedValueOnce({
-        json: jest.fn().mockResolvedValue({ data: mockData }),
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: jest.fn().mockResolvedValue(JSON.stringify({ data: mockData })),
       });
 
-    (isUnauthorizedError as jest.Mock).mockReturnValue(true);
-    (refreshTokensAction as jest.Mock).mockResolvedValue("new-refreshed-token");
+      const result = await gqlFetch(dummyDocument, { id: 1 }, { headers: { "X-Custom": "Header" } });
 
-    const result = await gqlRequest(dummyDocument);
-
-    expect(refreshTokensAction).toHaveBeenCalledTimes(1);
-
-    expect(global.fetch).toHaveBeenNthCalledWith(
-      2,
-      "https://api.example.com/graphql",
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          Authorization: "Bearer new-refreshed-token",
-        }),
-      })
-    );
-
-    expect(result).toEqual(mockData);
-  });
-
-  it("throws a session expired error if token refresh fails", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ errors: [{ message: "Unauthorized" }] }),
+      expect(mockFetch).toHaveBeenCalledWith(
+        "https://api.example.com/graphql",
+        expect.objectContaining({
+          headers: {
+            "Content-Type": "application/json",
+            "X-Custom": "Header",
+          },
+        })
+      );
+      expect(cookies).not.toHaveBeenCalled();
+      expect(result).toEqual(mockData);
     });
 
-    (isUnauthorizedError as jest.Mock).mockReturnValue(true);
+    it("throws UNAUTHORIZED on HTTP 401 status", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        text: jest.fn().mockResolvedValue(""),
+      });
 
-    (refreshTokensAction as jest.Mock).mockResolvedValue(null);
+      await expect(gqlFetch(dummyDocument)).rejects.toThrow("UNAUTHORIZED");
+    });
 
-    await expect(gqlRequest(dummyDocument)).rejects.toThrow("Session expired. Please login again.");
+    it("throws UNAUTHORIZED if GraphQL errors contain unauthenticated code", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: jest.fn().mockResolvedValue(JSON.stringify({ errors: [{ message: "Token expired" }] })),
+      });
+      (isUnauthorizedError as jest.Mock).mockReturnValue(true);
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
+      await expect(gqlFetch(dummyDocument)).rejects.toThrow("UNAUTHORIZED");
+    });
+
+    it("throws a specific GraphQL error message if standard errors exist", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: jest.fn().mockResolvedValue(JSON.stringify({ errors: [{ message: "Invalid credentials" }] })),
+      });
+      (isUnauthorizedError as jest.Mock).mockReturnValue(false);
+
+      await expect(gqlFetch(dummyDocument)).rejects.toThrow("Invalid credentials");
+    });
+  });
+
+  describe("gqlRequestAuthed (Authenticated Client)", () => {
+    it("injects token from cookies and returns data successfully", async () => {
+      const mockData = { departments: [{ id: 1, name: "HR" }] };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: jest.fn().mockResolvedValue(JSON.stringify({ data: mockData })),
+      });
+
+      const result = await gqlRequestAuthed(dummyDocument);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        "https://api.example.com/graphql",
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: "Bearer valid-token",
+          }),
+        })
+      );
+      expect(result).toEqual(mockData);
+    });
+
+    it("refreshes token and retries if the first request throws UNAUTHORIZED", async () => {
+      const mockData = { success: true };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        text: jest.fn().mockResolvedValue(""),
+      });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: jest.fn().mockResolvedValue(JSON.stringify({ data: mockData })),
+      });
+
+      (refreshTokensAction as jest.Mock).mockResolvedValue("new-refreshed-token");
+
+      const result = await gqlRequestAuthed(dummyDocument);
+
+      expect(refreshTokensAction).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+
+      expect(mockFetch).toHaveBeenNthCalledWith(
+        2,
+        "https://api.example.com/graphql",
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            Authorization: "Bearer new-refreshed-token",
+          }),
+        })
+      );
+
+      expect(result).toEqual(mockData);
+    });
+
+    it("throws 'Session expired' if token refresh fails", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        text: jest.fn().mockResolvedValue(""),
+      });
+
+      (refreshTokensAction as jest.Mock).mockResolvedValue(null);
+
+      await expect(gqlRequestAuthed(dummyDocument)).rejects.toThrow("Session expired. Please login again.");
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("propagates standard GraphQL errors without refreshing", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: jest.fn().mockResolvedValue(JSON.stringify({ errors: [{ message: "Some other error" }] })),
+      });
+
+      await expect(gqlRequestAuthed(dummyDocument)).rejects.toThrow("Some other error");
+      expect(refreshTokensAction).not.toHaveBeenCalled();
+    });
   });
 });

@@ -1,0 +1,49 @@
+{
+  "Departments": {
+    "title": "Abteilungen",
+    "deleteModalTitle": "Abteilung löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Abteilung löschen:",
+    "createButton": "Abteilung erstellen",
+    "createModalTitle": "Abteilung erstellen",
+    "updateModalTitle": "Abteilung bearbeiten",
+    "updateAction": "Abteilung bearbeiten",
+    "deleteAction": "Abteilung löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Abteilung erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Abteilung",
+      "updated": "Abteilung erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Abteilung",
+      "deleted": "Abteilung erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Abteilung"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Name"
+    },
+    "actions": {
+      "create": "Erstellen",
+      "update": "Aktualisieren",
+      "cancel": "Stornieren",
+      "search": "Suchen",
+      "resetSearch": "Suche zurücksetzen",
+      "creating": "Wird erstellt...",
+      "updating": "Wird aktualisiert...",
+      "confirm": "Bestätigen",
+      "confirming": "Wird bestätigt..."
+    },
+    "alerts": {
+      "deleteTitle": "Löschen bestätigen",
+      "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
+    },
+    "noResults": {
+      "title": "Keine Ergebnisse gefunden",
+      "description": "Versuchen Sie eine andere Suche, überprüfen Sie die Rechtschreibung oder verwenden Sie einen allgemeineren Begriff"
+    }
+  }
+}

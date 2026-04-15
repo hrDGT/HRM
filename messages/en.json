@@ -1,0 +1,49 @@
+{
+  "Departments": {
+    "title": "Departments",
+    "deleteModalTitle": "Delete department",
+    "deleteConfirmation": "Are you sure you want to delete department",
+    "createButton": "Create department",
+    "createModalTitle": "Create Department",
+    "updateModalTitle": "Update Department",
+    "updateAction": "Update department",
+    "deleteAction": "Delete department",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Department created successfully",
+      "createError": "Failed to create department",
+      "updated": "Department updated successfully",
+      "updateError": "Failed to update department",
+      "deleted": "Department deleted successfully",
+      "deleteError": "Failed to delete department"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Name"
+    },
+    "actions": {
+      "create": "Create",
+      "update": "Update",
+      "cancel": "Cancel",
+      "search": "Search",
+      "resetSearch": "Reset Search",
+      "creating": "Creating...",
+      "updating": "Updating...",
+      "confirm": "Confirm",
+      "confirming": "Confirming..."
+    },
+    "alerts": {
+      "deleteTitle": "Delete department",
+      "deleteDescription": "This action cannot be undone. This will permanently delete this record from our servers."
+    },
+    "noResults": {
+      "title": "No results found",
+      "description": "Try another search, check the spelling or use a broader term"
+    }
+  }
+}
