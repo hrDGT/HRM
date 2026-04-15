@@ -12,18 +12,18 @@ import { GetDepartmentsQuery } from "@/gqlcodegen/graphql";
 
 import { useDepartmentsLogic } from "../hooks/use-department-logic";
 
+import { CreateDepartmentModal } from "./create-department-modal";
 import { getDepartmentColumns } from "./departments-columns";
 import { UpdateDepartmentModal } from "./update-department-modal";
 
 export type Department = GetDepartmentsQuery["departments"][0];
 
-export function DepartmentsClient({
-  initialDepartments,
-  isAdmin,
-}: {
+type Props = {
   initialDepartments: Department[];
   isAdmin: boolean;
-}) {
+};
+
+export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
   const state = useDepartmentsLogic(initialDepartments, isAdmin);
 
   const [editingDept, setEditingDept] = useState<Department | null>(null);
@@ -51,6 +51,7 @@ export function DepartmentsClient({
         searchValue={state.searchValue}
         onChange={state.handleSearchChange}
         isAdmin={state.isAdmin}
+        createModal={<CreateDepartmentModal />}
       />
 
       <DataTable
