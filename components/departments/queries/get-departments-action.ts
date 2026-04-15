@@ -1,3 +1,5 @@
+import { cacheLife, cacheTag } from 'next/cache';
+
 import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
 import { graphql } from "@/gqlcodegen";
 
@@ -10,13 +12,15 @@ export const GET_DEPARTMENTS_QUERY = graphql(`
   }
 `);
 
-export async function fetchDepartments() {
+export async function fetchDepartments(token?: string) {
+  'use cache';
+  cacheLife('hours');
+  cacheTag('departments');
+
   const response = await gqlRequestAuthed(
     GET_DEPARTMENTS_QUERY,
     undefined,
-    {
-      next: { revalidate: 0 },
-    }
+    { token }
   );
 
   return response.departments;

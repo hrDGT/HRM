@@ -69,15 +69,20 @@ export async function gqlFetch<T, V>(
 export async function gqlRequestAuthed<T, V>(
   document: TypedDocumentNode<T, V>,
   variables?: V,
-  options?: FetchOptions
+  options?: FetchOptions & { token?: string }
 ): Promise<T> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
+  let token = options?.token;
+
+  if (!token) {
+    const cookieStore = await cookies();
+    token = cookieStore.get("access_token")?.value;
+  }
 
   const headers = {
     ...options?.headers,
     ...(token && { Authorization: `Bearer ${token}` }),
   };
+
   try {
     return await gqlFetch(document, variables, { ...options, headers });
   } catch (err: unknown) {

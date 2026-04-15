@@ -1,20 +1,20 @@
-"use client";
-
+import { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 
 interface NoResultsProps {
   isAdmin: boolean;
   onReset?: () => void;
   columnsCount: number;
+  action: ReactNode;
 }
 
 export function DashBoardNoResults({
   isAdmin,
   onReset,
   columnsCount,
+  action,
 }: NoResultsProps) {
   const t = useTranslations("Common");
   return (
@@ -31,15 +31,7 @@ export function DashBoardNoResults({
             {t("noResults.description")}
           </p>
 
-          {onReset && (
-            <Button
-              variant="ghost"
-              onClick={onReset}
-              className="uppercase text-secondary-text hover:underline text-sm font-medium tracking-wide"
-            >
-              {t("actions.resetSearch")}
-            </Button>
-          )}
+          {onReset && action}
         </div>
       </TableCell>
     </TableRow>

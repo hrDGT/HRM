@@ -1,12 +1,6 @@
+import { DataTable, TableColumn } from "@/components/ui/data-table";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TableHead } from "@/components/ui/table";
 
 const SKELETON_WIDTHS = [
   "45%",
@@ -21,8 +15,38 @@ const SKELETON_WIDTHS = [
   "36%",
 ];
 
+type MockItem = {
+  id: number;
+  width: string;
+};
+
 export function DepartmentsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
-  const skeletonRows = Array.from({ length: 10 });
+  const mockData: MockItem[] = Array.from({ length: 10 }).map((_, index) => ({
+    id: index,
+    width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
+  }));
+
+  const columns: TableColumn<MockItem>[] = [
+    {
+      header: (
+        <TableHead className="p-4">
+          <Skeleton className="w-14 h-5 rounded-xl" />
+        </TableHead>
+      ),
+      className: "p-4",
+      render: (item) => (
+        <Skeleton className="h-8 rounded-xl" style={{ width: item.width }} />
+      ),
+    },
+  ];
+
+  if (isAdmin) {
+    columns.push({
+      header: "",
+      className: "text-right py-4",
+      render: () => <Skeleton className="h-6 w-6 rounded-full ml-auto" />,
+    });
+  }
 
   return (
     <section className="max-w-7xl w-full mx-auto">
@@ -39,35 +63,7 @@ export function DepartmentsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
         )}
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow className="border-main-border">
-            <TableHead className="p-4">
-              <Skeleton className="w-14 h-5 rounded-xl" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {skeletonRows.map((_, index) => (
-            <TableRow key={index} className="border-main-border">
-              <TableCell className="py-4">
-                <Skeleton
-                  className="h-8 rounded-xl"
-                  style={{
-                    width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
-                  }}
-                />
-              </TableCell>
-              {isAdmin && (
-                <TableCell className="text-right py-4">
-                  <Skeleton className="h-6 w-6 rounded-full ml-auto" />
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <DataTable data={mockData} columns={columns} />
     </section>
   );
 }
