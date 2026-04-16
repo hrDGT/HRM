@@ -19,7 +19,6 @@ async function PositionsData({
   isAdmin: boolean;
   token?: string;
 }) {
-  await new Promise((resolve) => setTimeout(() => resolve(1), 2000));
   const positions = await fetchPositions(token);
 
   return <PositionsClient initialPositions={positions} isAdmin={isAdmin} />;
