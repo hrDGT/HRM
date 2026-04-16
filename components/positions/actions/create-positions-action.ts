@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { getTranslations } from "next-intl/server";
 
 import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
@@ -22,7 +22,7 @@ export async function createPositionAction(name: string) {
     await gqlRequestAuthed(CREATE_POSITION_MUTATION, {
       position: { name }
     });
-    revalidatePath("/positions");
+    updateTag("positions");
 
     return { success: true };
   } catch (err) {

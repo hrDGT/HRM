@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 
 import { createDepartmentAction } from "@/components/departments/actions/create-departments-action";
 import { deleteDepartmentAction } from "@/components/departments/actions/delete-departments-action";
@@ -23,7 +23,7 @@ jest.mock("next-intl/server", () => ({
   ),
 }));
 
-jest.mock("next/cache", () => ({ revalidatePath: jest.fn() }));
+jest.mock("next/cache", () => ({ updateTag: jest.fn() }));
 jest.mock("@/lib/gql/graphql-client", () => ({ gqlRequestAuthed: jest.fn() }));
 jest.mock("@/gqlcodegen", () => ({ graphql: jest.fn((query) => query) }));
 
@@ -35,7 +35,7 @@ describe("Departments Server Actions", () => {
       (gqlRequestAuthed as jest.Mock).mockResolvedValue({ createDepartment: { id: "1" } });
       const result = await createDepartmentAction("IT");
       expect(result).toEqual({ success: true });
-      expect(revalidatePath).toHaveBeenCalledWith("/departments");
+      expect(updateTag).toHaveBeenCalledWith("departments");
     });
 
     it("returns localized error on failure", async () => {
