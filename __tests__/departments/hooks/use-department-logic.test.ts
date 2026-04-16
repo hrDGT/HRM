@@ -26,9 +26,9 @@ jest.mock("@/components/departments/actions/delete-departments-action", () => ({
 }));
 
 const mockData = [
-  { id: "1", name: "Sales" },
-  { id: "2", name: "HR" },
-  { id: "3", name: "IT" },
+  { id: "1", name: "First test dep" },
+  { id: "2", name: "Second test dep" },
+  { id: "3", name: "Third test dep" },
 ];
 
 describe("useDepartmentsLogic Hook", () => {
@@ -43,7 +43,7 @@ describe("useDepartmentsLogic Hook", () => {
     expect(result.current.searchValue).toBe("");
     expect(result.current.sortField).toBe("name");
 
-    expect(result.current.filteredDepartments[0].name).toBe("HR");
+    expect(result.current.filteredDepartments[0].name).toBe("First test dep");
   });
 
   it("filters data based on search value", () => {
@@ -51,13 +51,13 @@ describe("useDepartmentsLogic Hook", () => {
 
     act(() => {
       result.current.handleSearchChange({
-        target: { value: "it" }
+        target: { value: "Second test dep" }
       } as React.ChangeEvent<HTMLInputElement>);
     });
 
-    expect(result.current.searchValue).toBe("it");
+    expect(result.current.searchValue).toBe("Second test dep");
     expect(result.current.filteredDepartments).toHaveLength(1);
-    expect(result.current.filteredDepartments[0].name).toBe("IT");
+    expect(result.current.filteredDepartments[0].name).toBe("Second test dep");
   });
 
   it("handles successful deletion and shows localized success toast", async () => {

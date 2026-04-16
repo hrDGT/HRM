@@ -33,22 +33,29 @@ describe("Departments Server Actions", () => {
   describe("createDepartmentAction", () => {
     it("returns success on valid creation", async () => {
       (gqlRequestAuthed as jest.Mock).mockResolvedValue({ createDepartment: { id: "1" } });
-      const result = await createDepartmentAction("IT");
+      const result = await createDepartmentAction("Create test dep");
       expect(result).toEqual({ success: true });
       expect(updateTag).toHaveBeenCalledWith("departments");
     });
 
     it("returns localized error on failure", async () => {
       (gqlRequestAuthed as jest.Mock).mockRejectedValue(new Error("GraphQL Error"));
-      const result = await createDepartmentAction("IT");
+      const result = await createDepartmentAction("Create test dep");
       expect(result).toEqual({ error: "Failed to create department" });
     });
   });
 
   describe("updateDepartmentAction", () => {
+    it("returns success on valid update", async () => {
+      (gqlRequestAuthed as jest.Mock).mockResolvedValue({ updateDepartment: { id: "1" } });
+      const result = await updateDepartmentAction("1", "Update test dep");
+      expect(result).toEqual({ success: true });
+      expect(updateTag).toHaveBeenCalledWith("departments");
+    });
+
     it("returns localized error on update failure", async () => {
       (gqlRequestAuthed as jest.Mock).mockRejectedValue(new Error("Update Error"));
-      const result = await updateDepartmentAction("1", "Sales");
+      const result = await updateDepartmentAction("1", "Update test dep");
       expect(result).toEqual({ error: "Failed to update department" });
     });
   });
@@ -58,6 +65,12 @@ describe("Departments Server Actions", () => {
       (gqlRequestAuthed as jest.Mock).mockResolvedValue({ deleteDepartment: { affected: 1 } });
       const result = await deleteDepartmentAction("1");
       expect(result).toEqual({ success: true });
+    });
+
+    it("returns localized error on deletion failure", async () => {
+      (gqlRequestAuthed as jest.Mock).mockRejectedValue(new Error("Delete Error"));
+      const result = await deleteDepartmentAction("1");
+      expect(result).toEqual({ error: "Failed to delete department" });
     });
   });
 });

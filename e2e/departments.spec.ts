@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import crypto from 'crypto';
 
 import { getT } from './utils/translate';
@@ -6,22 +6,9 @@ import { getT } from './utils/translate';
 const locale = (process.env.LOCALE as 'en' | 'ru' | 'de') || 'en';
 const t = getT(locale);
 
-test('Departments CRUD', async ({ page, context }) => {
-  const runId = crypto.randomUUID().slice(0, 8);
-  const NEW = `QA Department ${runId}`;
-  const UPDATED = `DevOps Department ${runId}`;
+const selectAll = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
 
-  const selectAll = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
-
-  await context.addCookies([
-    {
-      name: 'NEXT_LOCALE',
-      value: locale,
-      domain: 'localhost',
-      path: '/',
-    },
-  ]);
-
+async function robustLogin(page: Page, emailText: string, passText: string) {
   await page.goto('/auth/login');
   await page.waitForLoadState('domcontentloaded');
 
@@ -32,76 +19,150 @@ test('Departments CRUD', async ({ page, context }) => {
   await email.click();
   await page.keyboard.press(selectAll);
   await page.keyboard.press('Backspace');
-  await page.keyboard.type('admin@test.com', { delay: 30 });
-  await expect(email).toHaveValue('admin@test.com');
+  await page.keyboard.type(emailText, { delay: 30 });
+  await expect(email).toHaveValue(emailText);
 
   await password.click();
   await page.keyboard.press(selectAll);
   await page.keyboard.press('Backspace');
-  await page.keyboard.type('12345', { delay: 30 });
-  await expect(password).toHaveValue('12345');
+  await page.keyboard.type(passText, { delay: 30 });
+  await expect(password).toHaveValue(passText);
 
   await expect(loginBtn).toBeEnabled();
   await loginBtn.click();
 
   await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
+}
 
-  await page.goto('/departments');
+test.describe('Departments', () => {
 
-  await expect(
-    page.getByRole('heading', { name: t('Departments.title') })
-  ).toBeVisible({ timeout: 15000 }).catch(() => { });
+  test('Departments CRUD', async ({ page, context }) => {
+    const runId = crypto.randomUUID().slice(0, 8);
+    const NEW = `QA Department ${runId}`;
+    const UPDATED = `DevOps Department ${runId}`;
 
-  const createBtn = page.getByRole('button', { name: t('Departments.createButton') });
-  await expect(createBtn).toBeVisible();
+    await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
 
-  await createBtn.click();
+    await robustLogin(page, 'admin@test.com', '12345');
 
-  const dialog = page.getByRole('dialog');
-  await expect(dialog).toBeVisible();
+    await page.goto('/departments');
 
-  const nameInput = dialog.getByPlaceholder(t('Common.fields.name'));
+    await expect(
+      page.getByRole('heading', { name: t('Departments.title') })
+    ).toBeVisible({ timeout: 15000 }).catch(() => { });
 
-  await nameInput.click();
-  await page.keyboard.press(selectAll);
-  await page.keyboard.press('Backspace');
-  await page.keyboard.type(NEW, { delay: 20 });
+    const createBtn = page.getByRole('button', { name: t('Departments.createButton') });
+    await expect(createBtn).toBeVisible();
 
-  await dialog.getByRole('button', { name: t('Common.actions.create'), exact: true }).click();
+    await createBtn.click();
 
-  const createdRow = page.locator('tr').filter({
-    has: page.locator('td', { hasText: NEW }),
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+
+    const nameInput = dialog.getByPlaceholder(t('Common.fields.name'));
+
+    await nameInput.click();
+    await page.keyboard.press(selectAll);
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type(NEW, { delay: 20 });
+
+    await dialog.getByRole('button', { name: t('Common.actions.create'), exact: true }).click();
+
+    const createdRow = page.locator('tr').filter({
+      has: page.locator('td', { hasText: NEW }),
+    });
+    await expect(createdRow.first()).toBeVisible({ timeout: 15000 });
+
+    await createdRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
+    await page.getByRole('menuitem', { name: t('Departments.updateAction') }).click();
+
+    await expect(dialog).toBeVisible();
+
+    const editInput = dialog.getByPlaceholder(t('Common.fields.name'));
+
+    await editInput.click();
+    await page.keyboard.press(selectAll);
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type(UPDATED, { delay: 20 });
+
+    await dialog.getByRole('button', { name: t('Common.actions.update'), exact: true }).click();
+
+    await expect(createdRow.first()).toBeHidden({ timeout: 15000 });
+
+    const updatedRow = page.locator('tr').filter({
+      has: page.locator('td', { hasText: UPDATED }),
+    });
+    await expect(updatedRow.first()).toBeVisible({ timeout: 15000 });
+
+    await updatedRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
+    await page.getByRole('menuitem', { name: t('Departments.deleteAction') }).click();
+
+    const alertModal = page.getByRole('dialog');
+    await expect(alertModal).toBeVisible();
+
+    await alertModal.getByRole('button', { name: t('Common.actions.confirm'), exact: true }).click();
+
+    await expect(updatedRow.first()).toBeHidden({ timeout: 15000 });
   });
-  await expect(createdRow.first()).toBeVisible({ timeout: 15000 });
 
-  await createdRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
-  await page.getByRole('menuitem', { name: t('Departments.updateAction') }).click();
+  test.describe('Departments Extended Coverage', () => {
 
-  await expect(dialog).toBeVisible();
+    test('Regular user does not see control buttons', async ({ page, context }) => {
+      await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
 
-  const editInput = dialog.getByPlaceholder(t('Common.fields.name'));
+      await robustLogin(page, 'user@test.com', '12345');
 
-  await editInput.click();
-  await page.keyboard.press(selectAll);
-  await page.keyboard.press('Backspace');
-  await page.keyboard.type(UPDATED, { delay: 20 });
+      await page.goto('/departments');
 
-  await dialog.getByRole('button', { name: t('Common.actions.update'), exact: true }).click();
+      await expect(page.getByRole('heading', { name: t('Departments.title') })).toBeVisible();
 
-  await expect(createdRow.first()).toBeHidden({ timeout: 15000 });
+      const createBtn = page.getByRole('button', { name: t('Departments.createButton') });
+      await expect(createBtn).toHaveCount(0);
 
-  const updatedRow = page.locator('tr').filter({
-    has: page.locator('td', { hasText: UPDATED }),
+      const actionMenus = page.getByRole('button', { name: t('Departments.openMenu') });
+      await expect(actionMenus).toHaveCount(0);
+    });
+
+    test('Search and reset filter', async ({ page, context }) => {
+      await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
+
+      await robustLogin(page, 'admin@test.com', '12345');
+
+      await page.goto('/departments');
+      await expect(page.getByRole('heading', { name: t('Departments.title') })).toBeVisible();
+
+      const searchInput = page.getByRole('searchbox');
+
+      await searchInput.click();
+
+      await searchInput.pressSequentially('SomeNonExistentDepartmentName999', { delay: 20 });
+
+      await page.keyboard.press('Enter');
+
+      await expect(page.getByText(t('Common.noResults.title'))).toBeVisible();
+
+      await page.getByRole('button', { name: t('Common.actions.resetSearch') }).click();
+
+      await expect(searchInput).toHaveValue('');
+      await expect(page.getByText(t('Common.noResults.title'))).toBeHidden();
+    });
+
+    test('Validation during creation', async ({ page, context }) => {
+      await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
+
+      await robustLogin(page, 'admin@test.com', '12345');
+
+      await page.goto('/departments');
+
+      await page.getByRole('button', { name: t('Departments.createButton') }).click();
+      const dialog = page.getByRole('dialog');
+      await expect(dialog).toBeVisible();
+
+      await dialog.getByPlaceholder(t('Common.fields.name')).fill('A');
+      await dialog.getByRole('button', { name: t('Common.actions.create'), exact: true }).click();
+
+      await expect(dialog.getByText(t('Departments.validation.nameMin'))).toBeVisible();
+      await expect(dialog).toBeVisible();
+    });
   });
-  await expect(updatedRow.first()).toBeVisible({ timeout: 15000 });
-
-  await updatedRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
-  await page.getByRole('menuitem', { name: t('Departments.deleteAction') }).click();
-
-  const alertModal = page.getByRole('dialog');
-  await expect(alertModal).toBeVisible();
-
-  await alertModal.getByRole('button', { name: t('Common.actions.confirm'), exact: true }).click();
-
-  await expect(updatedRow.first()).toBeHidden({ timeout: 15000 });
 });

@@ -12,7 +12,7 @@ jest.mock("next-intl", () => ({
     const translations: Record<string, Record<string, string>> = {
       Departments: {
         createButton: "Create department",
-        createModalTitle: "Create Department",
+        createModalTitle: "Create department",
         "toasts.created": "Department created successfully",
         "validation.nameMin": "Name must be at least 2 characters",
       },

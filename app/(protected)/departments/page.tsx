@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
-import { fetchDepartments } from "@/components/departments/queries/get-departments-action";
+import { fetchDepartments } from "@/components/departments/queries/get-departments-query";
 import { DepartmentsClient } from "@/components/departments/ui/departments-client";
 import { DepartmentsTableSkeleton } from "@/components/departments/ui/departments-table-skeleton";
 import { requireUser } from "@/lib/auth/require-user";
