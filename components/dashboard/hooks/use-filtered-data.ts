@@ -3,7 +3,7 @@ import { sortByField } from "@/lib/utils";
 interface UseFilteredDataProps<T> {
   data: T[];
   searchValue: string;
-  searchField: keyof T;
+  searchFields: (keyof T)[];
   sortField: keyof T;
   sortOrder: "asc" | "desc";
 }
@@ -11,7 +11,7 @@ interface UseFilteredDataProps<T> {
 export function useFilteredData<T>({
   data,
   searchValue,
-  searchField,
+  searchFields,
   sortField,
   sortOrder,
 }: UseFilteredDataProps<T>) {
@@ -21,8 +21,10 @@ export function useFilteredData<T>({
   if (searchValue) {
     const lowercasedFilter = searchValue.toLowerCase();
     processed = processed.filter((item) => {
-      const value = String(item[searchField] || "");
-      return value.toLowerCase().includes(lowercasedFilter);
+      return searchFields.some((field) => {
+        const value = String(item[field] || "");
+        return value.toLowerCase().includes(lowercasedFilter);
+      });
     });
   }
 
