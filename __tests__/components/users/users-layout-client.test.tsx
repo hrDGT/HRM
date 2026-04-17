@@ -1,7 +1,29 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import React from "react";
+import { NextIntlClientProvider } from "next-intl";
 import { UsersLayoutClient } from "@/app/users/_components/users-layout-client";
+import messagesEn from "@/messages/en.json";
+import messagesDe from "@/messages/de.json";
+import messagesRu from "@/messages/ru.json";
+
+const locales = ["en", "de", "ru"] as const;
+type Locale = typeof locales[number];
+
+const messagesMap: Record<Locale, any> = {
+  en: messagesEn,
+  de: messagesDe,
+  ru: messagesRu,
+};
+
+function renderWithLocale(ui: React.ReactElement, locale: Locale = "en") {
+  return render(
+    <NextIntlClientProvider locale={locale} messages={messagesMap[locale]}>
+      {ui}
+    </NextIntlClientProvider>
+  );
+}
 
 jest.mock("next/link", () => ({
   __esModule: true,
@@ -59,134 +81,150 @@ describe("UsersLayoutClient", () => {
     jest.clearAllMocks();
   });
 
-  describe("sidebar rendering", () => {
-    it("renders navigation items", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      const links = screen.getAllByTestId("mock-link");
-      const linkHrefs = links.map((link: HTMLElement) => link.getAttribute("href"));
-      
-      expect(linkHrefs).toContain("/users");
-      expect(linkHrefs).toContain("/skills");
-      expect(linkHrefs).toContain("/languages");
-      expect(linkHrefs).toContain("/cvs");
+  describe.each(locales)("locale: %s", (locale) => {
+    const messages = messagesMap[locale];
+    const users = messages.Users;
+
+    describe("sidebar rendering", () => {
+      it("renders navigation items", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const links = screen.getAllByTestId("mock-link");
+        const linkHrefs = links.map((link: HTMLElement) => link.getAttribute("href"));
+        
+        expect(linkHrefs).toContain("/users");
+        expect(linkHrefs).toContain("/skills");
+        expect(linkHrefs).toContain("/languages");
+        expect(linkHrefs).toContain("/cvs");
+      });
+
+      it("renders profile section with user initials", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const fallback = screen.getByTestId("mock-avatar-fallback");
+        expect(fallback).toHaveTextContent("AB");
+      });
+
+      it("renders user display name", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText("Alice Brown")).toBeInTheDocument();
+      });
+
+      it("renders collapse/expand toggle button", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const toggleBtn = screen.getByRole("button", { name: new RegExp(`${users.collapseMenu}|${users.expandMenu}`) });
+        expect(toggleBtn).toBeInTheDocument();
+      });
+
+      it("displays navigation labels in correct locale", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(users.title)).toBeInTheDocument();
+        expect(screen.getByText(users.nav.skills)).toBeInTheDocument();
+        expect(screen.getByText(users.nav.languages)).toBeInTheDocument();
+        expect(screen.getByText(users.nav.cvs)).toBeInTheDocument();
+      });
     });
 
-    it("renders profile section with user initials", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      const fallback = screen.getByTestId("mock-avatar-fallback");
-      expect(fallback).toHaveTextContent("AB");
+    describe("sidebar toggle", () => {
+      it("collapses sidebar when toggle is clicked", async () => {
+        const user = userEvent.setup();
+        const { container } = renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
+        await user.click(toggleBtn);
+        
+        const aside = container.querySelector("aside");
+        expect(aside?.className).toContain("w-16");
+      });
+
+      it("expands sidebar when collapsed and toggle is clicked", async () => {
+        const user = userEvent.setup();
+        const { container } = renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
+        await user.click(toggleBtn);
+        
+        const expandBtn = screen.getByRole("button", { name: users.expandMenu });
+        await user.click(expandBtn);
+        
+        const aside = container.querySelector("aside");
+        expect(aside?.className).toContain("w-56");
+      });
+
+      it("hides nav labels when sidebar is collapsed", async () => {
+        const user = userEvent.setup();
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const navLabel = screen.getByText(users.title);
+        expect(navLabel).not.toHaveClass("hidden");
+        
+        const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
+        await user.click(toggleBtn);
+        
+        expect(navLabel).toHaveClass("hidden");
+      });
     });
 
-    it("renders user display name", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      expect(screen.getByText("Alice Brown")).toBeInTheDocument();
+    describe("profile link", () => {
+      it("navigates to /users/me on profile click", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        const profileLink = screen.getAllByTestId("mock-link").find(
+          (link: HTMLElement) => link.getAttribute("href") === "/users/me"
+        );
+        
+        expect(profileLink).toBeInTheDocument();
+      });
+
+      it("displays fallback initials when no avatar", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
+        expect(screen.queryByTestId("mock-avatar-image")).not.toBeInTheDocument();
+      });
+
+      it("displays avatar image when provided", () => {
+        renderWithLocale(
+          <UsersLayoutClient
+            {...defaultProps}
+            currentUser={{ ...mockCurrentUser, avatar: "/avatar.jpg" }}
+          />,
+          locale
+        );
+        
+        expect(screen.getByTestId("mock-avatar-image")).toHaveAttribute("src", "/avatar.jpg");
+      });
     });
 
-    it("renders collapse/expand toggle button", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      const toggleBtn = screen.getByRole("button", { name: /Свернуть меню|Развернуть меню/ });
-      expect(toggleBtn).toBeInTheDocument();
-    });
-  });
+    describe("edge cases", () => {
+      it("handles null currentUser gracefully", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} currentUser={null} />, locale);
+        
+        const fallback = screen.getByTestId("mock-avatar-fallback");
+        expect(fallback).toHaveTextContent("U");
+        expect(screen.getByText(users.defaultUser)).toBeInTheDocument();
+      });
 
-  describe("sidebar toggle", () => {
-    it("collapses sidebar when toggle is clicked", async () => {
-      const user = userEvent.setup();
-      const { container } = render(<UsersLayoutClient {...defaultProps} />);
-      
-      const toggleBtn = screen.getByRole("button", { name: /Свернуть меню/ });
-      await user.click(toggleBtn);
-      
-      const aside = container.querySelector("aside");
-      expect(aside?.className).toContain("w-16");
-    });
+      it("handles empty name fields", () => {
+        renderWithLocale(
+          <UsersLayoutClient
+            {...defaultProps}
+            currentUser={{ id: 1, firstName: "", lastName: "", avatar: null }}
+          />,
+          locale
+        );
+        
+        expect(screen.getByText(users.defaultUser)).toBeInTheDocument();
+      });
 
-    it("expands sidebar when collapsed and toggle is clicked", async () => {
-      const user = userEvent.setup();
-      const { container } = render(<UsersLayoutClient {...defaultProps} />);
-      
-      const toggleBtn = screen.getByRole("button", { name: /Свернуть меню/ });
-      await user.click(toggleBtn);
-      
-      const expandBtn = screen.getByRole("button", { name: /Развернуть меню/ });
-      await user.click(expandBtn);
-      
-      const aside = container.querySelector("aside");
-      expect(aside?.className).toContain("w-56");
-    });
-
-    it("hides nav labels when sidebar is collapsed", async () => {
-      const user = userEvent.setup();
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      const navLabel = screen.getByText("Employees");
-      expect(navLabel).not.toHaveClass("hidden");
-      
-      const toggleBtn = screen.getByRole("button", { name: /Свернуть меню/ });
-      await user.click(toggleBtn);
-      
-      expect(navLabel).toHaveClass("hidden");
-    });
-  });
-
-  describe("profile link", () => {
-    it("navigates to /users/me on profile click", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      const profileLink = screen.getAllByTestId("mock-link").find(
-        (link: HTMLElement) => link.getAttribute("href") === "/users/me"
-      );
-      
-      expect(profileLink).toBeInTheDocument();
-    });
-
-    it("displays fallback initials when no avatar", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
-      expect(screen.queryByTestId("mock-avatar-image")).not.toBeInTheDocument();
-    });
-
-    it("displays avatar image when provided", () => {
-      render(
-        <UsersLayoutClient
-          {...defaultProps}
-          currentUser={{ ...mockCurrentUser, avatar: "/avatar.jpg" }}
-        />
-      );
-      
-      expect(screen.getByTestId("mock-avatar-image")).toHaveAttribute("src", "/avatar.jpg");
-    });
-  });
-
-  describe("edge cases", () => {
-    it("handles null currentUser gracefully", () => {
-      render(<UsersLayoutClient {...defaultProps} currentUser={null} />);
-      
-      const fallback = screen.getByTestId("mock-avatar-fallback");
-      expect(fallback).toHaveTextContent("U");
-      expect(screen.getByText("User")).toBeInTheDocument();
-    });
-
-    it("handles empty name fields", () => {
-      render(
-        <UsersLayoutClient
-          {...defaultProps}
-          currentUser={{ id: 1, firstName: "", lastName: "", avatar: null }}
-        />
-      );
-      
-      expect(screen.getByText("User")).toBeInTheDocument();
-    });
-
-    it("renders children in main content area", () => {
-      render(<UsersLayoutClient {...defaultProps} />);
-      
-      expect(screen.getByTestId("mock-children")).toBeInTheDocument();
+      it("renders children in main content area", () => {
+        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        
+        expect(screen.getByTestId("mock-children")).toBeInTheDocument();
+      });
     });
   });
 });

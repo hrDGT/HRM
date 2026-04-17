@@ -2,8 +2,29 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import React from "react";
+import { NextIntlClientProvider } from "next-intl";
 import { UserProfileClient } from "@/app/users/[id]/_components/user-profile-client";
 import type { EmployeeProfile } from "@/lib/users/users-types";
+import messagesEn from "@/messages/en.json";
+import messagesDe from "@/messages/de.json";
+import messagesRu from "@/messages/ru.json";
+
+const locales = ["en", "de", "ru"] as const;
+type Locale = typeof locales[number];
+
+const messagesMap: Record<Locale, any> = {
+  en: messagesEn,
+  de: messagesDe,
+  ru: messagesRu,
+};
+
+function renderWithLocale(ui: React.ReactElement, locale: Locale = "en") {
+  return render(
+    <NextIntlClientProvider locale={locale} messages={messagesMap[locale]}>
+      {ui}
+    </NextIntlClientProvider>
+  );
+}
 
 jest.mock("next/link", () => ({
   __esModule: true,
@@ -153,266 +174,296 @@ describe("UserProfileClient", () => {
     jest.clearAllMocks();
   });
 
-  describe("rendering", () => {
-    it("renders breadcrumb navigation", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      expect(screen.getByText("Employees")).toBeInTheDocument();
-      const breadcrumbs = screen.getAllByText("Alice Brown");
-      expect(breadcrumbs[0]).toHaveClass("text-red-500");
-    });
+  describe.each(locales)("locale: %s", (locale) => {
+    const messages = messagesMap[locale];
+    const users = messages.Users;
+    const common = messages.Common;
 
-    it("renders tab navigation", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      expect(screen.getByText("PROFILE")).toBeInTheDocument();
-      expect(screen.getByText("SKILLS")).toBeInTheDocument();
-      expect(screen.getByText("LANGUAGES")).toBeInTheDocument();
-    });
+    describe("rendering", () => {
+      it("renders breadcrumb navigation", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(users.title)).toBeInTheDocument();
+        const breadcrumbs = screen.getAllByText("Alice Brown");
+        expect(breadcrumbs[0]).toHaveClass("text-red-500");
+      });
 
-    it("renders profile form with employee data", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      expect(inputs[0]).toHaveValue("Alice");
-      expect(inputs[1]).toHaveValue("Brown");
-    });
+      it("renders tab navigation", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(users.tabs.profile)).toBeInTheDocument();
+        expect(screen.getByText(users.tabs.skills)).toBeInTheDocument();
+        expect(screen.getByText(users.tabs.languages)).toBeInTheDocument();
+      });
 
-    it("renders avatar with initials fallback", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
-    });
+      it("renders profile form with employee data", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        expect(inputs[0]).toHaveValue("Alice");
+        expect(inputs[1]).toHaveValue("Brown");
+      });
 
-    it("shows member since info when available", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      expect(screen.getByText(/A member since 2024/)).toBeInTheDocument();
-    });
-  });
+      it("renders avatar with initials fallback", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
+      });
 
-  describe("tab switching", () => {
-    it("shows profile content by default", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      expect(screen.getAllByTestId("mock-input")[0]).toBeInTheDocument();
-      expect(screen.queryByText("TODO")).not.toBeInTheDocument();
-    });
+      it("shows member since info when available", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(/A member since 2024/)).toBeInTheDocument();
+      });
 
-    it("shows skills tab content when clicked", async () => {
-      const user = userEvent.setup();
-      render(<UserProfileClient {...defaultProps} />);
-      
-      await user.click(screen.getByText("SKILLS"));
-      
-      expect(screen.getByText("TODO")).toBeInTheDocument();
-    });
-
-    it("shows languages tab content when clicked", async () => {
-      const user = userEvent.setup();
-      render(<UserProfileClient {...defaultProps} />);
-      
-      await user.click(screen.getByText("LANGUAGES"));
-      
-      expect(screen.getByText("TODO")).toBeInTheDocument();
-    });
-
-    it("highlights active tab", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const profileTab = screen.getByText("PROFILE");
-      expect(profileTab.className).toContain("text-red-500");
-    });
-  });
-
-  describe("form editing", () => {
-    it("enables editing for current user", () => {
-      render(<UserProfileClient {...defaultProps} currentUserId={1} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      expect(inputs[0]).not.toBeDisabled();
-    });
-
-    it("enables editing for Admin role", () => {
-      render(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Admin" />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      expect(inputs[0]).not.toBeDisabled();
-    });
-
-    it("disables editing for other users", () => {
-      render(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Employee" />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      expect(inputs[0]).toBeDisabled();
-    });
-
-    it("updates form state when typing", async () => {
-      const user = userEvent.setup();
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      await user.clear(inputs[0]);
-      await user.type(inputs[0], "Alicia");
-      
-      expect(inputs[0]).toHaveValue("Alicia");
-    });
-  });
-
-  describe("department and position selects", () => {
-    it("displays current department as selected", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const wrappers = screen.getAllByTestId("mock-select-wrapper");
-      expect(wrappers[0]).toHaveAttribute("data-value", "1");
-    });
-
-    it("displays current position as selected", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const wrappers = screen.getAllByTestId("mock-select-wrapper");
-      expect(wrappers[1]).toHaveAttribute("data-value", "10");
-    });
-
-    it("renders department options", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const contents = screen.getAllByTestId("mock-select-content");
-      const items = Array.from(contents[0].querySelectorAll('[data-testid^="mock-select-item-"]'));
-      
-      expect(items[0]?.textContent).toBe("React");
-      expect(items[1]?.textContent).toBe(".NET");
-    });
-  });
-
-  describe("avatar upload", () => {
-    it("shows upload option for editable profiles", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      expect(screen.getByText("Upload avatar image")).toBeInTheDocument();
-    });
-
-    it("hides upload option for non-editable profiles", () => {
-      render(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Employee" />);
-      
-      expect(screen.queryByText("Upload avatar image")).not.toBeInTheDocument();
-    });
-  });
-
-  describe("save functionality", () => {
-    it("shows update button for editable profiles", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const buttons = screen.getAllByTestId("mock-button");
-      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
-      
-      expect(updateBtn).toBeInTheDocument();
-    });
-
-    it("disables update button when form is not dirty", () => {
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const buttons = screen.getAllByTestId("mock-button");
-      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
-      
-      expect(updateBtn).toBeDisabled();
-    });
-
-    it("enables update button when form is dirty", async () => {
-      const user = userEvent.setup();
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      await user.clear(inputs[0]);
-      await user.type(inputs[0], "Alicia");
-      
-      const buttons = screen.getAllByTestId("mock-button");
-      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
-      
-      expect(updateBtn).not.toBeDisabled();
-    });
-
-    it("calls updateProfile on save", async () => {
-      const user = userEvent.setup();
-      mockUpdateProfile.mockResolvedValue({ first_name: "Alicia", last_name: "Brown" });
-      
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      await user.clear(inputs[0]);
-      await user.type(inputs[0], "Alicia");
-      
-      const buttons = screen.getAllByTestId("mock-button");
-      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
-      
-      await user.click(updateBtn!);
-      
-      await waitFor(() => {
-        expect(mockUpdateProfile).toHaveBeenCalledWith(1, "Alicia", "Brown");
+      it("displays field labels in correct locale", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const labels = screen.getAllByTestId("mock-label");
+        expect(labels[0]).toHaveTextContent(common.fields.firstName);
+        expect(labels[1]).toHaveTextContent(common.fields.lastName);
       });
     });
 
-    it("displays error message on save failure", async () => {
-      const user = userEvent.setup();
-      mockUpdateProfile.mockRejectedValue(new Error("Save failed"));
-      
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      await user.clear(inputs[0]);
-      await user.type(inputs[0], "Alicia");
-      
-      const buttons = screen.getAllByTestId("mock-button");
-      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
-      
-      await user.click(updateBtn!);
-      
-      await waitFor(() => {
-        expect(screen.getByText("Save failed")).toBeInTheDocument();
+    describe("tab switching", () => {
+      it("shows profile content by default", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getAllByTestId("mock-input")[0]).toBeInTheDocument();
+        expect(screen.queryByText("TODO")).not.toBeInTheDocument();
+      });
+
+      it("shows skills tab content when clicked", async () => {
+        const user = userEvent.setup();
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        await user.click(screen.getByText(users.tabs.skills));
+        
+        expect(screen.getByText("TODO")).toBeInTheDocument();
+      });
+
+      it("shows languages tab content when clicked", async () => {
+        const user = userEvent.setup();
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        await user.click(screen.getByText(users.tabs.languages));
+        
+        expect(screen.getByText("TODO")).toBeInTheDocument();
+      });
+
+      it("highlights active tab", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const profileTab = screen.getByText(users.tabs.profile);
+        expect(profileTab.className).toContain("text-red-500");
       });
     });
-  });
 
-  describe("edge cases", () => {
-    it("handles employee with empty names", () => {
-      render(
-        <UserProfileClient
-          {...defaultProps}
-          employee={{ ...mockEmployee, firstName: "", lastName: "" }}
-        />
-      );
-      
-      expect(screen.getByText("Unnamed User")).toBeInTheDocument();
+    describe("form editing", () => {
+      it("enables editing for current user", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} currentUserId={1} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        expect(inputs[0]).not.toBeDisabled();
+      });
+
+      it("enables editing for Admin role", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Admin" />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        expect(inputs[0]).not.toBeDisabled();
+      });
+
+      it("disables editing for other users", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Employee" />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        expect(inputs[0]).toBeDisabled();
+      });
+
+      it("updates form state when typing", async () => {
+        const user = userEvent.setup();
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        await user.clear(inputs[0]);
+        await user.type(inputs[0], "Alicia");
+        
+        expect(inputs[0]).toHaveValue("Alicia");
+      });
     });
 
-    it("handles missing department/position mapping", () => {
-      render(
-        <UserProfileClient
-          {...defaultProps}
-          employee={{ ...mockEmployee, department: "Unknown", position: "Unknown" }}
-        />
-      );
-      
-      const wrappers = screen.getAllByTestId("mock-select-wrapper");
-      expect(wrappers[0]).toHaveAttribute("data-value", "");
+    describe("department and position selects", () => {
+      it("displays current department as selected", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const wrappers = screen.getAllByTestId("mock-select-wrapper");
+        expect(wrappers[0]).toHaveAttribute("data-value", "1");
+      });
+
+      it("displays current position as selected", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const wrappers = screen.getAllByTestId("mock-select-wrapper");
+        expect(wrappers[1]).toHaveAttribute("data-value", "10");
+      });
+
+      it("renders department options", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const contents = screen.getAllByTestId("mock-select-content");
+        const items = Array.from(contents[0].querySelectorAll('[data-testid^="mock-select-item-"]'));
+        
+        expect(items[0]?.textContent).toBe("React");
+        expect(items[1]?.textContent).toBe(".NET");
+      });
+
+      it("displays select labels in correct locale", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const labels = screen.getAllByTestId("mock-label");
+        expect(labels[2]).toHaveTextContent(common.fields.department);
+        expect(labels[3]).toHaveTextContent(common.fields.position);
+      });
     });
 
-    it("shows saving state during update", async () => {
-      const user = userEvent.setup();
-      mockUpdateProfile.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
-      
-      render(<UserProfileClient {...defaultProps} />);
-      
-      const inputs = screen.getAllByTestId("mock-input");
-      await user.clear(inputs[0]);
-      await user.type(inputs[0], "Alicia");
-      
-      const buttons = screen.getAllByTestId("mock-button");
-      const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === "Update");
-      
-      await user.click(updateBtn!);
-      
-      expect(screen.getByText("Saving...")).toBeInTheDocument();
+    describe("avatar upload", () => {
+      it("shows upload option for editable profiles", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(users.uploadAvatar)).toBeInTheDocument();
+      });
+
+      it("hides upload option for non-editable profiles", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} currentUserId={999} currentUserRole="Employee" />, locale);
+        
+        expect(screen.queryByText(users.uploadAvatar)).not.toBeInTheDocument();
+      });
+
+      it("displays upload hint in correct locale", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(users.uploadHint)).toBeInTheDocument();
+      });
+    });
+
+    describe("save functionality", () => {
+      it("shows update button for editable profiles", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const buttons = screen.getAllByTestId("mock-button");
+        const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === common.actions.update);
+        
+        expect(updateBtn).toBeInTheDocument();
+      });
+
+      it("disables update button when form is not dirty", () => {
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const buttons = screen.getAllByTestId("mock-button");
+        const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === common.actions.update);
+        
+        expect(updateBtn).toBeDisabled();
+      });
+
+      it("enables update button when form is dirty", async () => {
+        const user = userEvent.setup();
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        await user.clear(inputs[0]);
+        await user.type(inputs[0], "Alicia");
+        
+        const buttons = screen.getAllByTestId("mock-button");
+        const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === common.actions.update);
+        
+        expect(updateBtn).not.toBeDisabled();
+      });
+
+      it("calls updateProfile on save", async () => {
+        const user = userEvent.setup();
+        mockUpdateProfile.mockResolvedValue({ first_name: "Alicia", last_name: "Brown" });
+        
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        await user.clear(inputs[0]);
+        await user.type(inputs[0], "Alicia");
+        
+        const buttons = screen.getAllByTestId("mock-button");
+        const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === common.actions.update);
+        
+        await user.click(updateBtn!);
+        
+        await waitFor(() => {
+          expect(mockUpdateProfile).toHaveBeenCalledWith(1, "Alicia", "Brown");
+        });
+      });
+
+      it("displays error message on save failure", async () => {
+        const user = userEvent.setup();
+        mockUpdateProfile.mockRejectedValue(new Error("Save failed"));
+        
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        await user.clear(inputs[0]);
+        await user.type(inputs[0], "Alicia");
+        
+        const buttons = screen.getAllByTestId("mock-button");
+        const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === common.actions.update);
+        
+        await user.click(updateBtn!);
+        
+        await waitFor(() => {
+          expect(screen.getByText("Save failed")).toBeInTheDocument();
+        });
+      });
+
+      it("displays saving state in correct locale", async () => {
+        const user = userEvent.setup();
+        mockUpdateProfile.mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)));
+        
+        renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
+        
+        const inputs = screen.getAllByTestId("mock-input");
+        await user.clear(inputs[0]);
+        await user.type(inputs[0], "Alicia");
+        
+        const buttons = screen.getAllByTestId("mock-button");
+        const updateBtn = buttons.find((btn: HTMLElement) => btn.textContent?.trim() === common.actions.update);
+        
+        await user.click(updateBtn!);
+        
+        expect(screen.getByText(common.actions.saving)).toBeInTheDocument();
+      });
+    });
+
+    describe("edge cases", () => {
+      it("handles employee with empty names", () => {
+        renderWithLocale(
+          <UserProfileClient
+            {...defaultProps}
+            employee={{ ...mockEmployee, firstName: "", lastName: "" }}
+          />,
+          locale
+        );
+        
+        expect(screen.getByText(users.unnamedUser)).toBeInTheDocument();
+      });
+
+      it("handles missing department/position mapping", () => {
+        renderWithLocale(
+          <UserProfileClient
+            {...defaultProps}
+            employee={{ ...mockEmployee, department: "Unknown", position: "Unknown" }}
+          />,
+          locale
+        );
+        
+        const wrappers = screen.getAllByTestId("mock-select-wrapper");
+        expect(wrappers[0]).toHaveAttribute("data-value", "");
+      });
     });
   });
 });

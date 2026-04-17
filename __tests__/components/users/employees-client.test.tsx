@@ -1,7 +1,29 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import React from "react";
+import { NextIntlClientProvider } from "next-intl";
 import type { EmployeeCard } from "@/lib/users/users-types";
+import messagesEn from "@/messages/en.json";
+import messagesDe from "@/messages/de.json";
+import messagesRu from "@/messages/ru.json";
+
+const locales = ["en", "de", "ru"] as const;
+type Locale = typeof locales[number];
+
+const messagesMap: Record<Locale, any> = {
+  en: messagesEn,
+  de: messagesDe,
+  ru: messagesRu,
+};
+
+function renderWithLocale(ui: React.ReactElement, locale: Locale = "en") {
+  return render(
+    <NextIntlClientProvider locale={locale} messages={messagesMap[locale]}>
+      {ui}
+    </NextIntlClientProvider>
+  );
+}
 
 const mockPush = jest.fn();
 
@@ -144,6 +166,8 @@ const defaultProps = {
   employees: mockEmployees,
   currentUserId: 1,
   currentUserRole: "Admin",
+  departments: [],
+  positions: [],
 };
 
 describe("EmployeesClient", () => {
@@ -152,183 +176,247 @@ describe("EmployeesClient", () => {
     mockPush.mockClear();
   });
 
-  describe("rendering", () => {
-    it("renders employee table with all rows", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      expect(screen.getByText("Alice")).toBeInTheDocument();
-      expect(screen.getByText("Bob")).toBeInTheDocument();
-      expect(screen.getByText("alice@example.com")).toBeInTheDocument();
+  describe.each(locales)("locale: %s", (locale) => {
+    const messages = messagesMap[locale];
+    const users = messages.Users;
+    const common = messages.Common;
+
+    describe("rendering", () => {
+      it("renders employee table with all rows", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText("Alice")).toBeInTheDocument();
+        expect(screen.getByText("Bob")).toBeInTheDocument();
+        expect(screen.getByText("alice@example.com")).toBeInTheDocument();
+      });
+
+      it("renders department badges", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText("React")).toBeInTheDocument();
+        expect(screen.getByText(".NET")).toBeInTheDocument();
+      });
+
+      it("renders avatars with initials", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        expect(screen.getAllByText("AB")).toHaveLength(1);
+        expect(screen.getAllByText("BS")).toHaveLength(1);
+      });
+
+      it("displays title in correct locale", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        expect(screen.getByText(users.title)).toBeInTheDocument();
+      });
+
+      it("displays search placeholder in correct locale", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const searchInput = screen.getByTestId("mock-input");
+        expect(searchInput).toHaveAttribute("placeholder", common.placeholders.search);
+      });
     });
 
-    it("renders department badges", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      expect(screen.getByText("React")).toBeInTheDocument();
-      expect(screen.getByText(".NET")).toBeInTheDocument();
+    describe("search functionality", () => {
+      it("filters employees by name", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const searchInput = screen.getByTestId("mock-input");
+        await user.type(searchInput, "Alice");
+        
+        expect(screen.getByText("Alice")).toBeInTheDocument();
+        expect(screen.queryByText("Bob")).not.toBeInTheDocument();
+      });
+
+      it("filters employees by email", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const searchInput = screen.getByTestId("mock-input");
+        await user.type(searchInput, "bob@example");
+        
+        expect(screen.getByText("Bob")).toBeInTheDocument();
+        expect(screen.queryByText("Alice")).not.toBeInTheDocument();
+      });
+
+      it("filters employees by department", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const searchInput = screen.getByTestId("mock-input");
+        await user.type(searchInput, "React");
+        
+        expect(screen.getByText("React")).toBeInTheDocument();
+        expect(screen.queryByText(".NET")).not.toBeInTheDocument();
+      });
+
+      it("shows empty state when no results", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const searchInput = screen.getByTestId("mock-input");
+        await user.type(searchInput, "nonexistent");
+        
+        expect(screen.getByText(users.noResults)).toBeInTheDocument();
+      });
     });
 
-    it("renders avatars with initials", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      expect(screen.getAllByText("AB")).toHaveLength(1);
-      expect(screen.getAllByText("BS")).toHaveLength(1);
-    });
-  });
+    describe("sorting", () => {
+      it("sorts by department ascending by default", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const rows = screen.getAllByTestId("mock-table-row");
+        const bodyRows = rows.slice(1);
+        expect(bodyRows[0]).toHaveTextContent(".NET");
+        expect(bodyRows[1]).toHaveTextContent("React");
+      });
 
-  describe("search functionality", () => {
-    it("filters employees by name", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const searchInput = screen.getByTestId("mock-input");
-      await user.type(searchInput, "Alice");
-      
-      expect(screen.getByText("Alice")).toBeInTheDocument();
-      expect(screen.queryByText("Bob")).not.toBeInTheDocument();
-    });
+      it("toggles sort order when department header is clicked", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const departmentHeader = screen.getAllByTestId("mock-table-head")[4];
+        await user.click(departmentHeader);
+        
+        const rows = screen.getAllByTestId("mock-table-row");
+        const bodyRows = rows.slice(1);
+        expect(bodyRows[0]).toHaveTextContent("React");
+        expect(bodyRows[1]).toHaveTextContent(".NET");
+      });
 
-    it("filters employees by email", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const searchInput = screen.getByTestId("mock-input");
-      await user.type(searchInput, "bob@example");
-      
-      expect(screen.getByText("Bob")).toBeInTheDocument();
-      expect(screen.queryByText("Alice")).not.toBeInTheDocument();
-    });
-
-    it("filters employees by department", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const searchInput = screen.getByTestId("mock-input");
-      await user.type(searchInput, "React");
-      
-      expect(screen.getByText("React")).toBeInTheDocument();
-      expect(screen.queryByText(".NET")).not.toBeInTheDocument();
+      it("displays department header in correct locale", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const headers = screen.getAllByTestId("mock-table-head");
+        expect(headers[4]).toHaveTextContent(common.fields.department);
+      });
     });
 
-    it("shows empty state when no results", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const searchInput = screen.getByTestId("mock-input");
-      await user.type(searchInput, "nonexistent");
-      
-      expect(screen.getByText("No employees found")).toBeInTheDocument();
-    });
-  });
+    describe("actions dropdown", () => {
+      it("shows dropdown for current user", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const triggers = screen.getAllByTestId("mock-dropdown-trigger");
+        expect(triggers).toHaveLength(2);
+      });
 
-  describe("sorting", () => {
-    it("sorts by department ascending by default", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const rows = screen.getAllByTestId("mock-table-row");
-      const bodyRows = rows.slice(1);
-      expect(bodyRows[0]).toHaveTextContent(".NET");
-      expect(bodyRows[1]).toHaveTextContent("React");
-    });
+      it("navigates to profile on View profile click", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const triggers = screen.getAllByTestId("mock-dropdown-trigger");
+        await user.click(triggers[0]);
+        
+        const items = screen.getAllByTestId("mock-dropdown-item");
+        await user.click(items[0]);
+        
+        expect(mockPush).toHaveBeenCalledWith("/users/2");
+      });
 
-    it("toggles sort order when department header is clicked", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const departmentHeader = screen.getAllByTestId("mock-table-head")[4];
-      await user.click(departmentHeader);
-      
-      const rows = screen.getAllByTestId("mock-table-row");
-      const bodyRows = rows.slice(1);
-      expect(bodyRows[0]).toHaveTextContent("React");
-      expect(bodyRows[1]).toHaveTextContent(".NET");
-    });
-  });
+      it("opens update modal on Update user click", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const triggers = screen.getAllByTestId("mock-dropdown-trigger");
+        await user.click(triggers[0]);
+        
+        const items = screen.getAllByTestId("mock-dropdown-item");
+        await user.click(items[1]);
+        
+        expect(screen.getByTestId("mock-update-modal")).toBeInTheDocument();
+      });
 
-  describe("actions dropdown", () => {
-    it("shows dropdown for current user", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const triggers = screen.getAllByTestId("mock-dropdown-trigger");
-      expect(triggers).toHaveLength(2);
-    });
-
-    it("navigates to profile on View profile click", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const triggers = screen.getAllByTestId("mock-dropdown-trigger");
-      await user.click(triggers[0]);
-      
-      const items = screen.getAllByTestId("mock-dropdown-item");
-      await user.click(items[0]);
-      
-      expect(mockPush).toHaveBeenCalledWith("/users/2");
+      it("displays dropdown items in correct locale", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const triggers = screen.getAllByTestId("mock-dropdown-trigger");
+        await user.click(triggers[0]);
+        
+        const items = screen.getAllByTestId("mock-dropdown-item");
+        expect(items[0]).toHaveTextContent(users.viewProfile);
+        expect(items[1]).toHaveTextContent(users.updateAction);
+      });
     });
 
-    it("opens update modal on Update user click", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const triggers = screen.getAllByTestId("mock-dropdown-trigger");
-      await user.click(triggers[0]);
-      
-      const items = screen.getAllByTestId("mock-dropdown-item");
-      await user.click(items[1]);
-      
-      expect(screen.getByTestId("mock-update-modal")).toBeInTheDocument();
-    });
-  });
+    describe("create user button", () => {
+      it("shows create button for Admin role", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        expect(screen.getByTestId("create-user-button")).toBeInTheDocument();
+      });
 
-  describe("create user button", () => {
-    it("shows create button for Admin role", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      expect(screen.getByTestId("create-user-button")).toBeInTheDocument();
+      it("hides create button for non-Admin role", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} currentUserRole="Employee" />, locale);
+        
+        expect(screen.queryByTestId("create-user-button")).not.toBeInTheDocument();
+      });
+
+      it("opens create modal when clicked", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const createBtn = screen.getByTestId("create-user-button");
+        await user.click(createBtn);
+        expect(screen.getByTestId("mock-create-modal")).toBeInTheDocument();
+      });
+
+      it("displays create button text in correct locale", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const createBtn = screen.getByTestId("create-user-button");
+        expect(createBtn).toHaveTextContent(users.createUserButton);
+      });
     });
 
-    it("hides create button for non-Admin role", () => {
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} currentUserRole="Employee" />);
-      
-      expect(screen.queryByTestId("create-user-button")).not.toBeInTheDocument();
+    describe("row navigation", () => {
+      it("navigates to user profile on row click", async () => {
+        const user = userEvent.setup();
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const rows = screen.getAllByTestId("mock-table-row");
+        const bodyRows = rows.slice(1);
+        await user.click(bodyRows[0]);
+        
+        expect(mockPush).toHaveBeenCalledWith("/users/2");
+      });
     });
 
-    it("opens create modal when clicked", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const createBtn = screen.getByTestId("create-user-button");
-      await user.click(createBtn);
-      expect(screen.getByTestId("mock-create-modal")).toBeInTheDocument();
-    });
-  });
-
-  describe("row navigation", () => {
-    it("navigates to user profile on row click", async () => {
-      const user = userEvent.setup();
-      const { EmployeesClient } = require("@/app/users/_components/employees-client");
-      render(<EmployeesClient {...defaultProps} />);
-      
-      const rows = screen.getAllByTestId("mock-table-row");
-      const bodyRows = rows.slice(1);
-      await user.click(bodyRows[0]);
-      
-      expect(mockPush).toHaveBeenCalledWith("/users/2");
+    describe("table headers", () => {
+      it("displays all headers in correct locale", () => {
+        const { EmployeesClient } = require("@/app/users/_components/employees-client");
+        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
+        
+        const headers = screen.getAllByTestId("mock-table-head");
+        expect(headers[1]).toHaveTextContent(common.fields.firstName);
+        expect(headers[2]).toHaveTextContent(common.fields.lastName);
+        expect(headers[3]).toHaveTextContent(common.fields.email);
+        expect(headers[4]).toHaveTextContent(common.fields.department);
+        expect(headers[5]).toHaveTextContent(common.fields.position);
+      });
     });
   });
 });

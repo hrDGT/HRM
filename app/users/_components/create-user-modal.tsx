@@ -78,6 +78,8 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
       positionId: positions[0]?.id ?? "",
       role: ROLES[0],
     });
+
+    onClose();
   };
 
   const fieldWrapper = "relative rounded-lg border border-white/15 bg-[#1e1e1e] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
