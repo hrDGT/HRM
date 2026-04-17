@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { cookies } from "next/headers";
 
 import { fetchPositions } from "@/components/positions/queries/get-positions-query";
-import { PositionsClient } from "@/components/positions/ui/positions-client";
+import { PositionsPageContent } from "@/components/positions/ui/positions-page-content";
 import { PositionsTableSkeleton } from "@/components/positions/ui/positions-table-skeleton";
 import { requireUser } from "@/lib/auth/require-user";
 
@@ -21,14 +21,15 @@ async function PositionsData({
 }) {
   const positions = await fetchPositions(token);
 
-  return <PositionsClient initialPositions={positions} isAdmin={isAdmin} />;
+  return (
+    <PositionsPageContent initialPositions={positions} isAdmin={isAdmin} />
+  );
 }
 
 export default async function PositionsPage() {
-  const user = await requireUser();
+  const [user, cookieStore] = await Promise.all([requireUser(), cookies()]);
   const isAdmin = user?.role === "Admin";
 
-  const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
 
   return (

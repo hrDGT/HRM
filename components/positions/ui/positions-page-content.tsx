@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { useTableLogic } from "@/components/dashboard/hooks/use-table-logic";
 import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
 import { DashBoardNoResults } from "@/components/dashboard/ui/dashboard-no-results";
 import { BaseAlertModal } from "@/components/ui/base-alert-modal";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable, type TableAction } from "@/components/ui/data-table";
 import { GetPositionsQuery } from "@/gqlcodegen/graphql";
 
-import { usePositionsLogic } from "../hooks/use-positions-logic";
+import { deletePositionAction } from "../actions/delete-positions-action";
 
 import { CreatePositionModal } from "./create-position-modal";
 import { getPositionsColumns } from "./positions-columns";
@@ -23,26 +24,42 @@ type Props = {
   isAdmin: boolean;
 };
 
-export function PositionsClient({ initialPositions, isAdmin }: Props) {
-  const state = usePositionsLogic(initialPositions, isAdmin);
+export function PositionsPageContent({ initialPositions, isAdmin }: Props) {
+  const t = useTranslations("Positions");
+  const tCommon = useTranslations("Common");
+
+  const state = useTableLogic({
+    initialData: initialPositions,
+    isAdmin,
+    searchFields: ["name"],
+    initialSortField: "name",
+    deleteAction: deletePositionAction,
+    deleteSuccessMessage: t("toasts.deleted"),
+  });
 
   const [editingPos, setEditingPos] = useState<Position | null>(null);
   const [deletingPos, setDeletingPos] = useState<Position | null>(null);
 
-  const t = useTranslations("Positions");
-  const tCommon = useTranslations("Common");
-
   const columns = getPositionsColumns({
-    t,
     tCommon,
-    isAdmin: state.isAdmin,
-    isPending: state.isPending,
     sortField: state.sortField,
     sortOrder: state.sortOrder,
     onSort: state.handleSort,
-    onEdit: setEditingPos,
-    onDelete: setDeletingPos,
   });
+
+  const tableActions: TableAction<Position>[] = state.isAdmin
+    ? [
+        {
+          title: t("updateAction"),
+          action: setEditingPos,
+        },
+        {
+          title: t("deleteAction"),
+          action: setDeletingPos,
+        },
+      ]
+    : [];
+
   return (
     <section className="max-w-7xl w-full mx-auto">
       <DashboardHeader
@@ -54,8 +71,11 @@ export function PositionsClient({ initialPositions, isAdmin }: Props) {
       />
 
       <DataTable
-        data={state.filteredPositions}
+        data={state.filteredData}
         columns={columns}
+        actions={tableActions}
+        actionMenuLabel={t("openMenu")}
+        isPending={state.isPending}
         emptyState={
           <DashBoardNoResults
             isAdmin={state.isAdmin}

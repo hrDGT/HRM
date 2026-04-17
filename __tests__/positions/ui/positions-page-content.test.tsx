@@ -2,15 +2,15 @@
 
 import { render, screen } from "@testing-library/react";
 
-import { useDepartmentsLogic } from "@/components/departments/hooks/use-department-logic";
-import { DepartmentsClient } from "@/components/departments/ui/departments-client";
+import { useTableLogic } from "@/components/dashboard/hooks/use-table-logic";
+import { PositionsPageContent } from "@/components/positions/ui/positions-page-content";
 
-jest.mock("@/components/departments/hooks/use-department-logic");
+jest.mock("@/components/dashboard/hooks/use-table-logic");
 
 jest.mock("next-intl", () => ({
   useTranslations: jest.fn((namespace) => (key: string) => {
     const messages: Record<string, string> = {
-      title: "Departments",
+      title: "Positions",
       "fields.name": "Name",
       "noResults.title": "No results found",
       "noResults.description": "Try another search",
@@ -24,22 +24,22 @@ jest.mock("next-intl/server", () => ({
   getTranslations: jest.fn(() => Promise.resolve((key: string) => key)),
 }));
 
-jest.mock("@/components/departments/actions/delete-departments-action", () => ({
-  deleteDepartmentAction: jest.fn(),
+jest.mock("@/components/positions/actions/delete-positions-action", () => ({
+  deletePositionAction: jest.fn(),
 }));
 
-jest.mock("@/components/departments/actions/create-departments-action", () => ({
-  createDepartmentAction: jest.fn(),
+jest.mock("@/components/positions/actions/create-positions-action", () => ({
+  createPositionAction: jest.fn(),
 }));
 
-jest.mock("@/components/departments/actions/update-departments-action", () => ({
-  updateDepartmentAction: jest.fn(),
+jest.mock("@/components/positions/actions/update-positions-action", () => ({
+  updatePositionAction: jest.fn(),
 }));
 
-describe("DepartmentsClient", () => {
-  const mockInitialDepartments = [
-    { id: "1", name: "First test dep" },
-    { id: "2", name: "Second test dep" },
+describe("PositionsPageContent", () => {
+  const mockInitialPositions = [
+    { id: "1", name: "First test pos" },
+    { id: "2", name: "Second test pos" },
   ];
 
   beforeEach(() => {
@@ -47,12 +47,12 @@ describe("DepartmentsClient", () => {
   });
 
   it("renders the header and data table correctly", () => {
-    (useDepartmentsLogic as jest.Mock).mockReturnValue({
+    (useTableLogic as jest.Mock).mockReturnValue({
       isAdmin: true,
       searchValue: "",
       sortField: "name",
       sortOrder: "asc",
-      filteredDepartments: mockInitialDepartments,
+      filteredData: mockInitialPositions,
       handleSort: jest.fn(),
       handleSearchChange: jest.fn(),
       resetSearch: jest.fn(),
@@ -61,24 +61,24 @@ describe("DepartmentsClient", () => {
     });
 
     render(
-      <DepartmentsClient
-        initialDepartments={mockInitialDepartments}
+      <PositionsPageContent
+        initialPositions={mockInitialPositions}
         isAdmin={true}
       />,
     );
 
-    expect(screen.getByText("Departments")).toBeInTheDocument();
-    expect(screen.getByText("First test dep")).toBeInTheDocument();
-    expect(screen.getByText("Second test dep")).toBeInTheDocument();
+    expect(screen.getByText("Positions")).toBeInTheDocument();
+    expect(screen.getByText("First test pos")).toBeInTheDocument();
+    expect(screen.getByText("Second test pos")).toBeInTheDocument();
   });
 
   it("renders empty state (DashBoardNoResults) when filtered data is empty", () => {
-    (useDepartmentsLogic as jest.Mock).mockReturnValue({
+    (useTableLogic as jest.Mock).mockReturnValue({
       isAdmin: true,
-      searchValue: "UnknownDept",
+      searchValue: "UnknownPos",
       sortField: "name",
       sortOrder: "asc",
-      filteredDepartments: [],
+      filteredData: [], // <-- ИЗМЕНЕНО
       handleSort: jest.fn(),
       handleSearchChange: jest.fn(),
       resetSearch: jest.fn(),
@@ -87,13 +87,13 @@ describe("DepartmentsClient", () => {
     });
 
     render(
-      <DepartmentsClient
-        initialDepartments={mockInitialDepartments}
+      <PositionsPageContent
+        initialPositions={mockInitialPositions}
         isAdmin={true}
       />,
     );
 
-    expect(screen.queryByText("First test dep")).not.toBeInTheDocument();
+    expect(screen.queryByText("First test pos")).not.toBeInTheDocument();
 
     expect(screen.getByText("No results found")).toBeInTheDocument();
     expect(screen.getByText("Try another search")).toBeInTheDocument();

@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { useTableLogic } from "@/components/dashboard/hooks/use-table-logic";
 import { DashboardHeader } from "@/components/dashboard/ui/dashboard-header";
 import { DashBoardNoResults } from "@/components/dashboard/ui/dashboard-no-results";
 import { BaseAlertModal } from "@/components/ui/base-alert-modal";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable, type TableAction } from "@/components/ui/data-table";
 import { GetDepartmentsQuery } from "@/gqlcodegen/graphql";
 
-import { useDepartmentsLogic } from "../hooks/use-department-logic";
+import { deleteDepartmentAction } from "../actions/delete-departments-action";
 
 import { CreateDepartmentModal } from "./create-department-modal";
 import { getDepartmentColumns } from "./departments-columns";
@@ -23,26 +24,41 @@ type Props = {
   isAdmin: boolean;
 };
 
-export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
-  const state = useDepartmentsLogic(initialDepartments, isAdmin);
+export function DepartmentsPageContent({ initialDepartments, isAdmin }: Props) {
+  const t = useTranslations("Departments");
+  const tCommon = useTranslations("Common");
+
+  const state = useTableLogic({
+    initialData: initialDepartments,
+    isAdmin,
+    searchFields: ["name"],
+    initialSortField: "name",
+    deleteAction: deleteDepartmentAction,
+    deleteSuccessMessage: t("toasts.deleted"),
+  });
 
   const [editingDept, setEditingDept] = useState<Department | null>(null);
   const [deletingDept, setDeletingDept] = useState<Department | null>(null);
 
-  const t = useTranslations("Departments");
-  const tCommon = useTranslations("Common");
-
   const columns = getDepartmentColumns({
-    t,
     tCommon,
-    isAdmin: state.isAdmin,
-    isPending: state.isPending,
     sortField: state.sortField,
     sortOrder: state.sortOrder,
     onSort: state.handleSort,
-    onEdit: setEditingDept,
-    onDelete: setDeletingDept,
   });
+
+  const tableActions: TableAction<Department>[] = state.isAdmin
+    ? [
+        {
+          title: t("updateAction"),
+          action: setEditingDept,
+        },
+        {
+          title: t("deleteAction"),
+          action: setDeletingDept,
+        },
+      ]
+    : [];
 
   return (
     <section className="max-w-7xl w-full mx-auto">
@@ -55,8 +71,11 @@ export function DepartmentsClient({ initialDepartments, isAdmin }: Props) {
       />
 
       <DataTable
-        data={state.filteredDepartments}
+        data={state.filteredData}
         columns={columns}
+        actions={tableActions}
+        actionMenuLabel={t("openMenu")}
+        isPending={state.isPending}
         emptyState={
           <DashBoardNoResults
             isAdmin={state.isAdmin}
