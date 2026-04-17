@@ -22,6 +22,29 @@
       "nameMax": "Der Name ist zu lang"
     }
   },
+  "Positions": {
+    "title": "Positionen",
+    "deleteModalTitle": "Position löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Position löschen:",
+    "createButton": "Position erstellen",
+    "createModalTitle": "Position erstellen",
+    "updateModalTitle": "Position bearbeiten",
+    "updateAction": "Position bearbeiten",
+    "deleteAction": "Position löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Position erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Position",
+      "updated": "Position erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Position",
+      "deleted": "Position erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Position"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name"
@@ -36,10 +59,6 @@
       "updating": "Wird aktualisiert...",
       "confirm": "Bestätigen",
       "confirming": "Wird bestätigt..."
-    },
-    "alerts": {
-      "deleteTitle": "Löschen bestätigen",
-      "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
     },
     "noResults": {
       "title": "Keine Ergebnisse gefunden",

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { getTranslations } from "next-intl/server";
 
 import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
@@ -21,7 +21,7 @@ export async function deleteDepartmentAction(departmentId: string) {
     await gqlRequestAuthed(DELETE_DEPARTMENT_MUTATION, {
       department: { departmentId }
     });
-    revalidatePath("/departments");
+    updateTag("departments");
 
     return { success: true };
   } catch (err) {

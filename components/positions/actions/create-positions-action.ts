@@ -7,22 +7,22 @@ import { gqlRequestAuthed } from '@/lib/gql/graphql-client';
 import { getError } from "@/lib/utils";
 import { graphql } from "@/gqlcodegen";
 
-const CREATE_DEPARTMENT_MUTATION = graphql(`
-  mutation CreateDepartment($department: CreateDepartmentInput!) {
-    createDepartment(department: $department) {
+const CREATE_POSITION_MUTATION = graphql(`
+  mutation CreatePosition($position: CreatePositionInput!) {
+    createPosition(position: $position) {
       id,
       name
     }
   }
 `);
 
-export async function createDepartmentAction(name: string) {
-  const t = await getTranslations("Departments.toasts");
+export async function createPositionAction(name: string) {
+  const t = await getTranslations("Positions.toasts");
   try {
-    await gqlRequestAuthed(CREATE_DEPARTMENT_MUTATION, {
-      department: { name }
+    await gqlRequestAuthed(CREATE_POSITION_MUTATION, {
+      position: { name }
     });
-    updateTag("departments");
+    updateTag("positions");
 
     return { success: true };
   } catch (err) {

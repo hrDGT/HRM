@@ -20,8 +20,8 @@ type MockItem = {
   width: string;
 };
 
-export function DepartmentsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
-  const mockData: MockItem[] = Array.from({ length: 10 }).map((_, index) => ({
+export function PositionsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
+  const mockData: MockItem[] = Array.from({ length: 13 }).map((_, index) => ({
     id: index,
     width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
   }));

@@ -3,20 +3,20 @@ import { useTranslations } from "next-intl";
 import { DashboardTableHead } from "@/components/dashboard/ui/dashboard-table-head";
 import { type TableColumn } from "@/components/ui/data-table";
 
-import { type Department } from "./departments-page-content";
+import { Position } from "./positions-page-content";
 
-export function getDepartmentColumns({
+export function getPositionsColumns({
   tCommon,
   sortField,
   sortOrder,
   onSort,
 }: {
   tCommon: ReturnType<typeof useTranslations>;
-  sortField: keyof Department;
-  onSort: (field: keyof Department) => void;
+  sortField: keyof Position;
+  onSort: (field: keyof Position) => void;
   sortOrder: "asc" | "desc";
-}): TableColumn<Department>[] {
-  return [
+}): TableColumn<Position>[] {
+  const columns: TableColumn<Position>[] = [
     {
       header: (
         <DashboardTableHead
@@ -27,7 +27,9 @@ export function getDepartmentColumns({
           onSort={() => onSort("name")}
         />
       ),
-      render: (dept) => dept.name,
+      render: (pos) => pos.name,
     },
   ];
+
+  return columns;
 }

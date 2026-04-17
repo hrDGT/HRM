@@ -1,10 +1,9 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 
-import { CreateDepartmentModal } from "@/components/departments/ui/create-department-modal";
 import {
   InputGroup,
   InputGroupAddon,
@@ -16,6 +15,7 @@ type Props = {
   searchValue: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   isAdmin: boolean;
+  createModal: ReactNode;
 };
 
 export function DashboardHeader({
@@ -23,6 +23,7 @@ export function DashboardHeader({
   searchValue,
   onChange,
   isAdmin,
+  createModal,
 }: Props) {
   const t = useTranslations("Common");
   return (
@@ -44,7 +45,7 @@ export function DashboardHeader({
             <Search className="size-5 stroke-action-color" />
           </InputGroupAddon>
         </InputGroup>
-        {isAdmin && <CreateDepartmentModal />}
+        {isAdmin && createModal}
       </div>
     </header>
   );

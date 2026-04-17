@@ -34,24 +34,30 @@ async function robustLogin(page: Page, emailText: string, passText: string) {
   await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
 }
 
-test.describe('Departments', () => {
-
-  test('Departments CRUD', async ({ page, context }) => {
+test.describe('Positions', () => {
+  test('Positions CRUD', async ({ page, context }) => {
     const runId = crypto.randomUUID().slice(0, 8);
-    const NEW = `QA Department ${runId}`;
-    const UPDATED = `DevOps Department ${runId}`;
+    const NEW = `React Position ${runId}`;
+    const UPDATED = `Next Position ${runId}`;
 
-    await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
+    await context.addCookies([
+      {
+        name: 'NEXT_LOCALE',
+        value: locale,
+        domain: 'localhost',
+        path: '/',
+      },
+    ]);
 
     await robustLogin(page, 'admin@test.com', '12345');
 
-    await page.goto('/departments');
+    await page.goto('/positions');
 
     await expect(
-      page.getByRole('heading', { name: t('Departments.title') })
+      page.getByRole('heading', { name: t('Positions.title') })
     ).toBeVisible({ timeout: 15000 }).catch(() => { });
 
-    const createBtn = page.getByRole('button', { name: t('Departments.createButton') });
+    const createBtn = page.getByRole('button', { name: t('Positions.createButton') });
     await expect(createBtn).toBeVisible();
 
     await createBtn.click();
@@ -73,8 +79,8 @@ test.describe('Departments', () => {
     });
     await expect(createdRow.first()).toBeVisible({ timeout: 15000 });
 
-    await createdRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
-    await page.getByRole('menuitem', { name: t('Departments.updateAction') }).click();
+    await createdRow.first().getByRole('button', { name: t('Positions.openMenu') }).click();
+    await page.getByRole('menuitem', { name: t('Positions.updateAction') }).click();
 
     await expect(dialog).toBeVisible();
 
@@ -94,8 +100,8 @@ test.describe('Departments', () => {
     });
     await expect(updatedRow.first()).toBeVisible({ timeout: 15000 });
 
-    await updatedRow.first().getByRole('button', { name: t('Departments.openMenu') }).click();
-    await page.getByRole('menuitem', { name: t('Departments.deleteAction') }).click();
+    await updatedRow.first().getByRole('button', { name: t('Positions.openMenu') }).click();
+    await page.getByRole('menuitem', { name: t('Positions.deleteAction') }).click();
 
     const alertModal = page.getByRole('dialog');
     await expect(alertModal).toBeVisible();
@@ -105,21 +111,20 @@ test.describe('Departments', () => {
     await expect(updatedRow.first()).toBeHidden({ timeout: 15000 });
   });
 
-  test.describe('Departments Extended Coverage', () => {
-
+  test.describe('Positions Extended Coverage', () => {
     test('Regular user does not see control buttons', async ({ page, context }) => {
       await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
 
       await robustLogin(page, 'user@test.com', '12345');
 
-      await page.goto('/departments');
+      await page.goto('/positions');
 
-      await expect(page.getByRole('heading', { name: t('Departments.title') })).toBeVisible();
+      await expect(page.getByRole('heading', { name: t('Positions.title') })).toBeVisible();
 
-      const createBtn = page.getByRole('button', { name: t('Departments.createButton') });
+      const createBtn = page.getByRole('button', { name: t('Positions.createButton') });
       await expect(createBtn).toHaveCount(0);
 
-      const actionMenus = page.getByRole('button', { name: t('Departments.openMenu') });
+      const actionMenus = page.getByRole('button', { name: t('Positions.openMenu') });
       await expect(actionMenus).toHaveCount(0);
     });
 
@@ -128,15 +133,13 @@ test.describe('Departments', () => {
 
       await robustLogin(page, 'admin@test.com', '12345');
 
-      await page.goto('/departments');
-      await expect(page.getByRole('heading', { name: t('Departments.title') })).toBeVisible();
+      await page.goto('/positions');
+      await expect(page.getByRole('heading', { name: t('Positions.title') })).toBeVisible();
 
       const searchInput = page.getByRole('searchbox');
 
       await searchInput.click();
-
-      await searchInput.pressSequentially('SomeNonExistentDepartmentName999', { delay: 20 });
-
+      await searchInput.pressSequentially('SomeNonExistentPositionName999', { delay: 20 });
       await page.keyboard.press('Enter');
 
       await expect(page.getByText(t('Common.noResults.title'))).toBeVisible();
@@ -152,16 +155,16 @@ test.describe('Departments', () => {
 
       await robustLogin(page, 'admin@test.com', '12345');
 
-      await page.goto('/departments');
+      await page.goto('/positions');
 
-      await page.getByRole('button', { name: t('Departments.createButton') }).click();
+      await page.getByRole('button', { name: t('Positions.createButton') }).click();
       const dialog = page.getByRole('dialog');
       await expect(dialog).toBeVisible();
 
       await dialog.getByPlaceholder(t('Common.fields.name')).fill('A');
       await dialog.getByRole('button', { name: t('Common.actions.create'), exact: true }).click();
 
-      await expect(dialog.getByText(t('Departments.validation.nameMin'))).toBeVisible();
+      await expect(dialog.getByText(t('Positions.validation.nameMin'))).toBeVisible();
       await expect(dialog).toBeVisible();
     });
   });

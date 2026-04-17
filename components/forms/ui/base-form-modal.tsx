@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { DefaultValues, FieldValues, useFormContext } from "react-hook-form";
+import { DefaultValues, FieldValues } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { ZodType } from "zod";

@@ -4,8 +4,8 @@
     "deleteModalTitle": "Delete department",
     "deleteConfirmation": "Are you sure you want to delete department",
     "createButton": "Create department",
-    "createModalTitle": "Create Department",
-    "updateModalTitle": "Update Department",
+    "createModalTitle": "Create department",
+    "updateModalTitle": "Update department",
     "updateAction": "Update department",
     "deleteAction": "Delete department",
     "openMenu": "Open menu",
@@ -16,6 +16,29 @@
       "updateError": "Failed to update department",
       "deleted": "Department deleted successfully",
       "deleteError": "Failed to delete department"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long"
+    }
+  },
+  "Positions": {
+    "title": "Positions",
+    "deleteModalTitle": "Delete position",
+    "deleteConfirmation": "Are you sure you want to delete position",
+    "createButton": "Create position",
+    "createModalTitle": "Create position",
+    "updateModalTitle": "Update position",
+    "updateAction": "Update position",
+    "deleteAction": "Delete position",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Position created successfully",
+      "createError": "Failed to create position",
+      "updated": "Position updated successfully",
+      "updateError": "Failed to update position",
+      "deleted": "Position deleted successfully",
+      "deleteError": "Failed to delete position"
     },
     "validation": {
       "nameMin": "Name must be at least 2 characters",
@@ -36,10 +59,6 @@
       "updating": "Updating...",
       "confirm": "Confirm",
       "confirming": "Confirming..."
-    },
-    "alerts": {
-      "deleteTitle": "Delete department",
-      "deleteDescription": "This action cannot be undone. This will permanently delete this record from our servers."
     },
     "noResults": {
       "title": "No results found",

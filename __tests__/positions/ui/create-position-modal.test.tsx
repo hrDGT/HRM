@@ -4,16 +4,16 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 
-import { createDepartmentAction } from "@/components/departments/actions/create-departments-action";
-import { CreateDepartmentModal } from "@/components/departments/ui/create-department-modal";
+import { createPositionAction } from "@/components/positions/actions/create-positions-action";
+import { CreatePositionModal } from "@/components/positions/ui/create-position-modal";
 
 jest.mock("next-intl", () => ({
   useTranslations: jest.fn((namespace) => (key: string) => {
     const translations: Record<string, Record<string, string>> = {
-      Departments: {
-        createButton: "Create department",
-        createModalTitle: "Create department",
-        "toasts.created": "Department created successfully",
+      Positions: {
+        createButton: "Create position",
+        createModalTitle: "Create position",
+        "toasts.created": "Position created successfully",
         "validation.nameMin": "Name must be at least 2 characters",
       },
       Common: {
@@ -27,8 +27,8 @@ jest.mock("next-intl", () => ({
   }),
 }));
 
-jest.mock("@/components/departments/actions/create-departments-action", () => ({
-  createDepartmentAction: jest.fn(),
+jest.mock("@/components/positions/actions/create-positions-action", () => ({
+  createPositionAction: jest.fn(),
 }));
 
 jest.mock("sonner", () => ({
@@ -38,43 +38,41 @@ jest.mock("sonner", () => ({
   },
 }));
 
-describe("CreateDepartmentModal", () => {
+describe("CreatePositionModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("opens modal, fills form, submits successfully and shows toast", async () => {
     const user = userEvent.setup();
-    (createDepartmentAction as jest.Mock).mockResolvedValue({ success: true });
+    (createPositionAction as jest.Mock).mockResolvedValue({ success: true });
 
-    render(<CreateDepartmentModal />);
+    render(<CreatePositionModal />);
 
     const triggerBtn = screen.getByRole("button", {
-      name: /Create department/i,
+      name: /Create position/i,
     });
     await user.click(triggerBtn);
 
     const input = await screen.findByPlaceholderText("Name");
-    await user.type(input, "New Department");
+    await user.type(input, "New Position");
 
     const submitBtn = screen.getByRole("button", { name: "Create" });
     await user.click(submitBtn);
 
     await waitFor(() => {
-      expect(createDepartmentAction).toHaveBeenCalledWith("New Department");
+      expect(createPositionAction).toHaveBeenCalledWith("New Position");
       expect(toast.success).toHaveBeenCalledWith(
-        "Department created successfully",
+        "Position created successfully",
       );
     });
   });
 
   it("shows validation error if name is too short without calling action", async () => {
     const user = userEvent.setup();
-    render(<CreateDepartmentModal />);
+    render(<CreatePositionModal />);
 
-    await user.click(
-      screen.getByRole("button", { name: /Create department/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /Create position/i }));
 
     const input = await screen.findByPlaceholderText("Name");
     await user.type(input, "A");
@@ -85,7 +83,7 @@ describe("CreateDepartmentModal", () => {
       expect(
         screen.getByText("Name must be at least 2 characters"),
       ).toBeInTheDocument();
-      expect(createDepartmentAction).not.toHaveBeenCalled();
+      expect(createPositionAction).not.toHaveBeenCalled();
     });
   });
 });
