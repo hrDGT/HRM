@@ -1,11 +1,9 @@
-import { AuthHeader } from "@/components/auth/auth-header";
+import { PropsWithChildren } from "react";
+
+import { AuthHeader } from "@/components/auth/ui/auth-header";
 import { FadeIn } from "@/components/ui/fade-in";
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthLayout({ children }: PropsWithChildren) {
   return (
     <div className="min-h-screen flex flex-col">
       <AuthHeader />

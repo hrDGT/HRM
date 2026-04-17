@@ -32,6 +32,32 @@
       "department": "Отдел",
       "position": "Должность",
       "role": "Роль"
+  "Positions": {
+    "title": "Должности",
+    "deleteModalTitle": "Удалить должность",
+    "deleteConfirmation": "Вы уверены, что хотите удалить должность",
+    "createButton": "Создать должность",
+    "createModalTitle": "Создать должность",
+    "updateModalTitle": "Обновить должность",
+    "updateAction": "Обновить должность",
+    "deleteAction": "Удалить должность",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Позиция успешно создана",
+      "createError": "Не удалось создать позицию",
+      "updated": "Позиция успешно обновлена",
+      "updateError": "Не удалось обновить позицию",
+      "deleted": "Позиция успешно удалена",
+      "deleteError": "Не удалось удалить позицию"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Имя"
     },
     "actions": {
       "create": "Создать",
@@ -53,6 +79,7 @@
     "alerts": {
       "deleteTitle": "Удаление",
       "deleteDescription": "Это действие нельзя отменить. Запись будет безвозвратно удалена с наших серверов."
+      "confirming": "Подтверждение..."
     },
     "noResults": {
       "title": "Ничего не найдено",

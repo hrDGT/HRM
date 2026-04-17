@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { ResetPasswordForm } from "@/components/auth/reset-password/reset-password-form";
+import { ResetPasswordForm } from "@/components/auth/ui/reset-password-form";
 
 export const metadata: Metadata = {
   title: "HRM | Reset Password",
