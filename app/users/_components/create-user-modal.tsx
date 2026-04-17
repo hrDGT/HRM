@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,9 @@ type CreateFormState = {
 };
 
 export function CreateUserModal({ open, onClose, onCreate, departments, positions }: CreateUserModalProps) {
+  const t = useTranslations("Users");
+  const c = useTranslations("Common");
+  
   const [form, setForm] = useState<CreateFormState>({
     email: "",
     password: "",
@@ -81,34 +85,32 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
   const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
   return (
-    <ModalWrapper open={open} onClose={onClose} title="Create user">
+    <ModalWrapper open={open} onClose={onClose} title={t("createModalTitle")}>
       <div className="grid grid-cols-2 gap-4">
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>Email</Label>
+          <Label className={fieldLabel}>{c("fields.email")}</Label>
           <Input value={form.email} onChange={(e) => set("email", e.target.value)} className={fieldInput} />
         </div>
 
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>Password</Label>
+          <Label className={fieldLabel}>{c("fields.password")}</Label>
           <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="********" className={fieldInput} />
         </div>
 
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>First Name</Label>
+          <Label className={fieldLabel}>{c("fields.firstName")}</Label>
           <Input value={form.firstName} onChange={(e) => set("firstName", e.target.value)} className={fieldInput} />
         </div>
 
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>Last Name</Label>
+          <Label className={fieldLabel}>{c("fields.lastName")}</Label>
           <Input value={form.lastName} onChange={(e) => set("lastName", e.target.value)} className={fieldInput} />
         </div>
 
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>Department</Label>
+          <Label className={fieldLabel}>{c("fields.department")}</Label>
           <Select value={form.departmentId} onValueChange={(v) => set("departmentId", v)}>
-            <SelectTrigger className={fieldInput}>
-              <SelectValue />
-            </SelectTrigger>
+            <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {departments.map((d) => (
                 <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
@@ -118,11 +120,9 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
         </div>
 
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>Position</Label>
+          <Label className={fieldLabel}>{c("fields.position")}</Label>
           <Select value={form.positionId} onValueChange={(v) => set("positionId", v)}>
-            <SelectTrigger className={fieldInput}>
-              <SelectValue />
-            </SelectTrigger>
+            <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {positions.map((p) => (
                 <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
@@ -132,11 +132,9 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
         </div>
 
         <div className={fieldWrapper}>
-          <Label className={fieldLabel}>Role</Label>
+          <Label className={fieldLabel}>{c("fields.role")}</Label>
           <Select value={form.role} onValueChange={(v) => set("role", v)}>
-            <SelectTrigger className={fieldInput}>
-              <SelectValue />
-            </SelectTrigger>
+            <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {ROLES.map((r) => (
                 <SelectItem key={r} value={r} className="focus:bg-white/5">{r}</SelectItem>
@@ -153,14 +151,14 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
             onClick={onClose}
             className="flex-1 uppercase text-xs tracking-widest text-zinc-400 hover:text-zinc-200 bg-transparent hover:bg-white/5 border-white/10 rounded-4xl"
           >
-            Cancel
+            {c("actions.cancel")}
           </Button>
           <Button
             onClick={handleCreate}
             disabled={!form.email || !form.password || !form.firstName || !form.lastName}
             className="flex-1 uppercase text-xs tracking-widest bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10 rounded-4xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create
+            {c("actions.create")}
           </Button>
         </div>
       </div>

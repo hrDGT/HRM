@@ -1,0 +1,88 @@
+{
+  "Departments": {
+    "title": "Отделы",
+    "deleteModalTitle": "Удалить отдел",
+    "createButton": "Создать отдел",
+    "deleteConfirmation": "Вы уверены, что хотите удалить отдел",
+    "createModalTitle": "Создать отдел",
+    "updateModalTitle": "Редактировать отдел",
+    "updateAction": "Редактировать отдел",
+    "deleteAction": "Удалить отдел",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Отдел успешно создан",
+      "createError": "Не удалось создать отдел",
+      "updated": "Отдел успешно обновлен",
+      "updateError": "Не удалось обновить отдел",
+      "deleted": "Отдел успешно удален",
+      "deleteError": "Не удалось удалить отдел"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Имя",
+      "email": "Email",
+      "password": "Пароль",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "department": "Отдел",
+      "position": "Должность",
+      "role": "Роль"
+    },
+    "actions": {
+      "create": "Создать",
+      "update": "Обновить",
+      "cancel": "Отмена",
+      "search": "Поиск",
+      "resetSearch": "Сбросить поиск",
+      "creating": "Создание...",
+      "updating": "Обновление...",
+      "confirm": "Подтвердить",
+      "confirming": "Подтверждение...",
+      "saving": "Сохранение..."
+    },
+    "placeholders": {
+      "search": "Поиск",
+      "selectDepartment": "Выберите отдел",
+      "selectPosition": "Выберите должность"
+    },
+    "alerts": {
+      "deleteTitle": "Удаление",
+      "deleteDescription": "Это действие нельзя отменить. Запись будет безвозвратно удалена с наших серверов."
+    },
+    "noResults": {
+      "title": "Ничего не найдено",
+      "description": "Попробуйте другой запрос, проверьте орфографию или используйте более общие термины"
+    }
+  },
+  "Users": {
+    "title": "Сотрудники",
+    "createUserButton": "СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ",
+    "createModalTitle": "Создать пользователя",
+    "updateModalTitle": "Редактировать пользователя",
+    "viewProfile": "Просмотреть профиль",
+    "updateAction": "Редактировать пользователя",
+    "noResults": "Сотрудники не найдены",
+    "tabs": {
+      "profile": "ПРОФИЛЬ",
+      "skills": "НАВЫКИ",
+      "languages": "ЯЗЫКИ"
+    },
+    "nav": {
+      "skills": "Навыки",
+      "languages": "Языки",
+      "cvs": "Резюме"
+    },
+    "unnamedUser": "Без имени",
+    "uploadAvatar": "Загрузить аватар",
+    "uploadHint": "png, jpg или gif не более 1 МБ",
+    "fileSizeError": "Файл должен быть не более 1 МБ",
+    "collapseMenu": "Свернуть меню",
+    "expandMenu": "Развернуть меню",
+    "defaultUser": "Пользователь"
+  }
+}

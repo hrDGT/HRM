@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Upload, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,12 +15,6 @@ import { cn } from "@/lib/utils";
 import type { EmployeeProfile } from "@/lib/users/users-types";
 import { updateProfile, updateUserMeta, uploadAvatar } from "../actions";
 
-const TABS = [
-  { id: "profile", label: "PROFILE" },
-  { id: "skills", label: "SKILLS" },
-  { id: "languages", label: "LANGUAGES" },
-];
-
 type UserProfileClientProps = {
   employee: EmployeeProfile;
   currentUserId: number;
@@ -32,6 +27,14 @@ export function UserProfileClient({
   employee, currentUserId, currentUserRole,
   departments, positions,
 }: UserProfileClientProps) {
+  const t = useTranslations("Users");
+  const c = useTranslations("Common");
+
+  const TABS = [
+    { id: "profile", label: t("tabs.profile") },
+    { id: "skills", label: t("tabs.skills") },
+    { id: "languages", label: t("tabs.languages") },
+  ];
 
   const initialDeptId = departments.find(d => d.name === employee.department)?.id ?? null;
   const initialPosId = positions.find(p => p.name === employee.position)?.id ?? null;
@@ -62,7 +65,7 @@ export function UserProfileClient({
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 1024 * 1024) { setError("File must be no more than 1MB"); return; }
+    if (file.size > 1024 * 1024) { setError(t("fileSizeError")); return; }
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = reader.result as string;
@@ -121,7 +124,7 @@ export function UserProfileClient({
   const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
   const nameDisplay = form.firstName || form.lastName
-    ? `${form.firstName} ${form.lastName}`.trim() : "Unnamed User";
+    ? `${form.firstName} ${form.lastName}`.trim() : t("unnamedUser");
   const breadcrumbDisplay = form.firstName || form.lastName
     ? `${form.firstName} ${form.lastName}`.trim() : form.email;
 
@@ -129,7 +132,7 @@ export function UserProfileClient({
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
       <div className="flex items-center gap-2 px-8 py-4 text-sm">
         <Link href="/users" className="text-zinc-400 hover:text-zinc-200 transition-colors">
-          Employees
+          {t("title")}
         </Link>
         <ChevronRight size={16} className="text-zinc-600" />
         <span className="text-red-500">{breadcrumbDisplay}</span>
@@ -168,9 +171,9 @@ export function UserProfileClient({
                     className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
                     <div className="flex items-center gap-2 text-zinc-200">
                       <Upload size={18} className="text-zinc-400" />
-                      <span className="text-sm font-medium">Upload avatar image</span>
+                      <span className="text-sm font-medium">{t("uploadAvatar")}</span>
                     </div>
-                    <p className="text-xs text-zinc-500">png, jpg or gif no more than 1MB</p>
+                    <p className="text-xs text-zinc-500">{t("uploadHint")}</p>
                   </button>
                 </>
               )}
@@ -187,16 +190,16 @@ export function UserProfileClient({
             <fieldset disabled={!canEdit}
               className="grid grid-cols-2 gap-4 pt-4 disabled:opacity-60 disabled:cursor-not-allowed">
               <div className={fieldWrapper}>
-                <Label className={fieldLabel}>First Name</Label>
+                <Label className={fieldLabel}>{c("fields.firstName")}</Label>
                 <Input value={form.firstName} onChange={(e) => set("firstName", e.target.value)} className={fieldInput} />
               </div>
               <div className={fieldWrapper}>
-                <Label className={fieldLabel}>Last Name</Label>
+                <Label className={fieldLabel}>{c("fields.lastName")}</Label>
                 <Input value={form.lastName} onChange={(e) => set("lastName", e.target.value)} className={fieldInput} />
               </div>
 
               <div className={fieldWrapper}>
-                <Label className={fieldLabel}>Department</Label>
+                <Label className={fieldLabel}>{c("fields.department")}</Label>
                 <Select
                   value={form.departmentId ?? ""}
                   onValueChange={(v) => {
@@ -206,7 +209,7 @@ export function UserProfileClient({
                   disabled={!canEdit}
                 >
                   <SelectTrigger className={fieldInput}>
-                    <SelectValue placeholder="Select department" />
+                    <SelectValue placeholder={c("placeholders.selectDepartment")} />
                   </SelectTrigger>
                   <SelectContent className="bg-[#353535] border-white/10 text-zinc-200">
                     {departments.map((d) => (
@@ -217,7 +220,7 @@ export function UserProfileClient({
               </div>
 
               <div className={fieldWrapper}>
-                <Label className={fieldLabel}>Position</Label>
+                <Label className={fieldLabel}>{c("fields.position")}</Label>
                 <Select
                   value={form.positionId ?? ""}
                   onValueChange={(v) => {
@@ -227,7 +230,7 @@ export function UserProfileClient({
                   disabled={!canEdit}
                 >
                   <SelectTrigger className={fieldInput}>
-                    <SelectValue placeholder="Select position" />
+                    <SelectValue placeholder={c("placeholders.selectPosition")} />
                   </SelectTrigger>
                   <SelectContent className="bg-[#353535] border-white/10 text-zinc-200">
                     {positions.map((p) => (
@@ -247,7 +250,7 @@ export function UserProfileClient({
                         ? "bg-zinc-500 text-zinc-200 cursor-not-allowed border border-white/5"
                         : "bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10"
                     )}>
-                    {isSaving ? "Saving..." : "Update"}
+                    {isSaving ? c("actions.saving") : c("actions.update")}
                   </Button>
                 </div>
               </div>

@@ -1,18 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Users, Lightbulb, Languages, FileText, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-
-const NAV_ITEMS = [
-  { label: "Employees", icon: Users, href: "/users" },
-  { label: "Skills", icon: Lightbulb, href: "/skills" },
-  { label: "Languages", icon: Languages, href: "/languages" },
-  { label: "CVs", icon: FileText, href: "/cvs" },
-];
 
 type UsersLayoutClientProps = {
   currentUser: {
@@ -27,16 +21,24 @@ type UsersLayoutClientProps = {
 const PROFILE_LINK_CLASS = "flex items-center px-3 gap-2 hover:bg-white/5 rounded-l-lg rounded-4xl py-1 transition-colors cursor-pointer";
 
 export function UsersLayoutClient({ currentUser, children }: UsersLayoutClientProps) {
+  const t = useTranslations("Users");
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(true);
+
+  const NAV_ITEMS = [
+    { label: t("title"), icon: Users, href: "/users" },
+    { label: t("nav.skills"), icon: Lightbulb, href: "/skills" },
+    { label: t("nav.languages"), icon: Languages, href: "/languages" },
+    { label: t("nav.cvs"), icon: FileText, href: "/cvs" },
+  ];
 
   const initials = currentUser
     ? `${currentUser.firstName?.[0] ?? ""}${currentUser.lastName?.[0] ?? ""}`.toUpperCase() || "U"
     : "U";
 
   const displayName = currentUser
-    ? `${currentUser.firstName} ${currentUser.lastName}`.trim() || "User"
-    : "User";
+    ? `${currentUser.firstName} ${currentUser.lastName}`.trim() || t("defaultUser")
+    : t("defaultUser");
 
   return (
     <div className="flex h-screen bg-[#353535] text-zinc-200 overflow-hidden">
@@ -87,7 +89,7 @@ export function UsersLayoutClient({ currentUser, children }: UsersLayoutClientPr
 
           <button
             onClick={() => setIsExpanded((prev) => !prev)}
-            aria-label={isExpanded ? "Свернуть меню" : "Развернуть меню"}
+            aria-label={isExpanded ? t("collapseMenu") : t("expandMenu")}
             className="flex items-center justify-start w-full py-1.5 px-3 rounded-4xl rounded-l-lg transition-colors cursor-pointer hover:bg-white/5"
           >
             <ChevronLeft

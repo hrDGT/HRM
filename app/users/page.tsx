@@ -71,7 +71,7 @@ export default async function UsersPage() {
       currentUserRole = roleRes.user?.role || "Employee";
     } catch {}
   }
-
+console.log("UsersPage rendered");
   return (
     <EmployeesClient 
       employees={employees} 

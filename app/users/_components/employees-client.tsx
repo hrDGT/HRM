@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -47,6 +48,9 @@ export function EmployeesClient({
   departments,
   positions,
 }: Props) {
+  const t = useTranslations("Users");
+  const c = useTranslations("Common");
+
   const [employees, setEmployees] = useState(initialEmployees);
   const [search, setSearch] = useState("");
   const [sortAsc, setSortAsc] = useState(true);
@@ -87,7 +91,7 @@ export function EmployeesClient({
       <div className="px-6 pt-5 pb-4 border-white/5">
         <div className="flex items-center justify-between mb-3">
           <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold">
-            Employees
+            {t("title")}
           </p>
           {currentUserRole === "Admin" && (
             <Button
@@ -96,7 +100,7 @@ export function EmployeesClient({
               className="h-7 px-2 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400"
             >
               <Plus size={14} className="mr-1.5" />
-              CREATE USER
+              {t("createUserButton")}
             </Button>
           )}
         </div>
@@ -105,7 +109,7 @@ export function EmployeesClient({
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search"
+            placeholder={c("placeholders.search")}
             className="pl-8 h-9 border-white/10 rounded-4xl text-sm text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:border-white/20"
           />
         </div>
@@ -117,13 +121,13 @@ export function EmployeesClient({
             <TableRow className="border-white/5 hover:bg-transparent">
               <TableHead className="w-10" />
               <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                First Name
+                {c("fields.firstName")}
               </TableHead>
               <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                Last Name
+                {c("fields.lastName")}
               </TableHead>
               <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                Email
+                {c("fields.email")}
               </TableHead>
               <TableHead
                 className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none"
@@ -133,7 +137,7 @@ export function EmployeesClient({
                 }}
               >
                 <span className="flex items-center gap-1">
-                  Department
+                  {c("fields.department")}
                   {sortAsc ? (
                     <ChevronUp size={12} className="text-zinc-300" />
                   ) : (
@@ -142,7 +146,7 @@ export function EmployeesClient({
                 </span>
               </TableHead>
               <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                Position
+                {c("fields.position")}
               </TableHead>
               <TableHead className="w-10" />
             </TableRow>
@@ -220,7 +224,7 @@ export function EmployeesClient({
                                 router.push(`/users/${emp.id}`);
                               }}
                             >
-                              View profile
+                              {t("viewProfile")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
@@ -229,7 +233,7 @@ export function EmployeesClient({
                                 setEditingEmployee(emp);
                               }}
                             >
-                              Update user
+                              {t("updateAction")}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -247,7 +251,7 @@ export function EmployeesClient({
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
             <Users size={32} className="mb-3 opacity-40" />
-            <p className="text-sm">No employees found</p>
+            <p className="text-sm">{t("noResults")}</p>
           </div>
         )}
       </div>
