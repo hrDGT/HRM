@@ -43,7 +43,7 @@ export function PositionsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
   if (isAdmin) {
     columns.push({
       header: "",
-      className: "text-right py-4",
+      className: "text-right py-4 w-[50px] min-w-[50px] max-w-[50px]",
       render: () => <Skeleton className="h-6 w-6 rounded-full ml-auto" />,
     });
   }
