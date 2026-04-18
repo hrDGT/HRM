@@ -95,7 +95,6 @@ export function DataTable<T>({
                       <DropdownMenuContent
                         className="bg-white w-full py-2"
                         align="end"
-                        onCloseAutoFocus={(e) => e.preventDefault()}
                       >
                         {actions.map((act, i) => (
                           <DropdownMenuItem
