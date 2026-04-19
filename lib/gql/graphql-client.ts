@@ -19,6 +19,7 @@ export interface FetchOptions {
   headers?: Record<string, string>;
   cache?: RequestCache;
   next?: RequestInit["next"];
+  token?: string;
 }
 
 export async function gqlFetch<T, V>(
@@ -29,36 +30,67 @@ export async function gqlFetch<T, V>(
   const apiUrl = process.env.GRAPHQL_URL;
   if (!apiUrl) throw new Error("GRAPHQL_URL is missing");
 
-  const response = await fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    body: JSON.stringify({ query: print(document), variables }),
-    cache: options?.cache ?? "no-store",
-    next: options?.next,
-  });
-
-  const responseText = await response.text();
-  let result: GraphQLResponse<T> = {};
-
-  if (isUnauthorizedError(result.errors)) {
-    const appUrl = `http://localhost:${process.env.PORT || 3000}`;
-    const allCookies = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join("; ");
-
-    const refreshResponse = await fetch(`${appUrl}/api/auth/refresh`, {
+  const makeRequest = (accessToken?: string) =>
+    fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: allCookies,
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...options?.headers,
       },
+      body: JSON.stringify({ query: print(document), variables }),
+      cache: options?.cache ?? "no-store",
+      next: options?.next,
+    });
+
+  const response = await makeRequest(options?.token);
+  const result: GraphQLResponse<T> = await response.json();
+
+  if (result.errors) {
+    throw new Error(result.errors[0].message);
+  }
+
+  return result.data!;
+}
+
+export async function gqlRequestAuthed<T, V>(
+  document: TypedDocumentNode<T, V>,
+  variables?: V,
+  options?: Omit<FetchOptions, "token">
+): Promise<T> {
+  const apiUrl = process.env.GRAPHQL_URL;
+  if (!apiUrl) throw new Error("GRAPHQL_URL is missing");
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+
+  const makeRequest = (accessToken?: string) =>
+    fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...options?.headers,
+      },
+      body: JSON.stringify({ query: print(document), variables }),
+      cache: options?.cache ?? "no-store",
+      next: options?.next,
+    });
+
+  let response = await makeRequest(token);
+  let result: GraphQLResponse<T> = await response.json();
+
+  if (isUnauthorizedError(result.errors)) {
+    const appUrl = `http://localhost:${process.env.PORT || 3000}`;
+    const allCookies = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+    const refreshResponse = await fetch(`${appUrl}/api/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: allCookies },
     });
 
     if (refreshResponse.ok) {
-      const refreshData = await refreshResponse.json();
-      const newToken = refreshData.access_token;
-
+      const { access_token: newToken } = await refreshResponse.json();
       if (newToken) {
         response = await makeRequest(newToken);
         result = await response.json();
@@ -74,5 +106,7 @@ export async function gqlFetch<T, V>(
     throw new Error(result.errors[0].message);
   }
 
-  return result.data;
+  return result.data!;
 }
+
+export const gqlRequest = gqlRequestAuthed;

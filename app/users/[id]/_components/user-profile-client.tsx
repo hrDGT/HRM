@@ -2,8 +2,9 @@
 
 import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Upload, ChevronRight } from "lucide-react";
+import { Upload, ChevronRight, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { EmployeeProfile } from "@/lib/users/users-types";
-import { updateProfile, updateUserMeta, uploadAvatar } from "../actions";
+import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../actions";
 
 type UserProfileClientProps = {
   employee: EmployeeProfile;
@@ -54,8 +55,10 @@ export function UserProfileClient({
   const [avatarPreview, setAvatarPreview] = useState<string | null>(employee.avatar);
   const [avatarFile, setAvatarFile] = useState<{ base64: string; size: number; type: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canEdit = employee.id === currentUserId || currentUserRole?.toUpperCase() === "ADMIN";
+  const router = useRouter();
 
   const set = (field: string, value: string | null) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -70,11 +73,28 @@ export function UserProfileClient({
     reader.onload = () => {
       const dataUrl = reader.result as string;
       setAvatarPreview(dataUrl);
-      setAvatarFile({ base64: dataUrl.split(",")[1], size: file.size, type: file.type });
+      setAvatarFile({ base64: dataUrl, size: file.size, type: file.type });
       setIsDirty(true);
       setError(null);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleDeleteAvatar = async () => {
+    if (!confirm(t("deleteAvatarConfirm") || "Delete avatar?")) return;
+    
+    setIsDeleting(true);
+    setError(null);
+    try {
+      await deleteAvatar(employee.id);
+      setAvatarPreview(null);
+      setAvatarFile(null);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete avatar");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleUpdate = async () => {
@@ -101,17 +121,8 @@ export function UserProfileClient({
         setOriginalValues({ departmentId: form.departmentId, positionId: form.positionId });
       }
 
-      if (profileUpdated || userUpdated) {
-        setForm((prev) => ({
-          ...prev,
-          firstName: profileUpdated?.first_name ?? prev.firstName,
-          lastName: profileUpdated?.last_name ?? prev.lastName,
-          department: userUpdated?.department_name ?? prev.department,
-          position: userUpdated?.position_name ?? prev.position,
-        }));
-      }
-
       setIsDirty(false);
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save changes");
     } finally {
@@ -156,28 +167,43 @@ export function UserProfileClient({
       {activeTab === "profile" && (
         <div className="flex-1 px-8 pb-8">
           <div className="max-w-4xl mx-auto space-y-8">
-            <div className="flex justify-center items-center gap-6">
+          <div className="flex justify-center items-center gap-6">
+            <div className="relative group">
               <Avatar className="h-24 w-24 flex-shrink-0">
                 {avatarPreview && <AvatarImage src={avatarPreview} alt={nameDisplay} />}
                 <AvatarFallback className="bg-zinc-700 text-zinc-300 text-3xl font-bold">
                   {form.initials || (form.firstName?.[0] || "") + (form.lastName?.[0] || "")}
                 </AvatarFallback>
               </Avatar>
-              {canEdit && (
-                <>
-                  <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/gif"
-                    className="hidden" onChange={handleAvatarChange} />
-                  <button type="button" onClick={() => fileInputRef.current?.click()}
-                    className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
-                    <div className="flex items-center gap-2 text-zinc-200">
-                      <Upload size={18} className="text-zinc-400" />
-                      <span className="text-sm font-medium">{t("uploadAvatar")}</span>
-                    </div>
-                    <p className="text-xs text-zinc-500">{t("uploadHint")}</p>
-                  </button>
-                </>
+
+              {canEdit && avatarPreview && (
+                <button
+                  type="button"
+                  onClick={handleDeleteAvatar}
+                  disabled={isDeleting}
+                  className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
+                  title="Удалить аватар"
+                >
+                  <X className="w-10 h-10 text-red-500" />
+                </button>
               )}
             </div>
+            
+            {canEdit && (
+              <>
+                <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/gif"
+                  className="hidden" onChange={handleAvatarChange} />
+                <button type="button" onClick={() => fileInputRef.current?.click()}
+                  className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
+                  <div className="flex items-center gap-2 text-zinc-200">
+                    <Upload size={18} className="text-zinc-400" />
+                    <span className="text-sm font-medium">{t("uploadAvatar")}</span>
+                  </div>
+                  <p className="text-xs text-zinc-500">{t("uploadHint")}</p>
+                </button>
+              </>
+            )}
+          </div>
 
             <div className="text-center space-y-1">
               <h1 className="text-xl font-semibold text-zinc-100">{nameDisplay}</h1>

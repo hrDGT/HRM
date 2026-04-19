@@ -22,16 +22,6 @@
       "nameMax": "Название слишком длинное"
     }
   },
-  "Common": {
-    "fields": {
-      "name": "Имя",
-      "email": "Email",
-      "password": "Пароль",
-      "firstName": "Имя",
-      "lastName": "Фамилия",
-      "department": "Отдел",
-      "position": "Должность",
-      "role": "Роль"
   "Positions": {
     "title": "Должности",
     "deleteModalTitle": "Удалить должность",
@@ -57,7 +47,14 @@
   },
   "Common": {
     "fields": {
-      "name": "Имя"
+      "name": "Имя",
+      "email": "Email",
+      "password": "Пароль",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "department": "Отдел",
+      "position": "Должность",
+      "role": "Роль"
     },
     "actions": {
       "create": "Создать",
@@ -79,7 +76,6 @@
     "alerts": {
       "deleteTitle": "Удаление",
       "deleteDescription": "Это действие нельзя отменить. Запись будет безвозвратно удалена с наших серверов."
-      "confirming": "Подтверждение..."
     },
     "noResults": {
       "title": "Ничего не найдено",
@@ -93,6 +89,8 @@
     "updateModalTitle": "Редактировать пользователя",
     "viewProfile": "Просмотреть профиль",
     "updateAction": "Редактировать пользователя",
+    "deleteAvatar": "Удалить аватар",
+    "deleteAvatarConfirm": "Вы уверены, что хотите удалить этот аватар?",
     "noResults": "Сотрудники не найдены",
     "tabs": {
       "profile": "ПРОФИЛЬ",

@@ -53,7 +53,7 @@ export function EmployeesClient({
 
   const [employees, setEmployees] = useState(initialEmployees);
   const [search, setSearch] = useState("");
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortConfig, setSortConfig] = useState<{ field: string; direction: 'asc' | 'desc' } | null>(null);
   const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const router = useRouter();
@@ -67,7 +67,15 @@ export function EmployeesClient({
     setIsCreateOpen(false);
   };
 
-  const filtered = employees
+  const handleSort = (field: string) => {
+    setSortConfig((prev) => {
+      if (!prev || prev.field !== field) return { field, direction: "asc" };
+      if (prev.direction === "asc") return { field, direction: "desc" };
+      return null;
+    });
+  };
+
+  const displayed = [...employees]
     .filter((e) => {
       const q = search.toLowerCase();
       return (
@@ -79,12 +87,15 @@ export function EmployeesClient({
       );
     })
     .sort((a, b) => {
-      const da = a.department.toLowerCase();
-      const db = b.department.toLowerCase();
-      return sortAsc ? da.localeCompare(db) : db.localeCompare(da);
+      if (!sortConfig) return 0;
+      const { field, direction } = sortConfig;
+      const aVal = (a as any)[field]?.toLowerCase() ?? "";
+      const bVal = (b as any)[field]?.toLowerCase() ?? "";
+      return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
     });
 
-  const showActions = (empId: string | number) => empId === currentUserId || currentUserRole === "Admin";
+  const showActions = (empId: string | number) =>
+    empId === currentUserId || currentUserRole === "Admin";
 
   return (
     <>
@@ -105,7 +116,10 @@ export function EmployeesClient({
           )}
         </div>
         <div className="relative max-w-xs">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+          />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -120,40 +134,93 @@ export function EmployeesClient({
           <TableHeader>
             <TableRow className="border-white/5 hover:bg-transparent">
               <TableHead className="w-10" />
-              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                {c("fields.firstName")}
-              </TableHead>
-              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                {c("fields.lastName")}
-              </TableHead>
-              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                {c("fields.email")}
-              </TableHead>
+
               <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSortAsc((v) => !v);
-                }}
+                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
+                onClick={() => handleSort("firstName")}
               >
                 <span className="flex items-center gap-1">
-                  {c("fields.department")}
-                  {sortAsc ? (
-                    <ChevronUp size={12} className="text-zinc-300" />
-                  ) : (
-                    <ChevronUp size={12} className="text-zinc-300 rotate-180" />
+                  {c("fields.firstName")}
+                  {sortConfig?.field === "firstName" && (
+                    sortConfig.direction === "asc" ? (
+                      <ChevronUp size={12} className="text-zinc-300" />
+                    ) : (
+                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
+                    )
                   )}
                 </span>
               </TableHead>
-              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
-                {c("fields.position")}
+
+              <TableHead
+                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
+                onClick={() => handleSort("lastName")}
+              >
+                <span className="flex items-center gap-1">
+                  {c("fields.lastName")}
+                  {sortConfig?.field === "lastName" && (
+                    sortConfig.direction === "asc" ? (
+                      <ChevronUp size={12} className="text-zinc-300" />
+                    ) : (
+                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
+                    )
+                  )}
+                </span>
               </TableHead>
+
+              <TableHead
+                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
+                onClick={() => handleSort("email")}
+              >
+                <span className="flex items-center gap-1">
+                  {c("fields.email")}
+                  {sortConfig?.field === "email" && (
+                    sortConfig.direction === "asc" ? (
+                      <ChevronUp size={12} className="text-zinc-300" />
+                    ) : (
+                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
+                    )
+                  )}
+                </span>
+              </TableHead>
+
+              <TableHead
+                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
+                onClick={() => handleSort("department")}
+              >
+                <span className="flex items-center gap-1">
+                  {c("fields.department")}
+                  {sortConfig?.field === "department" && (
+                    sortConfig.direction === "asc" ? (
+                      <ChevronUp size={12} className="text-zinc-300" />
+                    ) : (
+                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
+                    )
+                  )}
+                </span>
+              </TableHead>
+
+              <TableHead
+                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
+                onClick={() => handleSort("position")}
+              >
+                <span className="flex items-center gap-1">
+                  {c("fields.position")}
+                  {sortConfig?.field === "position" && (
+                    sortConfig.direction === "asc" ? (
+                      <ChevronUp size={12} className="text-zinc-300" />
+                    ) : (
+                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
+                    )
+                  )}
+                </span>
+              </TableHead>
+
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {filtered.map((emp) => {
+            {displayed.map((emp) => {
               const isCurrentUser = emp.id === currentUserId;
               const canShowDropdown = showActions(emp.id);
 
@@ -248,7 +315,7 @@ export function EmployeesClient({
           </TableBody>
         </Table>
 
-        {filtered.length === 0 && (
+        {displayed.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
             <Users size={32} className="mb-3 opacity-40" />
             <p className="text-sm">{t("noResults")}</p>

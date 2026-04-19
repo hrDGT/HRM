@@ -22,16 +22,6 @@
       "nameMax": "Der Name ist zu lang"
     }
   },
-  "Common": {
-    "fields": {
-      "name": "Name",
-      "email": "E-Mail",
-      "password": "Passwort",
-      "firstName": "Vorname",
-      "lastName": "Nachname",
-      "department": "Abteilung",
-      "position": "Position",
-      "role": "Rolle"
   "Positions": {
     "title": "Positionen",
     "deleteModalTitle": "Position löschen",
@@ -57,7 +47,14 @@
   },
   "Common": {
     "fields": {
-      "name": "Name"
+      "name": "Name",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "department": "Abteilung",
+      "position": "Position",
+      "role": "Rolle"
     },
     "actions": {
       "create": "Erstellen",
@@ -79,7 +76,6 @@
     "alerts": {
       "deleteTitle": "Löschen bestätigen",
       "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
-      "confirming": "Wird bestätigt..."
     },
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
@@ -93,6 +89,8 @@
     "updateModalTitle": "Mitarbeiter bearbeiten",
     "viewProfile": "Profil ansehen",
     "updateAction": "Mitarbeiter bearbeiten",
+    "deleteAvatar": "Avatar löschen",
+    "deleteAvatarConfirm": "Möchten Sie wirklich diesen Avatar löschen?",
     "noResults": "Keine Mitarbeiter gefunden",
     "tabs": {
       "profile": "PROFIL",

@@ -66,6 +66,8 @@
     "updateModalTitle": "Update user",
     "viewProfile": "View profile",
     "updateAction": "Update user",
+    "deleteAvatar": "Delete avatar",
+    "deleteAvatarConfirm": "Delete this avatar?",
     "noResults": "No employees found",
     "tabs": {
       "profile": "PROFILE",
