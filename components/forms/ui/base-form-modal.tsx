@@ -97,7 +97,7 @@ export function BaseFormModal<T extends FieldValues>({
           defaultValues={defaultValues}
           onSubmit={handleFormSubmit}
         >
-          <div className="py-2 space-y-4">{children}</div>
+          <div className="py-2 space-y-6">{children}</div>
 
           <DialogFooter className="border-0">
             <Button
