@@ -20,7 +20,6 @@ export async function fetchSkills(token?: string) {
   'use cache'
   cacheLife('hours')
   cacheTag('skills')
-  cacheTag('skill-categories')
 
   const response = await gqlRequestAuthed(
     GET_SKILLS_QUERY,

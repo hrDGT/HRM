@@ -28,4 +28,4 @@ export async function updateSkillAction(skillId: string, name: string, categoryI
   } catch (err) {
     return { error: getError(err, t("updateError")) };
   }
-} 8
+}

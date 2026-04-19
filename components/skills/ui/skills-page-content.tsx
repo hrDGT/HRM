@@ -15,7 +15,7 @@ import { deleteSkillAction } from "../actions/delete-skills-action";
 
 import { CreateSkillModal } from "./create-skill-modal";
 import { getSkillsColumns } from "./skills-columns";
-import { UpdateSkillModal } from "./update-skill.modal";
+import { UpdateSkillModal } from "./update-skill-modal";
 
 export type Skill = GetSkillsQuery["skills"][0];
 
