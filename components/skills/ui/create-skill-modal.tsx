@@ -18,7 +18,6 @@ type Props = {
 };
 
 export function CreateSkillModal({ categoryOptions }: Props) {
-  console.log(categoryOptions);
   const [isPending, startTransition] = useTransition();
   const t = useTranslations("Skills");
   const tCommon = useTranslations("Common");
