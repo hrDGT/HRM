@@ -20,13 +20,24 @@ type MockItem = {
   width: string;
 };
 
-export function DepartmentsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
-  const mockData: MockItem[] = Array.from({ length: 10 }).map((_, index) => ({
+export function SkillsTableSkeleton({ isAdmin }: { isAdmin: boolean }) {
+  const mockData: MockItem[] = Array.from({ length: 13 }).map((_, index) => ({
     id: index,
     width: SKELETON_WIDTHS[index % SKELETON_WIDTHS.length],
   }));
 
   const columns: TableColumn<MockItem>[] = [
+    {
+      header: (
+        <TableHead className="p-4">
+          <Skeleton className="w-14 h-5 rounded-xl" />
+        </TableHead>
+      ),
+      className: "p-4",
+      render: (item) => (
+        <Skeleton className="h-8 rounded-xl" style={{ width: item.width }} />
+      ),
+    },
     {
       header: (
         <TableHead className="p-4">
