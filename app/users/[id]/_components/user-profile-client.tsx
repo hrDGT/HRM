@@ -134,10 +134,9 @@ export function UserProfileClient({
   const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#353535] px-1.5 text-[10px] uppercase tracking-wider text-zinc-500";
   const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
-  const nameDisplay = form.firstName || form.lastName
-    ? `${form.firstName} ${form.lastName}`.trim() : t("unnamedUser");
-  const breadcrumbDisplay = form.firstName || form.lastName
-    ? `${form.firstName} ${form.lastName}`.trim() : form.email;
+  const fullName = [form.firstName, form.lastName].filter(Boolean).join(" ").trim();
+  const nameDisplay = fullName || t("unnamedUser");
+  const breadcrumbDisplay = fullName || form.email;
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
