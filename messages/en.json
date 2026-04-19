@@ -69,9 +69,36 @@
       "categoryRequired": "Please select a category"
     }
   },
+  "Languages": {
+    "title": "Languages",
+    "deleteModalTitle": "Delete language",
+    "deleteConfirmation": "Are you sure you want to delete language",
+    "createButton": "Create language",
+    "createModalTitle": "Create language",
+    "updateModalTitle": "Update language",
+    "updateAction": "Update language",
+    "deleteAction": "Delete language",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Language created successfully",
+      "createError": "Failed to create language",
+      "updated": "Language updated successfully",
+      "updateError": "Failed to update language",
+      "deleted": "Language deleted successfully",
+      "deleteError": "Failed to delete language"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long",
+      "onlyLetters": "You can use only letters",
+      "isoLength": "ISO2 must be 2 letters"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name",
+      "nativeName": "Native name",
+      "iso2": "ISO2",
       "category": "Category"
     },
     "actions": {

@@ -69,10 +69,37 @@
       "categoryRequired": "Пожалуйста, выберите категорию"
     }
   },
+  "Languages": {
+    "title": "Языки",
+    "deleteModalTitle": "Удалить язык",
+    "deleteConfirmation": "Вы уверены, что хотите удалить язык",
+    "createButton": "Создать язык",
+    "createModalTitle": "Создать язык",
+    "updateModalTitle": "Редактировать язык",
+    "updateAction": "Редактировать язык",
+    "deleteAction": "Удалить язык",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Язык успешно создан",
+      "createError": "Не удалось создать язык",
+      "updated": "Язык успешно обновлен",
+      "updateError": "Не удалось обновить язык",
+      "deleted": "Язык успешно удален",
+      "deleteError": "Не удалось удалить язык"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное",
+      "onlyLetters": "Можно использовать только буквы",
+      "isoLength": "ISO2 должен состоять из 2 букв"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Имя",
-      "category": "Категория"
+      "nativeName": "Родное имя",
+      "category": "Категория",
+      "iso2": "ISO2"
     },
     "actions": {
       "create": "Создать",
