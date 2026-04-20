@@ -78,7 +78,7 @@
       "lastName": "Last Name",
       "department": "Department",
       "position": "Position",
-      "role": "Role"
+      "role": "Role",
       "category": "Category"
     },
     "actions": {

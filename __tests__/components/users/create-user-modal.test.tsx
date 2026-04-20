@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import React from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { CreateUserModal } from "@/app/users/_components/create-user-modal";
+import { CreateUserModal } from "@/app/(protected)/users/_components/create-user-modal";
 import messagesEn from "@/messages/en.json";
 import messagesDe from "@/messages/de.json";
 import messagesRu from "@/messages/ru.json";

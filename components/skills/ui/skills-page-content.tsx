@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { useTableLogic } from "@/components/dashboard/hooks/use-table-logic";
@@ -9,7 +9,8 @@ import { DashBoardNoResults } from "@/components/dashboard/ui/dashboard-no-resul
 import { BaseAlertModal } from "@/components/ui/base-alert-modal";
 import { Button } from "@/components/ui/button";
 import { DataTable, type TableAction } from "@/components/ui/data-table";
-import { GetSkillCategoriesQuery, GetSkillsQuery } from "@/gqlcodegen/graphql";
+import { GetUserForStoreQuery, GetSkillCategoriesQuery, GetSkillsQuery } from "@/gqlcodegen/graphql";
+import { useUserStore } from "@/store/use-user-store";
 
 import { deleteSkillAction } from "../actions/delete-skills-action";
 
@@ -18,20 +19,27 @@ import { getSkillsColumns } from "./skills-columns";
 import { UpdateSkillModal } from "./update-skill-modal";
 
 export type Skill = GetSkillsQuery["skills"][0];
-
 export type Category = GetSkillCategoriesQuery["skillCategories"][0];
 
 type Props = {
   initialSkills: Skill[];
   skillsCategories: Category[];
   isAdmin: boolean;
+  user: GetUserForStoreQuery["user"] | null;
 };
 
 export function SkillsPageContent({
   initialSkills,
   skillsCategories,
   isAdmin,
+  user,
 }: Props) {
+  useEffect(() => {
+    if (user) {
+      useUserStore.getState().setUser(user);
+    }
+  }, [user]);
+
   const t = useTranslations("Skills");
   const tCommon = useTranslations("Common");
 

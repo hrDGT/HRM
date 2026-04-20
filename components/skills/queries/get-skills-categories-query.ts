@@ -13,7 +13,7 @@ export const GET_SKILL_CATEGORIES_QUERY = graphql(`
   }
 `);
 
-export async function fetchSkillsCategories(token?: string) {
+export async function fetchSkillsCategories(token?: string, cookieHeader?: string) {
   'use cache'
   cacheLife('hours')
   cacheTag('skill-categories')
@@ -21,8 +21,7 @@ export async function fetchSkillsCategories(token?: string) {
   const response = await gqlRequestAuthed(
     GET_SKILL_CATEGORIES_QUERY,
     undefined,
-    { token }
+    { token, cookieHeader },
   )
-
   return response.skillCategories
 }

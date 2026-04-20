@@ -20,6 +20,7 @@ export interface FetchOptions {
   cache?: RequestCache;
   next?: RequestInit["next"];
   token?: string;
+  cookieHeader?: string;
 }
 
 export async function gqlFetch<T, V>(
@@ -56,13 +57,14 @@ export async function gqlFetch<T, V>(
 export async function gqlRequestAuthed<T, V>(
   document: TypedDocumentNode<T, V>,
   variables?: V,
-  options?: Omit<FetchOptions, "token">
+  options?: FetchOptions
 ): Promise<T> {
   const apiUrl = process.env.GRAPHQL_URL;
   if (!apiUrl) throw new Error("GRAPHQL_URL is missing");
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
+  let token = options?.token;
+  const cookieStore = token ? null : await cookies();
+  if (!token) token = cookieStore!.get("access_token")?.value;
 
   const makeRequest = (accessToken?: string) =>
     fetch(apiUrl, {
@@ -82,7 +84,11 @@ export async function gqlRequestAuthed<T, V>(
 
   if (isUnauthorizedError(result.errors)) {
     const appUrl = `http://localhost:${process.env.PORT || 3000}`;
-    const allCookies = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+    const allCookies =
+      cookieStore?.getAll().map((c) => `${c.name}=${c.value}`).join("; ") ??
+      options?.cookieHeader ??
+      "";
+
 
     const refreshResponse = await fetch(`${appUrl}/api/auth/refresh`, {
       method: "POST",

@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import React from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { UsersLayoutClient } from "@/app/users/_components/users-layout-client";
+import { UsersLayoutClient } from "@/app/(protected)/users/_components/users-layout-client";
 import messagesEn from "@/messages/en.json";
 import messagesDe from "@/messages/de.json";
 import messagesRu from "@/messages/ru.json";

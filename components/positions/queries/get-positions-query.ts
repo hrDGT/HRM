@@ -12,7 +12,7 @@ export const GET_POSITIONS_QUERY = graphql(`
   }
 `);
 
-export async function fetchPositions(token?: string) {
+export async function fetchPositions(token?: string, cookieHeader?: string) {
   'use cache'
   cacheLife('hours')
   cacheTag('positions')
@@ -20,7 +20,7 @@ export async function fetchPositions(token?: string) {
   const response = await gqlRequestAuthed(
     GET_POSITIONS_QUERY,
     undefined,
-    { token }
+    { token, cookieHeader }
   )
 
   return response.positions

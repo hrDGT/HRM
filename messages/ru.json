@@ -78,7 +78,7 @@
       "lastName": "Фамилия",
       "department": "Отдел",
       "position": "Должность",
-      "role": "Роль"
+      "role": "Роль",
       "category": "Категория"
     },
     "actions": {
