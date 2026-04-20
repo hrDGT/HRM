@@ -18,7 +18,6 @@ export default function proxy(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  // ✅ AUTH FIRST
   if (!accessToken && !isPublic) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
@@ -27,7 +26,6 @@ export default function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/users", request.url));
   }
 
-  // ✅ THEN intl
   return NextResponse.next();
 }
 

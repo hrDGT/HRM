@@ -22,6 +22,29 @@
       "nameMax": "Name is too long"
     }
   },
+  "Positions": {
+    "title": "Positions",
+    "deleteModalTitle": "Delete position",
+    "deleteConfirmation": "Are you sure you want to delete position",
+    "createButton": "Create position",
+    "createModalTitle": "Create position",
+    "updateModalTitle": "Update position",
+    "updateAction": "Update position",
+    "deleteAction": "Delete position",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Position created successfully",
+      "createError": "Failed to create position",
+      "updated": "Position updated successfully",
+      "updateError": "Failed to update position",
+      "deleted": "Position deleted successfully",
+      "deleteError": "Failed to delete position"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name",

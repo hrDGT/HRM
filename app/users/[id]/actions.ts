@@ -4,6 +4,38 @@ import { revalidateTag } from "next/cache";
 import { gql } from "graphql-tag";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import type { UserRole } from "@/gqlcodegen/graphql";
+
+type CreateUserInput = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  departmentId?: string;
+  positionId?: string;
+  role: UserRole;
+};
+
+type CreateUserResult = {
+  createUser: {
+    id: string;
+    email: string;
+    profile: { first_name: string; last_name: string; avatar: string | null };
+    department_name: string | null;
+    position_name: string | null;
+    role: UserRole;
+    is_verified: boolean;
+  };
+};
+type CreateUserVariables = {
+  user: {
+    auth: { email: string; password: string };
+    profile: { first_name: string; last_name: string };
+    departmentId?: string;
+    positionId?: string;
+    role: UserRole;
+  };
+};
 
 type UpdateProfileResult = {
   updateProfile: {
@@ -33,6 +65,20 @@ type DeleteAvatarVariables = { avatar: { userId: string } };
 
 type GetDepartmentsResult = { departments: { id: string; name: string }[] };
 type GetPositionsResult = { positions: { id: string; name: string }[] };
+
+const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($user: CreateUserInput!) {
+    createUser(user: $user) {
+      id
+      email
+      profile { first_name last_name avatar }
+      department_name
+      position_name
+      role
+      is_verified
+    }
+  }
+` as TypedDocumentNode<CreateUserResult, CreateUserVariables>;
 
 const UPDATE_PROFILE_MUTATION = gql`
   mutation UpdateProfile($profile: UpdateProfileInput!) {
@@ -85,6 +131,27 @@ const GET_POSITIONS = gql`
     }
   }
 ` as TypedDocumentNode<GetPositionsResult, Record<string, never>>;
+
+export async function createUser(data: CreateUserInput) {
+  const result = await gqlRequestAuthed(CREATE_USER_MUTATION, {
+    user: {
+      auth: {
+        email: data.email,
+        password: data.password,
+      },
+      profile: {
+        first_name: data.firstName,
+        last_name: data.lastName,
+      },
+      cvsIds: [],
+      departmentId: data.departmentId,
+      positionId: data.positionId,
+      role: data.role,
+    },
+  });
+  revalidateTag("users", "default");
+  return result.createUser;
+}
 
 export async function getDepartments() {
   const result = await gqlRequestAuthed(GET_DEPARTMENTS, {});

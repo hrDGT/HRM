@@ -13,9 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
+import { createUser } from "@/app/users/[id]/actions";
 import type { EmployeeCard } from "@/lib/users/users-types";
+import { UserRole } from "@/gqlcodegen/graphql";
 
-const ROLES = ["Employee", "Admin"];
+const ROLES: UserRole[] = [UserRole.Employee, UserRole.Admin];
 
 type CreateUserModalProps = {
   open: boolean;
@@ -32,7 +34,7 @@ type CreateFormState = {
   lastName: string;
   departmentId: string;
   positionId: string;
-  role: string;
+  role: UserRole;
 };
 
 export function CreateUserModal({ open, onClose, onCreate, departments, positions }: CreateUserModalProps) {
@@ -46,27 +48,35 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
     lastName: "",
     departmentId: departments[0]?.id ?? "",
     positionId: positions[0]?.id ?? "",
-    role: ROLES[0],
+    role: UserRole.Employee,
   });
 
-  const set = (field: string, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const set = (field: keyof CreateFormState, value: string) =>
+    setForm((prev) => ({ ...prev, [field]: value } as CreateFormState));
 
-  const handleCreate = () => {
-    const dept = departments.find(d => d.id === form.departmentId);
-    const pos = positions.find(p => p.id === form.positionId);
-    const initials = `${form.firstName.charAt(0)}${form.lastName.charAt(0)}`.toUpperCase() || "U";
-    
-    onCreate({
-      id: Date.now(),
+  const handleCreate = async () => {
+    const created = await createUser({
       email: form.email,
+      password: form.password,
       firstName: form.firstName,
       lastName: form.lastName,
-      department: dept?.name ?? "",
-      position: pos?.name ?? "",
-      avatar: null,
+      departmentId: form.departmentId || undefined,
+      positionId: form.positionId || undefined,
+      role: form.role,
+    });
+
+    const initials = `${form.firstName.charAt(0)}${form.lastName.charAt(0)}`.toUpperCase();
+
+    onCreate({
+      id: Number(created.id),
+      email: created.email,
+      firstName: created.profile.first_name,
+      lastName: created.profile.last_name,
+      department: created.department_name ?? "",
+      position: created.position_name ?? "",
+      avatar: created.profile.avatar,
       initials,
-      isVerified: false,
+      isVerified: created.is_verified,
     });
 
     setForm({
@@ -76,7 +86,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
       lastName: "",
       departmentId: departments[0]?.id ?? "",
       positionId: positions[0]?.id ?? "",
-      role: ROLES[0],
+      role: UserRole.Employee,
     });
 
     onClose();
@@ -135,7 +145,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.role")}</Label>
-          <Select value={form.role} onValueChange={(v) => set("role", v)}>
+          <Select value={form.role} onValueChange={(v) => set("role", v as UserRole)}>
             <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {ROLES.map((r) => (

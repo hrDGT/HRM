@@ -13,9 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
+import { updateProfile, updateUserMeta } from "@/app/users/[id]/actions";
 import type { EmployeeCard } from "@/lib/users/users-types";
+import { UserRole } from "@/gqlcodegen/graphql";
 
-const ROLES = ["Employee", "Admin"];
+const ROLES: UserRole[] = [UserRole.Employee, UserRole.Admin];
 
 type UpdateUserModalProps = {
   open: boolean;
@@ -24,45 +26,58 @@ type UpdateUserModalProps = {
   onUpdate: (updated: EmployeeCard) => void;
   departments: { id: string; name: string }[];
   positions: { id: string; name: string }[];
-}
+};
 
-type UpdateFormState = Omit<EmployeeCard, "id" | "initials" | "isVerified" | "avatar"> & {
+type UpdateFormState = {
+  email: string;
   password: string;
-  role: string;
-  departmentId: string | null;
-  positionId: string | null;
+  firstName: string;
+  lastName: string;
+  departmentId: string;
+  positionId: string;
+  role: UserRole;
 };
 
 export function UpdateUserModal({ open, onClose, employee, onUpdate, departments, positions }: UpdateUserModalProps) {
   const t = useTranslations("Users");
   const c = useTranslations("Common");
 
-  const initialDeptId = departments.find(d => d.name === employee.department)?.id ?? null;
-  const initialPosId = positions.find(p => p.name === employee.position)?.id ?? null;
+  const initialDeptId = departments.find(d => d.name === employee.department)?.id ?? "";
+  const initialPosId = positions.find(p => p.name === employee.position)?.id ?? "";
 
   const [form, setForm] = useState<UpdateFormState>({
     email: employee.email,
     password: "",
     firstName: employee.firstName,
     lastName: employee.lastName,
-    department: employee.department,
-    position: employee.position,
-    role: "Employee",
     departmentId: initialDeptId,
     positionId: initialPosId,
+    role: UserRole.Employee,
   });
 
-  const set = (field: string, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const set = (field: keyof UpdateFormState, value: string) =>
+    setForm((prev) => ({ ...prev, [field]: value } as UpdateFormState));
 
-  const handleUpdate = () => {
-    onUpdate({ 
-      ...employee, 
-      ...form,
-      avatar: employee.avatar,
-      initials: employee.initials,
-      isVerified: employee.isVerified,
+  const handleUpdate = async () => {
+    await updateProfile(employee.id, form.firstName, form.lastName);
+    await updateUserMeta(
+      employee.id,
+      form.departmentId ? Number(form.departmentId) : null,
+      form.positionId ? Number(form.positionId) : null
+    );
+
+    const updatedDept = departments.find(d => d.id === form.departmentId)?.name ?? employee.department;
+    const updatedPos = positions.find(p => p.id === form.positionId)?.name ?? employee.position;
+
+    onUpdate({
+      ...employee,
+      email: form.email,
+      firstName: form.firstName,
+      lastName: form.lastName,
+      department: updatedDept,
+      position: updatedPos,
     });
+
     onClose();
   };
 
@@ -95,16 +110,8 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.department")}</Label>
-          <Select
-            value={form.departmentId ?? ""}
-            onValueChange={(v) => {
-              const dept = departments.find(d => d.id === v);
-              if (dept) { set("departmentId", dept.id); set("department", dept.name); }
-            }}
-          >
-            <SelectTrigger className={fieldInput}>
-              <SelectValue placeholder={c("placeholders.selectDepartment")} />
-            </SelectTrigger>
+          <Select value={form.departmentId} onValueChange={(v) => set("departmentId", v)}>
+            <SelectTrigger className={fieldInput}><SelectValue placeholder={c("placeholders.selectDepartment")} /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {departments.map((d) => (
                 <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
@@ -115,16 +122,8 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.position")}</Label>
-          <Select
-            value={form.positionId ?? ""}
-            onValueChange={(v) => {
-              const pos = positions.find(p => p.id === v);
-              if (pos) { set("positionId", pos.id); set("position", pos.name); }
-            }}
-          >
-            <SelectTrigger className={fieldInput}>
-              <SelectValue placeholder={c("placeholders.selectPosition")} />
-            </SelectTrigger>
+          <Select value={form.positionId} onValueChange={(v) => set("positionId", v)}>
+            <SelectTrigger className={fieldInput}><SelectValue placeholder={c("placeholders.selectPosition")} /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {positions.map((p) => (
                 <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
@@ -135,7 +134,7 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.role")}</Label>
-          <Select value={form.role} onValueChange={(v) => set("role", v)}>
+          <Select value={form.role} onValueChange={(v) => set("role", v as UserRole)}>
             <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {ROLES.map((r) => (
@@ -157,7 +156,8 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
           </Button>
           <Button
             onClick={handleUpdate}
-            className="flex-1 uppercase text-xs tracking-widest bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10 rounded-4xl"
+            disabled={!form.firstName || !form.lastName}
+            className="flex-1 uppercase text-xs tracking-widest bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10 rounded-4xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {c("actions.update")}
           </Button>
