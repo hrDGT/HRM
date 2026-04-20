@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import React from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { UpdateUserModal } from "@/app/users/_components/update-user-modal";
+import { UpdateUserModal } from "@/app/(protected)/users/_components/update-user-modal";
 import type { EmployeeCard } from "@/lib/users/users-types";
 import messagesEn from "@/messages/en.json";
 import messagesDe from "@/messages/de.json";

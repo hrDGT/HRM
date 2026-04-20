@@ -105,7 +105,7 @@
       "lastName": "Nachname",
       "department": "Abteilung",
       "position": "Position",
-      "role": "Rolle"
+      "role": "Rolle",
       "category": "Kategorie"
     },
     "actions": {

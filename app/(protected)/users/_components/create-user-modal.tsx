@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
-import { createUser } from "@/app/users/[id]/actions";
+import { createUser } from "@/app/(protected)/users/[id]/actions";
 import type { EmployeeCard } from "@/lib/users/users-types";
 import { UserRole } from "@/gqlcodegen/graphql";
 

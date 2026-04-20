@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import React from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { UserProfileClient } from "@/app/users/[id]/_components/user-profile-client";
+import { UserProfileClient } from "@/app/(protected)/users/[id]/_components/user-profile-client";
 import type { EmployeeProfile } from "@/lib/users/users-types";
 import messagesEn from "@/messages/en.json";
 import messagesDe from "@/messages/de.json";

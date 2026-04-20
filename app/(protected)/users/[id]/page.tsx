@@ -7,6 +7,7 @@ import { EmployeeProfile } from "@/lib/users/users-types";
 import { UserProfileClient } from "./_components/user-profile-client";
 import { getDepartments, getPositions } from "./actions";
 import { getTranslations } from "next-intl/server";
+import { getAuthProps } from "@/lib/auth/get-auth-props";
 
 const GET_EMPLOYEE_QUERY = graphql(`
   query GetEmployee($userId: ID!) {
@@ -88,10 +89,13 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   const userId = Number(id);
   if (isNaN(userId)) notFound();
 
-  const currentUser = await requireUser();
+  const [currentUser, { token, cookieHeader }] = await Promise.all([
+    requireUser(),
+    getAuthProps(),
+  ]);
 
   const [result, departments, positions] = await Promise.all([
-    gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) }),
+    gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) }, { token, cookieHeader }),
     getDepartments(),
     getPositions(),
   ]);
