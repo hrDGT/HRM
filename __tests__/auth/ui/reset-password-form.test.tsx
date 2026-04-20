@@ -6,6 +6,10 @@ import userEvent from "@testing-library/user-event";
 import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
 import { ResetPasswordForm } from "@/components/auth/ui/reset-password-form";
 
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 jest.mock("next/navigation", () => ({
   useSearchParams: jest.fn(),
 }));
@@ -42,16 +46,16 @@ describe("ResetPasswordForm Component", () => {
   it("renders all form elements correctly", () => {
     render(<ResetPasswordForm />);
 
-    expect(screen.getByText("Set a new password")).toBeInTheDocument();
+    expect(screen.getByText("title")).toBeInTheDocument();
+    expect(screen.getByText("subtitle")).toBeInTheDocument();
+
+    expect(screen.getByPlaceholderText("fields.newPassword")).toBeInTheDocument();
+
     expect(
-      screen.getByText("Almost done! Now create a new password"),
+      screen.getByRole("button", { name: "submitAction" }),
     ).toBeInTheDocument();
-
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
-
-    expect(screen.getByRole("button", { name: "Submit" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Back to log in" }),
+      screen.getByRole("link", { name: "backToLoginAction" }),
     ).toBeInTheDocument();
   });
 
@@ -59,8 +63,8 @@ describe("ResetPasswordForm Component", () => {
     const user = userEvent.setup();
     render(<ResetPasswordForm />);
 
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: "Submit" });
+    const passwordInput = screen.getByPlaceholderText("fields.newPassword");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(passwordInput, "NewSecurePassword123!");
     await user.click(submitButton);
@@ -74,19 +78,14 @@ describe("ResetPasswordForm Component", () => {
   });
 
   it("displays a root error message if the server action fails", () => {
+    const serverError = "Reset token has expired or is invalid";
     jest
       .spyOn(React, "useActionState")
-      .mockReturnValue([
-        { error: "Reset token has expired or is invalid" },
-        mockFormAction,
-        false,
-      ]);
+      .mockReturnValue([{ error: serverError }, mockFormAction, false]);
 
     render(<ResetPasswordForm />);
 
-    expect(
-      screen.getByText("Reset token has expired or is invalid"),
-    ).toBeInTheDocument();
+    expect(screen.getByText(serverError)).toBeInTheDocument();
   });
 
   it("disables the submit button and shows loading state when isPending is true", () => {
@@ -96,7 +95,9 @@ describe("ResetPasswordForm Component", () => {
 
     render(<ResetPasswordForm />);
 
-    const loadingButton = screen.getByRole("button", { name: "Loading..." });
+    const loadingButton = screen.getByRole("button", {
+      name: /loading|confirming/i,
+    });
     expect(loadingButton).toBeInTheDocument();
     expect(loadingButton).toBeDisabled();
   });
@@ -110,7 +111,7 @@ describe("ResetPasswordForm Component", () => {
 
     expect(useActionFeedback).toHaveBeenCalledWith(
       true,
-      "Password has been reset",
+      "success",
       "/auth/login",
     );
   });

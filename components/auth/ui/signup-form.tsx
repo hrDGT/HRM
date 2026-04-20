@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useId } from "react";
+import { useTranslations } from "next-intl";
 
 import { ControlledPasswordInput } from "@/components/forms/ui/controlled-password-input";
 import { Form } from "@/components/forms/ui/form";
@@ -11,11 +12,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 
 import { signUpUserAction } from "../actions/signup-action";
-import { SignupFormValues, signupSchema } from "../schemas/signup-schema";
+import {
+  getSignupSchema,
+  type SignupFormValues,
+} from "../schemas/signup-schema";
 
 import { FormRootError } from "./auth-root-error";
 
 export function SignupForm() {
+  const t = useTranslations("Auth.signUp");
+  const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Common.validation");
   const id = useId();
   const [state, formAction, isPending] = useActionState(signUpUserAction, null);
 
@@ -27,28 +34,25 @@ export function SignupForm() {
 
   return (
     <Card>
-      <FormHeader
-        title="Register now"
-        description="Welcome! Sign up to continue"
-      />
+      <FormHeader title={t("title")} description={t("subtitle")} />
       <CardContent className="mb-14">
         <Form
           className="space-y-2"
           id={id}
-          schema={signupSchema}
+          schema={getSignupSchema(tValidation)}
           defaultValues={{ email: "", password: "" }}
           onSubmit={handleFormSubmit}
         >
           <FieldGroup className="gap-y-4">
             <FormInput
               name="email"
-              placeholder="Email"
+              placeholder={tCommon("fields.email")}
               autoFocus
               autocompleteValue="email"
             />
             <ControlledPasswordInput
               name="password"
-              placeholder="Password"
+              placeholder={tCommon("fields.password")}
               autoComplete="new-password"
             />
           </FieldGroup>
@@ -57,8 +61,8 @@ export function SignupForm() {
       </CardContent>
       <FormActions
         formId={id}
-        buttonText="Create account"
-        linkText="I have an account"
+        buttonText={t("submitAction")}
+        linkText={t("haveAccountAction")}
         linkHref="/auth/login"
         isPending={isPending}
       />

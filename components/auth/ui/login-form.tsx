@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useId } from "react";
+import { useTranslations } from "next-intl";
 
 import { ControlledPasswordInput } from "@/components/forms/ui/controlled-password-input";
 import { Form } from "@/components/forms/ui/form";
@@ -11,11 +12,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FieldGroup } from "@/components/ui/field";
 
 import { loginUserAction } from "../actions/login-action";
-import { LoginFormValues, loginSchema } from "../schemas/login-schema";
+import { getLoginSchema, type LoginFormValues } from "../schemas/login-schema";
 
 import { FormRootError } from "./auth-root-error";
 
 export function LoginForm() {
+  const t = useTranslations("Auth.login");
+  const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Common.validation");
   const id = useId();
   const [state, formAction, isPending] = useActionState(loginUserAction, null);
 
@@ -27,28 +31,25 @@ export function LoginForm() {
 
   return (
     <Card>
-      <FormHeader
-        title="Welcome back"
-        description="Hello again! Log in to continue"
-      />
+      <FormHeader title={t("title")} description={t("subtitle")} />
       <CardContent className="mb-14">
         <Form
           className="space-y-2"
           id={id}
-          schema={loginSchema}
+          schema={getLoginSchema(tValidation)}
           defaultValues={{ email: "", password: "" }}
           onSubmit={handleFormSubmit}
         >
           <FieldGroup className="gap-y-4">
             <FormInput
               name="email"
-              placeholder="Email"
+              placeholder={tCommon("fields.email")}
               autoFocus
               autocompleteValue="email"
             />
             <ControlledPasswordInput
               name="password"
-              placeholder="Password"
+              placeholder={tCommon("fields.password")}
               autoComplete="current-password"
             />
           </FieldGroup>
@@ -57,8 +58,8 @@ export function LoginForm() {
       </CardContent>
       <FormActions
         formId={id}
-        buttonText="Log in"
-        linkText="Forgot password"
+        buttonText={t("submitAction")}
+        linkText={t("forgotPasswordAction")}
         linkHref="/forgot-password"
         isPending={isPending}
       />

@@ -30,7 +30,11 @@ describe("GraphQL Client Utilities", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env = { ...originalEnv, GRAPHQL_URL: "https://api.example.com/graphql" };
+    process.env = {
+      ...originalEnv,
+      GRAPHQL_URL: "https://api.example.com/graphql",
+      FRONTEND_URL: "http://localhost:3000"
+    };
 
     (cookies as jest.Mock).mockResolvedValue({
       get: jest.fn().mockReturnValue({ value: "valid-token" }),
@@ -63,10 +67,11 @@ describe("GraphQL Client Utilities", () => {
       expect(mockFetch).toHaveBeenCalledWith(
         "https://api.example.com/graphql",
         expect.objectContaining({
-          headers: {
+          headers: expect.objectContaining({
             "Content-Type": "application/json",
+            "Origin": "http://localhost:3000",
             "X-Custom": "Header",
-          },
+          }),
         })
       );
       expect(cookies).not.toHaveBeenCalled();
@@ -123,6 +128,7 @@ describe("GraphQL Client Utilities", () => {
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: "Bearer valid-token",
+            Origin: "http://localhost:3000",
           }),
         })
       );
@@ -157,6 +163,7 @@ describe("GraphQL Client Utilities", () => {
         expect.objectContaining({
           headers: expect.objectContaining({
             Authorization: "Bearer new-refreshed-token",
+            Origin: "http://localhost:3000",
           }),
         })
       );

@@ -1,17 +1,18 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
 import { AuthTab } from "./auth-tab";
 
-const tabs = [
-  { title: "Sign In", href: "/auth/login" },
-  { title: "Sign Up", href: "/auth/signup" },
-];
-
 export function AuthHeader() {
+  const t = useTranslations("Auth.header");
+  const tabs = [
+    { title: t("loginLinkTitle"), href: "/auth/login" },
+    { title: t("signUpLinkTitle"), href: "/auth/signup" },
+  ];
   const pathname = usePathname();
   const activeIndex = tabs.findIndex((tab) => pathname === tab.href);
   const isSignup = activeIndex === 1;

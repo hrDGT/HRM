@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 
 import { SignupForm } from "@/components/auth/ui/signup-form";
 
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 jest.mock("@/components/auth/actions/signup-action", () => ({
   signUpUserAction: jest.fn(),
 }));
@@ -28,19 +32,17 @@ describe("SignupForm Component", () => {
   it("renders all form elements correctly", () => {
     render(<SignupForm />);
 
-    expect(screen.getByText("Register now")).toBeInTheDocument();
-    expect(
-      screen.getByText("Welcome! Sign up to continue"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("title")).toBeInTheDocument();
+    expect(screen.getByText("subtitle")).toBeInTheDocument();
 
-    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("fields.email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("fields.password")).toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", { name: "Create account" }),
+      screen.getByRole("button", { name: "submitAction" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "I have an account" }),
+      screen.getByRole("link", { name: "haveAccountAction" }),
     ).toBeInTheDocument();
   });
 
@@ -48,9 +50,9 @@ describe("SignupForm Component", () => {
     const user = userEvent.setup();
     render(<SignupForm />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: "Create account" });
+    const emailInput = screen.getByPlaceholderText("fields.email");
+    const passwordInput = screen.getByPlaceholderText("fields.password");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(emailInput, "newuser@example.com");
     await user.type(passwordInput, "StrongPassword123!");
@@ -69,8 +71,8 @@ describe("SignupForm Component", () => {
     const user = userEvent.setup();
     render(<SignupForm />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const submitButton = screen.getByRole("button", { name: "Create account" });
+    const emailInput = screen.getByPlaceholderText("fields.email");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(emailInput, "not-an-email");
     await user.click(submitButton);
@@ -81,19 +83,14 @@ describe("SignupForm Component", () => {
   });
 
   it("displays a root error message if the server action returns an error", () => {
+    const errorMsg = "User with this email already exists";
     jest
       .spyOn(React, "useActionState")
-      .mockReturnValue([
-        { error: "User with this email already exists" },
-        mockFormAction,
-        false,
-      ]);
+      .mockReturnValue([{ error: errorMsg }, mockFormAction, false]);
 
     render(<SignupForm />);
 
-    expect(
-      screen.getByText("User with this email already exists"),
-    ).toBeInTheDocument();
+    expect(screen.getByText(errorMsg)).toBeInTheDocument();
   });
 
   it("disables the submit button and shows loading state when isPending is true", () => {
@@ -103,13 +100,13 @@ describe("SignupForm Component", () => {
 
     render(<SignupForm />);
 
-    const loadingButton = screen.getByRole("button", { name: "Loading..." });
+    const loadingButton = screen.getByRole("button", { name: /loading/i });
 
     expect(loadingButton).toBeInTheDocument();
     expect(loadingButton).toBeDisabled();
 
     expect(
-      screen.queryByRole("button", { name: "Create account" }),
+      screen.queryByRole("button", { name: "submitAction" }),
     ).not.toBeInTheDocument();
   });
 });

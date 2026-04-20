@@ -31,10 +31,13 @@ export async function gqlFetch<T, V>(
   const apiUrl = process.env.GRAPHQL_URL;
   if (!apiUrl) throw new Error("GRAPHQL_URL is missing");
 
+  const originUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+
   const response = await fetch(apiUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Origin": originUrl,
       ...options?.headers,
     },
     body: JSON.stringify({ query: print(document), variables }),
