@@ -1,4 +1,41 @@
 {
+  "Auth": {
+    "header": {
+      "loginLinkTitle": "Sign in",
+      "signUpLinkTitle": "Sign up"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Hello again! Log in to continue",
+      "submitAction": "Log in",
+      "forgotPasswordAction": "Forgot password",
+      "error": "Login failed"
+    },
+    "signUp": {
+      "title": "Register now",
+      "subtitle": "Welcome! Sign up to continue",
+      "submitAction": "Create account",
+      "haveAccountAction": "I have an account",
+      "error": "Registration failed"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "We will sent you an email with further instructions",
+      "submitAction": "Reset password",
+      "cancelAction": "Cancel",
+      "success": "Check your email inbox",
+      "sendError": "Failed to send email"
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "subtitle": "Almost done! Now create a new password",
+      "submitAction": "Submit",
+      "backToLoginAction": "Back to log in",
+      "success": "Password has been reset",
+      "error": "Failed to reset password",
+      "tokenError": "Missing reset token. Please check your email link"
+    }
+  },
   "Departments": {
     "title": "Departments",
     "deleteModalTitle": "Delete department",
@@ -72,6 +109,9 @@
   "Common": {
     "fields": {
       "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "newPassword": "New password",
       "category": "Category"
     },
     "actions": {
@@ -88,6 +128,11 @@
     "noResults": {
       "title": "No results found",
       "description": "Try another search, check the spelling or use a broader term"
+    },
+    "validation": {
+      "invalidEmail": "Invalid email format",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 5 characters long"
     }
   }
 }
