@@ -45,6 +45,30 @@
       "nameMax": "Name is too long"
     }
   },
+  "Skills": {
+    "title": "Skills",
+    "deleteModalTitle": "Delete skill",
+    "deleteConfirmation": "Are you sure you want to delete skill",
+    "createButton": "Create skill",
+    "createModalTitle": "Create skill",
+    "updateModalTitle": "Update skill",
+    "updateAction": "Update skill",
+    "deleteAction": "Delete skill",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Skill created successfully",
+      "createError": "Failed to create skill",
+      "updated": "Skill updated successfully",
+      "updateError": "Failed to update skill",
+      "deleted": "Skill deleted successfully",
+      "deleteError": "Failed to delete skill"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long",
+      "categoryRequired": "Please select a category"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name",
@@ -55,6 +79,7 @@
       "department": "Department",
       "position": "Position",
       "role": "Role"
+      "category": "Category"
     },
     "actions": {
       "create": "Create",

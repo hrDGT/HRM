@@ -45,6 +45,30 @@
       "nameMax": "Der Name ist zu lang"
     }
   },
+  "Skills": {
+    "title": "Fähigkeiten",
+    "deleteModalTitle": "Fähigkeit löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Fähigkeit löschen:",
+    "createButton": "Fähigkeit erstellen",
+    "createModalTitle": "Fähigkeit erstellen",
+    "updateModalTitle": "Fähigkeit bearbeiten",
+    "updateAction": "Fähigkeit bearbeiten",
+    "deleteAction": "Fähigkeit löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Fähigkeit erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Fähigkeit",
+      "updated": "Fähigkeit erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Fähigkeit",
+      "deleted": "Fähigkeit erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Fähigkeit"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang",
+      "categoryRequired": "Bitte wählen Sie eine Kategorie aus"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name",
@@ -55,6 +79,7 @@
       "department": "Abteilung",
       "position": "Position",
       "role": "Rolle"
+      "category": "Kategorie"
     },
     "actions": {
       "create": "Erstellen",

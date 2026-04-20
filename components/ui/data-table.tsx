@@ -48,7 +48,7 @@ export function DataTable<T>({
   const hasActions = actions && actions.length > 0;
 
   return (
-    <Table>
+    <Table className="table-fixed w-full">
       <TableHeader>
         <TableRow className="border-main-border">
           {columns.map((col, index) => (
@@ -60,7 +60,9 @@ export function DataTable<T>({
               )}
             </React.Fragment>
           ))}
-          {hasActions && <TableHead className="text-right py-4"></TableHead>}
+          {hasActions && (
+            <TableHead className="text-right py-4 w-12.5 min-w-12.5 max-w-12.5"></TableHead>
+          )}
         </TableRow>
       </TableHeader>
 
@@ -78,7 +80,7 @@ export function DataTable<T>({
                 ))}
 
                 {hasActions && (
-                  <TableCell className="text-right py-4">
+                  <TableCell className="text-right py-4 w-12.5 min-w-12.5 max-w-12.5">
                     <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -95,7 +97,6 @@ export function DataTable<T>({
                       <DropdownMenuContent
                         className="bg-white w-full py-2"
                         align="end"
-                        onCloseAutoFocus={(e) => e.preventDefault()}
                       >
                         {actions.map((act, i) => (
                           <DropdownMenuItem
