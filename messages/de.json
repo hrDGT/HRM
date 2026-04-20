@@ -69,9 +69,36 @@
       "categoryRequired": "Bitte wählen Sie eine Kategorie aus"
     }
   },
+  "Languages": {
+    "title": "Sprachen",
+    "deleteModalTitle": "Sprache löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Sprache löschen:",
+    "createButton": "Sprache erstellen",
+    "createModalTitle": "Sprache erstellen",
+    "updateModalTitle": "Sprache bearbeiten",
+    "updateAction": "Sprache bearbeiten",
+    "deleteAction": "Sprache löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Sprache erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Sprache",
+      "updated": "Sprache erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Sprache",
+      "deleted": "Sprache erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Sprache"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang",
+      "onlyLetters": "Es sind nur Buchstaben erlaubt",
+      "isoLength": "ISO2 muss aus 2 Buchstaben bestehen"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name",
+      "nativeName": "Einheimischer Name",
+      "iso2": "ISO2"
       "email": "E-Mail",
       "password": "Passwort",
       "firstName": "Vorname",
