@@ -12,8 +12,8 @@ const config = {
     "^@/(.*)$": "<rootDir>/$1",
   },
   testMatch: ["<rootDir>/__tests__/**/*.{spec,test}.{ts,tsx}"],
-
   testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
+  transformIgnorePatterns: ["/node_modules/(?!next-intl|use-intl)/"],
 };
 
 export default createJestConfig(config);

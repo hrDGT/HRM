@@ -72,6 +72,13 @@
   "Common": {
     "fields": {
       "name": "Name",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "department": "Abteilung",
+      "position": "Position",
+      "role": "Rolle"
       "category": "Kategorie"
     },
     "actions": {
@@ -83,11 +90,49 @@
       "creating": "Wird erstellt...",
       "updating": "Wird aktualisiert...",
       "confirm": "Bestätigen",
-      "confirming": "Wird bestätigt..."
+      "confirming": "Wird bestätigt...",
+      "saving": "Wird gespeichert..."
+    },
+    "placeholders": {
+      "search": "Suchen",
+      "selectDepartment": "Abteilung auswählen",
+      "selectPosition": "Position auswählen"
+    },
+    "alerts": {
+      "deleteTitle": "Löschen bestätigen",
+      "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
     },
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
       "description": "Versuchen Sie eine andere Suche, überprüfen Sie die Rechtschreibung oder verwenden Sie einen allgemeineren Begriff"
     }
+  },
+  "Users": {
+    "title": "Mitarbeiter",
+    "createUserButton": "MITARBEITER ERSTELLEN",
+    "createModalTitle": "Mitarbeiter erstellen",
+    "updateModalTitle": "Mitarbeiter bearbeiten",
+    "viewProfile": "Profil ansehen",
+    "updateAction": "Mitarbeiter bearbeiten",
+    "deleteAvatar": "Avatar löschen",
+    "deleteAvatarConfirm": "Möchten Sie wirklich diesen Avatar löschen?",
+    "noResults": "Keine Mitarbeiter gefunden",
+    "tabs": {
+      "profile": "PROFIL",
+      "skills": "KENNTNISSE",
+      "languages": "SPRACHEN"
+    },
+    "nav": {
+      "skills": "Kenntnisse",
+      "languages": "Sprachen",
+      "cvs": "Lebensläufe"
+    },
+    "unnamedUser": "Unbenannter Nutzer",
+    "uploadAvatar": "Avatar hochladen",
+    "uploadHint": "png, jpg oder gif maximal 1MB",
+    "fileSizeError": "Datei darf nicht größer als 1MB sein",
+    "collapseMenu": "Menü einklappen",
+    "expandMenu": "Menü ausklappen",
+    "defaultUser": "Nutzer"
   }
 }
