@@ -6,6 +6,7 @@ import type { ResultOf } from "@graphql-typed-document-node/core";
 import { EmployeeCard } from "@/lib/users/users-types";
 import { getDepartments, getPositions } from "./[id]/actions";
 import { getTranslations } from "next-intl/server";
+import { getAuthProps } from "@/lib/auth/get-auth-props";
 
 const GET_EMPLOYEES_QUERY = graphql(`
   query GetEmployees {
@@ -50,10 +51,13 @@ export async function generateMetadata() {
 }
 
 export default async function UsersPage() {
-  const currentUser = await requireUser();
+  const [currentUser, { token, cookieHeader }] = await Promise.all([
+    requireUser(),
+    getAuthProps(),
+  ]);
 
   const [result, departments, positions] = await Promise.all([
-    gqlRequestAuthed(GET_EMPLOYEES_QUERY),
+    gqlRequestAuthed(GET_EMPLOYEES_QUERY, undefined, { token, cookieHeader }),
     getDepartments(),
     getPositions(),
   ]);

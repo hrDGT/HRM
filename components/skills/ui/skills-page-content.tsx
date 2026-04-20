@@ -36,7 +36,15 @@ export function SkillsPageContent({
 }: Props) {
   useEffect(() => {
     if (user) {
-      useUserStore.getState().setUser(user);
+      useUserStore.getState().setUser({
+        ...user,
+        profile: {
+          ...user.profile,
+          first_name: user.profile?.first_name ?? null,
+          last_name: user.profile?.last_name ?? null,
+          avatar: user.profile?.avatar ?? null,
+        },
+      });
     }
   }, [user]);
 

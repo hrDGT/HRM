@@ -15,7 +15,15 @@ export function UserProvider({ children, user }: UserProviderProps) {
 
   useEffect(() => {
     if (!hasInitialized.current && user) {
-      useUserStore.getState().setUser(user);
+      useUserStore.getState().setUser({
+        ...user,
+        profile: {
+          ...user.profile,
+          first_name: user.profile?.first_name ?? null,
+          last_name: user.profile?.last_name ?? null,
+          avatar: user.profile?.avatar ?? null,
+        },
+      });
       hasInitialized.current = true;
     }
   }, [user]);
