@@ -98,8 +98,15 @@
     "fields": {
       "name": "Имя",
       "nativeName": "Родное имя",
-      "category": "Категория",
       "iso2": "ISO2"
+      "email": "Email",
+      "password": "Пароль",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "department": "Отдел",
+      "position": "Должность",
+      "role": "Роль"
+      "category": "Категория"
     },
     "actions": {
       "create": "Создать",
@@ -110,11 +117,49 @@
       "creating": "Создание...",
       "updating": "Обновление...",
       "confirm": "Подтвердить",
-      "confirming": "Подтверждение..."
+      "confirming": "Подтверждение...",
+      "saving": "Сохранение..."
+    },
+    "placeholders": {
+      "search": "Поиск",
+      "selectDepartment": "Выберите отдел",
+      "selectPosition": "Выберите должность"
+    },
+    "alerts": {
+      "deleteTitle": "Удаление",
+      "deleteDescription": "Это действие нельзя отменить. Запись будет безвозвратно удалена с наших серверов."
     },
     "noResults": {
       "title": "Ничего не найдено",
       "description": "Попробуйте другой запрос, проверьте орфографию или используйте более общие термины"
     }
+  },
+  "Users": {
+    "title": "Сотрудники",
+    "createUserButton": "СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ",
+    "createModalTitle": "Создать пользователя",
+    "updateModalTitle": "Редактировать пользователя",
+    "viewProfile": "Просмотреть профиль",
+    "updateAction": "Редактировать пользователя",
+    "deleteAvatar": "Удалить аватар",
+    "deleteAvatarConfirm": "Вы уверены, что хотите удалить этот аватар?",
+    "noResults": "Сотрудники не найдены",
+    "tabs": {
+      "profile": "ПРОФИЛЬ",
+      "skills": "НАВЫКИ",
+      "languages": "ЯЗЫКИ"
+    },
+    "nav": {
+      "skills": "Навыки",
+      "languages": "Языки",
+      "cvs": "Резюме"
+    },
+    "unnamedUser": "Без имени",
+    "uploadAvatar": "Загрузить аватар",
+    "uploadHint": "png, jpg или gif не более 1 МБ",
+    "fileSizeError": "Файл должен быть не более 1 МБ",
+    "collapseMenu": "Свернуть меню",
+    "expandMenu": "Развернуть меню",
+    "defaultUser": "Пользователь"
   }
 }
