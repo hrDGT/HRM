@@ -146,6 +146,10 @@
       "role": "Роль",
       "category": "Категория"
     },
+    "roles": {
+      "employee": "Сотрудник",
+      "admin": "Администратор"
+    },
     "actions": {
       "create": "Создать",
       "update": "Обновить",
@@ -161,7 +165,8 @@
     "placeholders": {
       "search": "Поиск",
       "selectDepartment": "Выберите отдел",
-      "selectPosition": "Выберите должность"
+      "selectPosition": "Выберите должность",
+      "password": "********"
     },
     "alerts": {
       "deleteTitle": "Удаление",
@@ -186,7 +191,28 @@
     "updateAction": "Редактировать пользователя",
     "deleteAvatar": "Удалить аватар",
     "deleteAvatarConfirm": "Вы уверены, что хотите удалить этот аватар?",
+    "deleteAvatarTitle": "Удалить аватар",
     "noResults": "Сотрудники не найдены",
+    "memberSince": "Участник с {date}",
+    "uncategorized": "Без категории",
+    "noSkills": "Навыки еще не добавлены",
+    "addFirstSkill": "Добавьте свой первый навык",
+    "addSkill": "Добавить навык",
+    "cancelSelection": "Отмена",
+    "removeSelected": "Удалить",
+    "languagesComingSoon": "Раздел языков скоро появится",
+    "noLanguages": "Языки еще не добавлены",
+    "addFirstLanguage": "Добавьте свой первый язык",
+    "addLanguage": "Добавить язык",
+    "languageModal": {
+      "addTitle": "Добавить язык",
+      "updateTitle": "Обновить язык",
+      "language": "Язык",
+      "selectLanguage": "Выберите язык",
+      "proficiency": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
+    },
     "tabs": {
       "profile": "ПРОФИЛЬ",
       "skills": "НАВЫКИ",
@@ -196,6 +222,15 @@
       "skills": "Навыки",
       "languages": "Языки",
       "cvs": "Резюме"
+    },
+    "skillModal": {
+      "addTitle": "Добавить навык",
+      "updateTitle": "Обновить навык",
+      "skill": "Навык",
+      "selectSkill": "Выберите навык",
+      "mastery": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
     },
     "unnamedUser": "Без имени",
     "uploadAvatar": "Загрузить аватар",

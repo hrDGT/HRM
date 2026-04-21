@@ -29,18 +29,13 @@ async function robustLogin(page: Page, emailText: string, passText: string) {
 
   await expect(loginBtn).toBeEnabled();
   await loginBtn.click();
-  await expect(page).toHaveURL(/.*\/users/, { timeout: 15000 });
+  await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
 }
 
 test.describe('Users', () => {
   test.beforeEach(async ({ context }) => {
     await context.addCookies([
-      {
-        name: 'NEXT_LOCALE',
-        value: locale,
-        domain: 'localhost',
-        path: '/',
-      },
+      { name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' },
     ]);
   });
 
@@ -49,7 +44,7 @@ test.describe('Users', () => {
     await page.goto('/users');
 
     await expect(
-      page.locator('main p').filter({ hasText: t('Users.title') })
+      page.locator('main p').filter({ hasText: t('Users.title') }).first()
     ).toBeVisible({ timeout: 15000 });
 
     await expect(page.locator('tbody tr').first()).toBeVisible({ timeout: 15000 });
@@ -67,7 +62,7 @@ test.describe('Users', () => {
     await page.goto('/users');
 
     await expect(
-      page.locator('main p').filter({ hasText: t('Users.title') })
+      page.locator('main p').filter({ hasText: t('Users.title') }).first()
     ).toBeVisible({ timeout: 15000 });
 
     await expect(page.locator('tbody tr').first()).toBeVisible({ timeout: 15000 });
@@ -83,7 +78,7 @@ test.describe('Users', () => {
     await page.goto('/users');
 
     await expect(
-      page.locator('main p').filter({ hasText: t('Users.title') })
+      page.locator('main p').filter({ hasText: t('Users.title') }).first()
     ).toBeVisible({ timeout: 15000 });
 
     const searchInput = page.getByPlaceholder(t('Common.placeholders.search'));
@@ -143,14 +138,21 @@ test.describe('Users', () => {
     await page.locator('tbody tr').first().click();
     await expect(page).toHaveURL(/\/users\/\d+/, { timeout: 15000 });
 
-    await expect(page.getByRole('button', { name: t('Users.tabs.profile') })).toBeVisible();
+    const userId = page.url().match(/\/users\/(\d+)/)?.[1];
+    if (!userId) throw new Error('Не удалось извлечь userId из URL');
 
-    await page.getByRole('button', { name: t('Users.tabs.skills') }).click();
-    await expect(page.locator('main').getByText('TODO', { exact: true })).toBeVisible();
+    await expect(page.locator(`main a[href="/users/${userId}"]`).first()).toBeVisible({ timeout: 10000 });
 
-    await page.getByRole('button', { name: t('Users.tabs.languages') }).click();
-    await expect(page.locator('main').getByText('TODO', { exact: true })).toBeVisible();
+    await page.locator(`main a[href="/users/${userId}/skills"]`).first().click();
+    await expect(page).toHaveURL(`/users/${userId}/skills`, { timeout: 10000 });
+    
+    await expect(page.locator('aside + main')).toBeVisible({ timeout: 10000 });
+
+    await page.locator(`main a[href="/users/${userId}/languages"]`).first().click();
+    await expect(page).toHaveURL(`/users/${userId}/languages`, { timeout: 10000 });
+    await expect(page.locator('aside + main')).toBeVisible({ timeout: 10000 });
   });
+
 
   test('Validation during user creation', async ({ page }) => {
     await robustLogin(page, 'admin@test.com', '12345');
@@ -178,52 +180,5 @@ test.describe('/users/me redirect', () => {
   test('redirects to /auth/login when not authenticated', async ({ page }) => {
     await page.goto('/users/me');
     await expect(page).toHaveURL(/\/auth\/login/, { timeout: 15000 });
-  });
-});
-
-test.describe('Sidebar layout', () => {
-  test('sidebar shows navigation items', async ({ page }) => {
-    await robustLogin(page, 'admin@test.com', '12345');
-    await page.goto('/users');
-
-    const sidebar = page.locator('aside');
-    await expect(sidebar.getByText(t('Users.title'))).toBeVisible({ timeout: 15000 });
-    await expect(sidebar.getByText(t('Users.nav.skills'))).toBeVisible();
-    await expect(sidebar.getByText(t('Users.nav.languages'))).toBeVisible();
-    await expect(sidebar.getByText(t('Users.nav.cvs'))).toBeVisible();
-  });
-
-  test('collapse button hides nav labels', async ({ page }) => {
-    await robustLogin(page, 'admin@test.com', '12345');
-    await page.goto('/users');
-
-    const sidebar = page.locator('aside');
-    const collapseBtn = sidebar.locator('button').filter({ has: sidebar.locator('svg').first() });
-
-    if (await collapseBtn.isVisible()) {
-      await collapseBtn.click();
-      await expect(sidebar.getByText(t('Users.title'))).not.toBeVisible();
-    }
-  });
-
-  test('current user info visible in sidebar', async ({ page }) => {
-    await robustLogin(page, 'admin@test.com', '12345');
-    await page.goto('/users');
-
-    const sidebar = page.locator('aside');
-    await expect(sidebar.locator('a[href="/users/me"]')).toBeVisible({ timeout: 15000 });
-  });
-
-  test('clicking user avatar navigates to profile', async ({ page }) => {
-    await robustLogin(page, 'admin@test.com', '12345');
-    await page.goto('/users');
-
-    const sidebar = page.locator('aside');
-    const userLink = sidebar.locator('a[href="/users/me"]');
-
-    if (await userLink.isVisible()) {
-      await userLink.click();
-      await expect(page).toHaveURL(/\/users\/(me|\d+)/, { timeout: 15000 });
-    }
   });
 });

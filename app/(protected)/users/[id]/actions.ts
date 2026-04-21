@@ -1,11 +1,16 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
-import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { gql } from "graphql-tag";
-
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
+import { GET_USER_SKILLS, ADD_PROFILE_SKILL, UPDATE_PROFILE_SKILL, DELETE_PROFILE_SKILL } from "@/lib/user/user-queries";
+import { fetchSkills } from "@/components/skills/queries/get-skills-query";
+import type { MasteryLevel } from "@/lib/users/skill-utils";
+import type { ProficiencyLevel } from "@/lib/users/language-utils";
+import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { UserRole } from "@/gqlcodegen/graphql";
+import { Mastery } from "@/gqlcodegen/graphql";
 
 type CreateUserInput = {
   email: string;
@@ -202,4 +207,198 @@ export async function deleteAvatar(userId: number) {
   });
   revalidateTag("users", "default");
   return result.deleteAvatar;
+}
+
+export async function getUserSkills(userId: number) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const [skillsData, allSkills] = await Promise.all([
+    gqlRequestAuthed(GET_USER_SKILLS, { userId: String(userId) }, { token, cookieHeader }),
+    fetchSkills(token, cookieHeader),
+  ]);
+
+  const skillMetaMap = new Map(
+    (allSkills ?? []).map((s) => [
+      s.name,
+      {
+        categoryId: s.category?.id ?? null,
+        categoryName: s.category?.name ?? null,
+      },
+    ])
+  );
+
+  return (skillsData.user?.profile?.skills ?? []).map((s) => {
+    const meta = skillMetaMap.get(s.name);
+    return {
+      name: s.name,
+      categoryId: meta?.categoryId ?? s.categoryId ?? null,
+      categoryName: meta?.categoryName ?? null,
+      categoryParentName: null,
+      mastery: s.mastery as MasteryLevel,
+    };
+  });
+}
+
+
+export async function deleteProfileSkills(userId: number, skillNames: string[]) {
+  const data = await gqlRequestAuthed(DELETE_PROFILE_SKILL, {
+    skill: {
+      userId: String(userId),
+      name: skillNames,
+    },
+  });
+  return (data.deleteProfileSkill?.skills ?? []).map((s) => ({
+    name: s.name,
+    categoryId: s.categoryId ?? null,
+    mastery: s.mastery as MasteryLevel,
+  }));
+}
+
+export async function getAvailableSkills() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  const data = await fetchSkills(token, cookieHeader);
+  return (data ?? []).map((s) => ({ id: s.id, name: s.name }));
+}
+ 
+export async function addProfileSkill(userId: number, skillName: string, mastery: MasteryLevel) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  await gqlRequestAuthed(
+    ADD_PROFILE_SKILL,
+    { skill: { userId: String(userId), name: skillName, mastery: mastery as unknown as Mastery } },
+    { token, cookieHeader }
+  );
+}
+ 
+export async function updateProfileSkill(userId: number, skillName: string, mastery: MasteryLevel) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  await gqlRequestAuthed(
+    UPDATE_PROFILE_SKILL,
+    { skill: { userId: String(userId), name: skillName, mastery: mastery as unknown as Mastery } },
+    { token, cookieHeader }
+  );
+}
+
+export async function getUserLanguages(userId: number) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const GET_USER_LANGUAGES = gql`
+    query GetUserLanguages($userId: ID!) {
+      user(userId: $userId) {
+        profile {
+          languages {
+            name
+            proficiency
+          }
+        }
+      }
+    }
+  ` as TypedDocumentNode<{ user: { profile: { languages: Array<{ name: string; proficiency: string }> } } }, { userId: string }>;
+
+  const data = await gqlRequestAuthed(GET_USER_LANGUAGES, { userId: String(userId) }, { token, cookieHeader });
+
+  return (data.user?.profile?.languages ?? []).map((l) => ({
+    name: l.name,
+    proficiency: l.proficiency as ProficiencyLevel,
+  }));
+}
+
+export async function deleteProfileLanguages(userId: number, languageNames: string[]) {
+  const DELETE_PROFILE_LANGUAGE = gql`
+    mutation DeleteProfileLanguage($language: DeleteProfileLanguageInput!) {
+      deleteProfileLanguage(language: $language) {
+        languages {
+          name
+          proficiency
+        }
+      }
+    }
+  ` as TypedDocumentNode<{ deleteProfileLanguage: { languages: Array<{ name: string; proficiency: string }> } }, { language: { userId: string; name: string[] } }>;
+
+  const data = await gqlRequestAuthed(DELETE_PROFILE_LANGUAGE, {
+    language: {
+      userId: String(userId),
+      name: languageNames,
+    },
+  });
+  return (data.deleteProfileLanguage?.languages ?? []).map((l) => ({
+    name: l.name,
+    proficiency: l.proficiency as ProficiencyLevel,
+  }));
+}
+
+export async function getAvailableLanguages() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const GET_AVAILABLE_LANGUAGES = gql`
+    query GetAvailableLanguages {
+      languages {
+        id
+        name
+      }
+    }
+  ` as TypedDocumentNode<{ languages: Array<{ id: string; name: string }> }, Record<string, never>>;
+
+  const data = await gqlRequestAuthed(GET_AVAILABLE_LANGUAGES, {}, { token, cookieHeader });
+  return (data.languages ?? []).map((l) => ({ id: l.id, name: l.name }));
+}
+
+export async function addProfileLanguage(userId: number, languageName: string, proficiency: ProficiencyLevel) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const ADD_PROFILE_LANGUAGE = gql`
+    mutation AddProfileLanguage($language: AddProfileLanguageInput!) {
+      addProfileLanguage(language: $language) {
+        languages {
+          name
+          proficiency
+        }
+      }
+    }
+  ` as TypedDocumentNode<{ addProfileLanguage: { languages: Array<{ name: string; proficiency: string }> } }, { language: { userId: string; name: string; proficiency: string } }>;
+
+  await gqlRequestAuthed(
+    ADD_PROFILE_LANGUAGE,
+    { language: { userId: String(userId), name: languageName, proficiency: proficiency as unknown as string } },
+    { token, cookieHeader }
+  );
+}
+
+export async function updateProfileLanguage(userId: number, languageName: string, proficiency: ProficiencyLevel) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const UPDATE_PROFILE_LANGUAGE = gql`
+    mutation UpdateProfileLanguage($language: UpdateProfileLanguageInput!) {
+      updateProfileLanguage(language: $language) {
+        languages {
+          name
+          proficiency
+        }
+      }
+    }
+  ` as TypedDocumentNode<{ updateProfileLanguage: { languages: Array<{ name: string; proficiency: string }> } }, { language: { userId: string; name: string; proficiency: string } }>;
+
+  await gqlRequestAuthed(
+    UPDATE_PROFILE_LANGUAGE,
+    { language: { userId: String(userId), name: languageName, proficiency: proficiency as unknown as string } },
+    { token, cookieHeader }
+  );
 }

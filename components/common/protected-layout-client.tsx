@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { type StoreUser, useUserStore } from "@/store/use-user-store";
 
-export type UsersLayoutClientProps = {
+export type ProtectedLayoutClientProps = {
   children: React.ReactNode;
   initialUser?: StoreUser | null;
 };
@@ -24,10 +24,7 @@ export type UsersLayoutClientProps = {
 const PROFILE_LINK_CLASS =
   "flex items-center px-3 gap-2 hover:bg-white/5 rounded-l-lg rounded-4xl py-1 transition-colors cursor-pointer";
 
-export function UsersLayoutClient({
-  initialUser,
-  children,
-}: UsersLayoutClientProps) {
+export function ProtectedLayoutClient({ initialUser, children }: ProtectedLayoutClientProps) {
   const t = useTranslations("Users");
   const pathname = usePathname();
   const [isExpanded, setIsExpanded] = useState(true);

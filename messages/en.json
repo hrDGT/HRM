@@ -146,6 +146,10 @@
       "role": "Role",
       "category": "Category"
     },
+    "roles": {
+      "employee": "Employee",
+      "admin": "Admin"
+    },
     "actions": {
       "create": "Create",
       "update": "Update",
@@ -161,7 +165,8 @@
     "placeholders": {
       "search": "Search",
       "selectDepartment": "Select department",
-      "selectPosition": "Select position"
+      "selectPosition": "Select position",
+      "password": "********"
     },
     "alerts": {
       "deleteTitle": "Delete department",
@@ -186,7 +191,28 @@
     "updateAction": "Update user",
     "deleteAvatar": "Delete avatar",
     "deleteAvatarConfirm": "Delete this avatar?",
+    "deleteAvatarTitle": "Delete avatar",
     "noResults": "No employees found",
+    "memberSince": "A member since {date}",
+    "uncategorized": "Uncategorized",
+    "noSkills": "No skills added yet",
+    "addFirstSkill": "Add your first skill",
+    "addSkill": "Add Skill",
+    "cancelSelection": "Cancel",
+    "removeSelected": "Delete",
+    "languagesComingSoon": "Languages tab coming soon",
+    "noLanguages": "No languages added yet",
+    "addFirstLanguage": "Add your first language",
+    "addLanguage": "Add Language",
+    "languageModal": {
+      "addTitle": "Add language",
+      "updateTitle": "Update language",
+      "language": "Language",
+      "selectLanguage": "Select language",
+      "proficiency": "Proficiency",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
     "tabs": {
       "profile": "PROFILE",
       "skills": "SKILLS",
@@ -196,6 +222,15 @@
       "skills": "Skills",
       "languages": "Languages",
       "cvs": "CVs"
+    },
+    "skillModal": {
+      "addTitle": "Add skill",
+      "updateTitle": "Update skill",
+      "skill": "Skill",
+      "selectSkill": "Select skill",
+      "mastery": "Skill mastery",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
     },
     "unnamedUser": "Unnamed User",
     "uploadAvatar": "Upload avatar image",

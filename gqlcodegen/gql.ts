@@ -14,7 +14,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  query GetEmployeeLanguages($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": typeof types.GetEmployeeLanguagesDocument,
     "\n  query GetEmployee($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      is_verified\n      created_at\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n      role\n      cvs {\n        id\n        created_at\n      }\n    }\n  }\n": typeof types.GetEmployeeDocument,
+    "\n  query GetEmployeeSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": typeof types.GetEmployeeSkillsDocument,
     "\n  query GetEmployees {\n    users {\n      id\n      email\n      is_verified\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n    }\n  }\n": typeof types.GetEmployeesDocument,
     "\n  mutation ForgotPassword($auth: ForgotPasswordInput!) {\n    forgotPassword(auth: $auth)\n  }\n": typeof types.ForgotPasswordDocument,
     "\n  query Login($auth: AuthInput!) {\n    login(auth: $auth) {\n      user {\n        id\n      }\n      access_token\n      refresh_token\n    }\n  }\n": typeof types.LoginDocument,
@@ -38,10 +40,16 @@ type Documents = {
     "\n  query GetSkillCategories {\n    skillCategories {\n      id\n      name\n      order\n    }\n  }\n": typeof types.GetSkillCategoriesDocument,
     "\n  query GetSkills {\n    skills {\n      id\n      name\n      category {\n        id\n        name\n      }\n    }\n  }\n": typeof types.GetSkillsDocument,
     "\n  mutation UpdateToken {\n    updateToken {\n      access_token\n      refresh_token\n    }\n  }\n": typeof types.UpdateTokenDocument,
-    "\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n    }\n  }\n": typeof types.GetUserForStoreDocument,
+    "\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n": typeof types.GetUserForStoreDocument,
+    "\n  query GetUserSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      profile {\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n": typeof types.GetUserSkillsDocument,
+    "\n  mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {\n    deleteProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n": typeof types.DeleteProfileSkillDocument,
+    "\n  mutation AddProfileSkill($skill: AddProfileSkillInput!) {\n    addProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n": typeof types.AddProfileSkillDocument,
+    "\n  mutation UpdateProfileSkill($skill: UpdateProfileSkillInput!) {\n    updateProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n": typeof types.UpdateProfileSkillDocument,
 };
 const documents: Documents = {
+    "\n  query GetEmployeeLanguages($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": types.GetEmployeeLanguagesDocument,
     "\n  query GetEmployee($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      is_verified\n      created_at\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n      role\n      cvs {\n        id\n        created_at\n      }\n    }\n  }\n": types.GetEmployeeDocument,
+    "\n  query GetEmployeeSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": types.GetEmployeeSkillsDocument,
     "\n  query GetEmployees {\n    users {\n      id\n      email\n      is_verified\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n    }\n  }\n": types.GetEmployeesDocument,
     "\n  mutation ForgotPassword($auth: ForgotPasswordInput!) {\n    forgotPassword(auth: $auth)\n  }\n": types.ForgotPasswordDocument,
     "\n  query Login($auth: AuthInput!) {\n    login(auth: $auth) {\n      user {\n        id\n      }\n      access_token\n      refresh_token\n    }\n  }\n": types.LoginDocument,
@@ -65,7 +73,11 @@ const documents: Documents = {
     "\n  query GetSkillCategories {\n    skillCategories {\n      id\n      name\n      order\n    }\n  }\n": types.GetSkillCategoriesDocument,
     "\n  query GetSkills {\n    skills {\n      id\n      name\n      category {\n        id\n        name\n      }\n    }\n  }\n": types.GetSkillsDocument,
     "\n  mutation UpdateToken {\n    updateToken {\n      access_token\n      refresh_token\n    }\n  }\n": types.UpdateTokenDocument,
-    "\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n    }\n  }\n": types.GetUserForStoreDocument,
+    "\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n": types.GetUserForStoreDocument,
+    "\n  query GetUserSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      profile {\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n": types.GetUserSkillsDocument,
+    "\n  mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {\n    deleteProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n": types.DeleteProfileSkillDocument,
+    "\n  mutation AddProfileSkill($skill: AddProfileSkillInput!) {\n    addProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n": types.AddProfileSkillDocument,
+    "\n  mutation UpdateProfileSkill($skill: UpdateProfileSkillInput!) {\n    updateProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n": types.UpdateProfileSkillDocument,
 };
 
 /**
@@ -85,7 +97,15 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query GetEmployeeLanguages($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetEmployeeLanguages($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query GetEmployee($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      is_verified\n      created_at\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n      role\n      cvs {\n        id\n        created_at\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetEmployee($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      is_verified\n      created_at\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n      role\n      cvs {\n        id\n        created_at\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetEmployeeSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetEmployeeSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -181,7 +201,23 @@ export function graphql(source: "\n  mutation UpdateToken {\n    updateToken {\n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserForStore($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n        avatar\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetUserSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      profile {\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserSkills($userId: ID!) {\n    user(userId: $userId) {\n      id\n      profile {\n        skills {\n          name\n          categoryId\n          mastery\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {\n    deleteProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {\n    deleteProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation AddProfileSkill($skill: AddProfileSkillInput!) {\n    addProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation AddProfileSkill($skill: AddProfileSkillInput!) {\n    addProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateProfileSkill($skill: UpdateProfileSkillInput!) {\n    updateProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfileSkill($skill: UpdateProfileSkillInput!) {\n    updateProfileSkill(skill: $skill) {\n      skills {\n        name\n        categoryId\n        mastery\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

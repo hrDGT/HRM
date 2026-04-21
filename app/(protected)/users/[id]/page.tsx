@@ -130,6 +130,7 @@ export default async function UserProfilePage({
       positions={positions}
       currentUserId={Number(currentUser.id)}
       currentUserRole={currentUser.role}
+      userId={id}
     />
   );
 }
