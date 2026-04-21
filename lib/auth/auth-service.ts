@@ -5,8 +5,6 @@ import { print } from "graphql";
 
 import { graphql } from "@/gqlcodegen";
 
-import { setAuthCookies } from "./auth-cookies";
-
 const UPDATE_TOKEN_MUTATION = graphql(`
   mutation UpdateToken {
     updateToken {
@@ -27,8 +25,7 @@ export async function refreshTokensAction() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${refreshToken}`,
-        "Cookie": `refresh_token=${refreshToken}`,
+        Authorization: `Bearer ${refreshToken}`,
       },
       body: JSON.stringify({ query: print(UPDATE_TOKEN_MUTATION) }),
     });
@@ -36,9 +33,7 @@ export async function refreshTokensAction() {
     const result = await response.json();
 
     if (result.data?.updateToken) {
-      const { access_token, refresh_token } = result.data.updateToken;
-      await setAuthCookies(access_token, refresh_token);
-      return access_token;
+      return result.data.updateToken.access_token;
     }
     return null;
   } catch (error) {

@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 
 import { fetchSkillsCategories } from "@/components/skills/queries/get-skills-categories-query";
 import { fetchSkills } from "@/components/skills/queries/get-skills-query";
 import { SkillsPageContent } from "@/components/skills/ui/skills-page-content";
 import { SkillsTableSkeleton } from "@/components/skills/ui/skills-table-skeleton";
+import { getAuthProps } from "@/lib/auth/get-auth-props";
 import { requireUser } from "@/lib/auth/require-user";
 
 export const metadata: Metadata = {
@@ -16,13 +16,17 @@ export const metadata: Metadata = {
 async function SkillsData({
   isAdmin,
   token,
+  cookieHeader,
+  user,
 }: {
   isAdmin: boolean;
   token?: string;
+  cookieHeader?: string;
+  user: Awaited<ReturnType<typeof requireUser>>;
 }) {
   const [skills, skillsCategories] = await Promise.all([
-    fetchSkills(token),
-    fetchSkillsCategories(token),
+    fetchSkills(token, cookieHeader),
+    fetchSkillsCategories(token, cookieHeader),
   ]);
 
   return (
@@ -30,19 +34,21 @@ async function SkillsData({
       initialSkills={skills}
       skillsCategories={skillsCategories}
       isAdmin={isAdmin}
+      user={user}
     />
   );
 }
 
 export default async function SkillsPage() {
-  const [user, cookieStore] = await Promise.all([requireUser(), cookies()]);
+  const [user, { token, cookieHeader }] = await Promise.all([
+    requireUser(),
+    getAuthProps(),
+  ]);
   const isAdmin = user?.role === "Admin";
-
-  const token = cookieStore.get("access_token")?.value;
 
   return (
     <Suspense fallback={<SkillsTableSkeleton isAdmin={isAdmin} />}>
-      <SkillsData isAdmin={isAdmin} token={token} />
+      <SkillsData isAdmin={isAdmin} token={token} cookieHeader={cookieHeader} user={user} />
     </Suspense>
   );
 }
