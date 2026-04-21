@@ -1,0 +1,160 @@
+{
+  "common": {
+    "loading": "Загрузка...",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "save": "Сохранить",
+    "update": "Обновить",
+    "create": "Создать",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "search": "Поиск",
+    "export": "Экспорт",
+    "exporting": "Экспорт...",
+    "back": "Назад",
+    "close": "Закрыть"
+  },
+  "cvs": {
+    "list": {
+      "title": "Резюме",
+      "searchPlaceholder": "Поиск",
+      "createButton": "СОЗДАТЬ РЕЗЮМЕ",
+      "tableHeaders": {
+        "name": "Название",
+        "description": "Описание",
+        "employee": "Сотрудник"
+      },
+      "actions": {
+        "edit": "Редактировать",
+        "delete": "Удалить"
+      },
+      "empty": "Резюме не найдены",
+      "deleteModal": {
+        "title": "Удалить резюме",
+        "message": "Вы уверены, что хотите удалить резюме \"{title}\"?",
+        "confirm": "Подтвердить",
+        "cancel": "Отмена"
+      },
+      "createModal": {
+        "title": "Создать новое резюме",
+        "editTitle": "Редактировать резюме",
+        "fields": {
+          "title": "Название",
+          "education": "Образование",
+          "description": "Описание"
+        },
+        "validation": {
+          "titleRequired": "Название обязательно",
+          "educationRequired": "Образование обязательно",
+          "descriptionRequired": "Описание обязательно"
+        }
+      }
+    },
+    "details": {
+      "tabs": {
+        "details": "ДЕТАЛИ",
+        "skills": "НАВЫКИ",
+        "projects": "ПРОЕКТЫ",
+        "preview": "ПРОСМОТР"
+      },
+      "breadcrumb": {
+        "cvs": "Резюме"
+      },
+      "detailsTab": {
+        "fields": {
+          "name": "Имя",
+          "education": "Образование",
+          "description": "Описание"
+        },
+        "updateButton": "ОБНОВИТЬ",
+        "updating": "ОБНОВЛЕНИЕ...",
+        "validation": {
+          "fullnameRequired": "Полное имя обязательно",
+          "educationRequired": "Образование обязательно",
+          "descriptionRequired": "Описание обязательно"
+        }
+      },
+      "skillsTab": {
+        "addSkill": "ДОБАВИТЬ НАВЫК",
+        "removeSkills": "УДАЛИТЬ НАВЫКИ",
+        "addSkillModal": {
+          "title": "Добавить навык",
+          "category": "Категория",
+          "skillName": "Название навыка",
+          "proficiency": "Уровень владения",
+          "color": "Цвет",
+          "addButton": "Добавить навык"
+        }
+      },
+      "projectsTab": {
+        "searchPlaceholder": "Поиск",
+        "addProject": "ДОБАВИТЬ ПРОЕКТ",
+        "tableHeaders": {
+          "name": "Название",
+          "domain": "Область",
+          "startDate": "Дата начала",
+          "endDate": "Дата окончания"
+        },
+        "environment": "Окружение",
+        "projectModal": {
+          "addTitle": "Добавить проект",
+          "editTitle": "Редактировать проект",
+          "fields": {
+            "project": "Проект",
+            "startDate": "Дата начала",
+            "endDate": "Дата окончания",
+            "description": "Описание",
+            "environment": "Окружение",
+            "responsibilities": "Обязанности"
+          },
+          "placeholders": {
+            "project": "Платформа обучения сотрудников",
+            "startDate": "ДД/ММ/ГГГГ",
+            "endDate": "ДД/ММ/ГГГГ",
+            "description": "Игровая платформа для обучения сотрудников компании...",
+            "environment": "напр., TypeScript, CSS3, Vue",
+            "responsibilities": "• Разработал веб-компоненты...\n• Интегрировал OAuth...\n• Управлял IoT-устройствами..."
+          },
+          "responsibilitiesHint": "Вводите каждую обязанность с новой строки.",
+          "validation": {
+            "nameRequired": "Название проекта обязательно",
+            "domainRequired": "Область обязательна",
+            "startDateRequired": "Дата начала обязательна",
+            "endDateRequired": "Дата окончания обязательна",
+            "descriptionRequired": "Описание обязательно"
+          },
+          "buttons": {
+            "cancel": "Отмена",
+            "add": "Добавить",
+            "update": "Обновить"
+          }
+        },
+        "deleteModal": {
+          "title": "Удалить проект",
+          "message": "Вы уверены, что хотите удалить проект \"{name}\"?",
+          "confirm": "Подтвердить",
+          "cancel": "Отмена"
+        },
+        "validationErrors": "Ошибки валидации"
+      },
+      "previewTab": {
+        "education": "Образование",
+        "languageProficiency": "Владение языками",
+        "domains": "Области",
+        "englishFluent": "Английский (свободно)",
+        "experienceYears": "с опытом более 5 лет"
+      },
+      "export": {
+        "button": "ЭКСПОРТ",
+        "exporting": "ЭКСПОРТ...",
+        "error": "Не удалось экспортировать PDF. Пожалуйста, попробуйте снова."
+      },
+      "notFound": "Резюме не найдено",
+      "readOnly": "У вас нет прав на редактирование этого резюме"
+    }
+  },
+  "auth": {
+    "unauthorized": "Не авторизован: Пожалуйста, войдите",
+    "forbidden": "Доступ запрещён: Требуются права администратора"
+  }
+}

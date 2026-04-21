@@ -1,0 +1,136 @@
+query GetCVs {
+    CVs{
+        id,
+        title,
+        fullname,
+        education,
+        description,
+        email
+    }
+}
+
+mutation CreateCV ($input: CVInput!){
+    createCV(cv: $input){
+        id,
+        title,
+        fullname,
+        education,
+        description,
+        email
+    }
+}
+
+mutation UpdateCV ($input: CVUpdateInput!){
+    updateCV(cv: $input){
+        id,
+        title,
+        fullname,
+        education,
+        description,
+        email
+    }
+}
+
+mutation DeleteCV ($id: ID!){
+    deleteCV(id: $id)
+}
+query GetCVs {
+  CVs {
+    id
+    title
+    fullname
+    education
+    description
+    email
+  }
+}
+
+query GetCV($id: ID!) {
+  cv(id: $id) {
+    id
+    title
+    fullname
+    education
+    description
+    email
+    skills {
+      id
+      name
+      categoryId
+      categoryName
+    }
+    languages {
+      id
+      name
+      iso2
+    }
+    projects {
+      id
+      startDate
+      endDate
+      responsibilities
+      project {
+        id
+        name
+        domain
+        description
+        environment
+      }
+    }
+    userId
+  }
+}
+
+mutation CreateCV($input: CVInput!) {
+  createCV(cv: $input) {
+    id
+    title
+    fullname
+    education
+    description
+    email
+  }
+}
+
+mutation UpdateCV($input: CVUpdateInput!) {
+  updateCV(cv: $input) {
+    id
+    title
+    fullname
+    education
+    description
+    email
+  }
+}
+
+mutation DeleteCV($id: ID!) {
+  deleteCV(id: $id)
+}
+
+mutation UpdateCVSkills($id: ID!, $skills: [SkillInput!]!) {
+  updateCVSkills(id: $id, skills: $skills) {
+    id
+    skills {
+      id
+      name
+    }
+  }
+}
+
+mutation UpsertCvProject($cvId: ID!, $project: ProjectInput!) {
+  upsertCvProject(cvId: $cvId, project: $project) {
+    id
+    startDate
+    endDate
+    responsibilities
+    project {
+      id
+      name
+      domain
+    }
+  }
+}
+
+mutation DeleteCvProject($cvId: ID!, $cvProjectId: ID!) {
+  deleteCvProject(cvId: $cvId, cvProjectId: $cvProjectId)
+}

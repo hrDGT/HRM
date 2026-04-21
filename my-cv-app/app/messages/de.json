@@ -1,0 +1,160 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "save": "Speichern",
+    "update": "Aktualisieren",
+    "create": "Erstellen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "search": "Suchen",
+    "export": "Exportieren",
+    "exporting": "Exportiere...",
+    "back": "Zurück",
+    "close": "Schließen"
+  },
+  "cvs": {
+    "list": {
+      "title": "Lebensläufe",
+      "searchPlaceholder": "Suchen",
+      "createButton": "LEBENSLAUF ERSTELLEN",
+      "tableHeaders": {
+        "name": "Name",
+        "description": "Beschreibung",
+        "employee": "Mitarbeiter"
+      },
+      "actions": {
+        "edit": "Bearbeiten",
+        "delete": "Löschen"
+      },
+      "empty": "Keine Lebensläufe gefunden",
+      "deleteModal": {
+        "title": "Lebenslauf löschen",
+        "message": "Sind Sie sicher, dass Sie den Lebenslauf \"{title}\" löschen möchten?",
+        "confirm": "Bestätigen",
+        "cancel": "Abbrechen"
+      },
+      "createModal": {
+        "title": "Neuen Lebenslauf erstellen",
+        "editTitle": "Lebenslauf bearbeiten",
+        "fields": {
+          "title": "Titel",
+          "education": "Ausbildung",
+          "description": "Beschreibung"
+        },
+        "validation": {
+          "titleRequired": "Titel ist erforderlich",
+          "educationRequired": "Ausbildung ist erforderlich",
+          "descriptionRequired": "Beschreibung ist erforderlich"
+        }
+      }
+    },
+    "details": {
+      "tabs": {
+        "details": "DETAILS",
+        "skills": "FÄHIGKEITEN",
+        "projects": "PROJEKTE",
+        "preview": "VORSCHAU"
+      },
+      "breadcrumb": {
+        "cvs": "Lebensläufe"
+      },
+      "detailsTab": {
+        "fields": {
+          "name": "Name",
+          "education": "Ausbildung",
+          "description": "Beschreibung"
+        },
+        "updateButton": "AKTUALISIEREN",
+        "updating": "AKTUALISIERE...",
+        "validation": {
+          "fullnameRequired": "Vollständiger Name ist erforderlich",
+          "educationRequired": "Ausbildung ist erforderlich",
+          "descriptionRequired": "Beschreibung ist erforderlich"
+        }
+      },
+      "skillsTab": {
+        "addSkill": "FÄHIGKEIT HINZUFÜGEN",
+        "removeSkills": "FÄHIGKEITEN ENTFERNEN",
+        "addSkillModal": {
+          "title": "Fähigkeit hinzufügen",
+          "category": "Kategorie",
+          "skillName": "Name der Fähigkeit",
+          "proficiency": "Kenntnisstand",
+          "color": "Farbe",
+          "addButton": "Fähigkeit hinzufügen"
+        }
+      },
+      "projectsTab": {
+        "searchPlaceholder": "Suchen",
+        "addProject": "PROJEKT HINZUFÜGEN",
+        "tableHeaders": {
+          "name": "Name",
+          "domain": "Domäne",
+          "startDate": "Startdatum",
+          "endDate": "Enddatum"
+        },
+        "environment": "Umgebung",
+        "projectModal": {
+          "addTitle": "Projekt hinzufügen",
+          "editTitle": "Projekt bearbeiten",
+          "fields": {
+            "project": "Projekt",
+            "startDate": "Startdatum",
+            "endDate": "Enddatum",
+            "description": "Beschreibung",
+            "environment": "Umgebung",
+            "responsibilities": "Verantwortlichkeiten"
+          },
+          "placeholders": {
+            "project": "Mitarbeiter-Schulungsplattform",
+            "startDate": "TT/MM/JJJJ",
+            "endDate": "TT/MM/JJJJ",
+            "description": "Eine Spieleplattform zur Schulung von Mitarbeitern...",
+            "environment": "z.B. TypeScript, CSS3, Vue",
+            "responsibilities": "• Webkomponenten entwickelt...\n• OAuth integriert...\n• IoT-Geräte verwaltet..."
+          },
+          "responsibilitiesHint": "Geben Sie jede Verantwortlichkeit in eine neue Zeile ein.",
+          "validation": {
+            "nameRequired": "Projektname ist erforderlich",
+            "domainRequired": "Domäne ist erforderlich",
+            "startDateRequired": "Startdatum ist erforderlich",
+            "endDateRequired": "Enddatum ist erforderlich",
+            "descriptionRequired": "Beschreibung ist erforderlich"
+          },
+          "buttons": {
+            "cancel": "Abbrechen",
+            "add": "Hinzufügen",
+            "update": "Aktualisieren"
+          }
+        },
+        "deleteModal": {
+          "title": "Projekt löschen",
+          "message": "Sind Sie sicher, dass Sie das Projekt \"{name}\" löschen möchten?",
+          "confirm": "Bestätigen",
+          "cancel": "Abbrechen"
+        },
+        "validationErrors": "Validierungsfehler"
+      },
+      "previewTab": {
+        "education": "Ausbildung",
+        "languageProficiency": "Sprachkenntnisse",
+        "domains": "Domänen",
+        "englishFluent": "Englisch (Fließend)",
+        "experienceYears": "mit über 5 Jahren Erfahrung"
+      },
+      "export": {
+        "button": "EXPORTIEREN",
+        "exporting": "EXPORTIERE...",
+        "error": "PDF-Export fehlgeschlagen. Bitte versuchen Sie es erneut."
+      },
+      "notFound": "Lebenslauf nicht gefunden",
+      "readOnly": "Sie haben keine Berechtigung, diesen Lebenslauf zu bearbeiten"
+    }
+  },
+  "auth": {
+    "unauthorized": "Nicht autorisiert: Bitte melden Sie sich an",
+    "forbidden": "Verboten: Administratorzugriff erforderlich"
+  }
+}
