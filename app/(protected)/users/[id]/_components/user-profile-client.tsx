@@ -15,6 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 import type { EmployeeProfile } from "@/lib/users/users-types";
 import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../actions";
+import { ProfileTabs } from "./profile-tabs";
+import { UserSkills } from "./user-skills";
 
 type UserProfileClientProps = {
   employee: EmployeeProfile;
@@ -81,7 +83,7 @@ export function UserProfileClient({
   };
 
   const handleDeleteAvatar = async () => {
-    if (!confirm(t("deleteAvatarConfirm") || "Delete avatar?")) return;
+    if (!confirm(t("deleteAvatarConfirm"))) return;
     
     setIsDeleting(true);
     setError(null);
@@ -106,14 +108,13 @@ export function UserProfileClient({
         setAvatarFile(null);
       }
 
-      const profileUpdated = await updateProfile(employee.id, form.firstName, form.lastName);
+      await updateProfile(employee.id, form.firstName, form.lastName);
 
-      let userUpdated = null;
       const hasDeptChange = form.departmentId !== originalValues.departmentId;
       const hasPosChange = form.positionId !== originalValues.positionId;
 
       if (hasDeptChange || hasPosChange) {
-        userUpdated = await updateUserMeta(
+        await updateUserMeta(
           employee.id,
           form.departmentId != null ? Number(form.departmentId) : null,
           form.positionId != null ? Number(form.positionId) : null,
@@ -149,65 +150,54 @@ export function UserProfileClient({
       </div>
 
       <div className="px-8 pb-6">
-        <div className="flex gap-8 border-b border-white/10">
-          {TABS.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={cn("pb-3 text-xs font-semibold tracking-wider transition-colors relative",
-                activeTab === tab.id ? "text-red-500" : "text-zinc-500 hover:text-zinc-300"
-              )}
-            >
-              {tab.label}
-              {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />}
-            </button>
-          ))}
-        </div>
+        <ProfileTabs tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
 
       {activeTab === "profile" && (
         <div className="flex-1 px-8 pb-8">
           <div className="max-w-4xl mx-auto space-y-8">
-          <div className="flex justify-center items-center gap-6">
-            <div className="relative group">
-              <Avatar className="h-24 w-24 flex-shrink-0">
-                {avatarPreview && <AvatarImage src={avatarPreview} alt={nameDisplay} />}
-                <AvatarFallback className="bg-zinc-700 text-zinc-300 text-3xl font-bold">
-                  {form.initials || (form.firstName?.[0] || "") + (form.lastName?.[0] || "")}
-                </AvatarFallback>
-              </Avatar>
+            <div className="flex justify-center items-center gap-6">
+              <div className="relative group">
+                <Avatar className="h-24 w-24 flex-shrink-0">
+                  {avatarPreview && <AvatarImage src={avatarPreview} alt={nameDisplay} />}
+                  <AvatarFallback className="bg-zinc-700 text-zinc-300 text-3xl font-bold">
+                    {form.initials || (form.firstName?.[0] || "") + (form.lastName?.[0] || "")}
+                  </AvatarFallback>
+                </Avatar>
 
-              {canEdit && avatarPreview && (
-                <button
-                  type="button"
-                  onClick={handleDeleteAvatar}
-                  disabled={isDeleting}
-                  className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
-                  title="Удалить аватар"
-                >
-                  <X className="w-10 h-10 text-red-500" />
-                </button>
+                {canEdit && avatarPreview && (
+                  <button
+                    type="button"
+                    onClick={handleDeleteAvatar}
+                    disabled={isDeleting}
+                    className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
+                    title={t("deleteAvatarTitle")}
+                  >
+                    <X className="w-10 h-10 text-red-500" />
+                  </button>
+                )}
+              </div>
+              
+              {canEdit && (
+                <>
+                  <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/gif"
+                    className="hidden" onChange={handleAvatarChange} />
+                  <button type="button" onClick={() => fileInputRef.current?.click()}
+                    className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
+                    <div className="flex items-center gap-2 text-zinc-200">
+                      <Upload size={18} className="text-zinc-400" />
+                      <span className="text-sm font-medium">{t("uploadAvatar")}</span>
+                    </div>
+                    <p className="text-xs text-zinc-500">{t("uploadHint")}</p>
+                  </button>
+                </>
               )}
             </div>
-            
-            {canEdit && (
-              <>
-                <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/gif"
-                  className="hidden" onChange={handleAvatarChange} />
-                <button type="button" onClick={() => fileInputRef.current?.click()}
-                  className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
-                  <div className="flex items-center gap-2 text-zinc-200">
-                    <Upload size={18} className="text-zinc-400" />
-                    <span className="text-sm font-medium">{t("uploadAvatar")}</span>
-                  </div>
-                  <p className="text-xs text-zinc-500">{t("uploadHint")}</p>
-                </button>
-              </>
-            )}
-          </div>
 
             <div className="text-center space-y-1">
               <h1 className="text-xl font-semibold text-zinc-100">{nameDisplay}</h1>
               <p className="text-sm text-zinc-400">{form.email}</p>
-              {employee.memberSince && <p className="text-xs text-zinc-500">A member since {employee.memberSince}</p>}
+              {employee.memberSince && <p className="text-xs text-zinc-500">{t("memberSince", { date: employee.memberSince })}</p>}
             </div>
 
             {error && <p className="text-center text-sm text-red-400">{error}</p>}
@@ -284,8 +274,18 @@ export function UserProfileClient({
         </div>
       )}
 
-      {activeTab === "skills" && <div>TODO</div>}
-      {activeTab === "languages" && <div>TODO</div>}
+      {activeTab === "skills" && (
+        <UserSkills 
+          userId={employee.id} 
+          canEdit={canEdit}
+        />
+      )}
+
+      {activeTab === "languages" && (
+        <div className="px-8 pb-8 flex items-center justify-center min-h-[200px] text-zinc-500">
+          {t("languagesComingSoon")}
+        </div>
+      )}
     </div>
   );
 }

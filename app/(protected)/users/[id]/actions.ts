@@ -1,10 +1,16 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
 import { gql } from "graphql-tag";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
+import { GET_USER_SKILLS, ADD_PROFILE_SKILL, UPDATE_PROFILE_SKILL, DELETE_PROFILE_SKILL } from "@/lib/user/user-queries";
+import { fetchSkills } from "@/components/skills/queries/get-skills-query";
+import {  } from "@/lib/user/user-queries";
+import type { MasteryLevel } from "@/lib/users/skill-utils";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { UserRole } from "@/gqlcodegen/graphql";
+import { Mastery } from "@/gqlcodegen/graphql";
 
 type CreateUserInput = {
   email: string;
@@ -201,4 +207,84 @@ export async function deleteAvatar(userId: number) {
   });
   revalidateTag("users", "default");
   return result.deleteAvatar;
+}
+
+export async function getUserSkills(userId: number) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const [skillsData, allSkills] = await Promise.all([
+    gqlRequestAuthed(GET_USER_SKILLS, { userId: String(userId) }, { token, cookieHeader }),
+    fetchSkills(token, cookieHeader),
+  ]);
+
+  const skillMetaMap = new Map(
+    (allSkills ?? []).map((s) => [
+      s.name,
+      {
+        categoryId: s.category?.id ?? null,
+        categoryName: s.category?.name ?? null,
+      },
+    ])
+  );
+
+  return (skillsData.user?.profile?.skills ?? []).map((s) => {
+    const meta = skillMetaMap.get(s.name);
+    return {
+      name: s.name,
+      categoryId: meta?.categoryId ?? s.categoryId ?? null,
+      categoryName: meta?.categoryName ?? null,
+      categoryParentName: null,
+      mastery: s.mastery as MasteryLevel,
+    };
+  });
+}
+
+
+export async function deleteProfileSkills(userId: number, skillNames: string[]) {
+  const data = await gqlRequestAuthed(DELETE_PROFILE_SKILL, {
+    skill: {
+      userId: String(userId),
+      name: skillNames,
+    },
+  });
+  return (data.deleteProfileSkill?.skills ?? []).map((s) => ({
+    name: s.name,
+    categoryId: s.categoryId ?? null,
+    mastery: s.mastery as MasteryLevel,
+  }));
+}
+
+export async function getAvailableSkills() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  const data = await fetchSkills(token, cookieHeader);
+  return (data ?? []).map((s) => ({ id: s.id, name: s.name }));
+}
+ 
+export async function addProfileSkill(userId: number, skillName: string, mastery: MasteryLevel) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  await gqlRequestAuthed(
+    ADD_PROFILE_SKILL,
+    { skill: { userId: String(userId), name: skillName, mastery: mastery as unknown as Mastery } },
+    { token, cookieHeader }
+  );
+}
+ 
+export async function updateProfileSkill(userId: number, skillName: string, mastery: MasteryLevel) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  await gqlRequestAuthed(
+    UPDATE_PROFILE_SKILL,
+    { skill: { userId: String(userId), name: skillName, mastery: mastery as unknown as Mastery } },
+    { token, cookieHeader }
+  );
 }

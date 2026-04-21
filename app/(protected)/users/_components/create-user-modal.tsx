@@ -92,8 +92,8 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
     onClose();
   };
 
-  const fieldWrapper = "relative rounded-lg border border-white/15 bg-[#1e1e1e] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
-  const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#1e1e1e] px-1.5 text-xs text-zinc-400 pointer-events-none select-none";
+  const fieldWrapper = "relative rounded-lg border border-white/15 bg-[#2c2c2c] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
+  const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#2c2c2c] px-1.5 text-xs text-zinc-400 pointer-events-none select-none";
   const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
   return (
@@ -106,7 +106,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.password")}</Label>
-          <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="********" className={fieldInput} />
+          <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder={c("placeholders.password")} className={fieldInput} />
         </div>
 
         <div className={fieldWrapper}>
@@ -123,7 +123,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
           <Label className={fieldLabel}>{c("fields.department")}</Label>
           <Select value={form.departmentId} onValueChange={(v) => set("departmentId", v)}>
             <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
-            <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
+            <SelectContent className="bg-[#2c2c2c] border-white/10 text-zinc-200">
               {departments.map((d) => (
                 <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
               ))}
@@ -135,7 +135,7 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
           <Label className={fieldLabel}>{c("fields.position")}</Label>
           <Select value={form.positionId} onValueChange={(v) => set("positionId", v)}>
             <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
-            <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
+            <SelectContent className="bg-[#2c2c2c] border-white/10 text-zinc-200">
               {positions.map((p) => (
                 <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
               ))}
@@ -147,9 +147,9 @@ export function CreateUserModal({ open, onClose, onCreate, departments, position
           <Label className={fieldLabel}>{c("fields.role")}</Label>
           <Select value={form.role} onValueChange={(v) => set("role", v as UserRole)}>
             <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
-            <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
+            <SelectContent className="bg-[#2c2c2c] border-white/10 text-zinc-200">
               {ROLES.map((r) => (
-                <SelectItem key={r} value={r} className="focus:bg-white/5">{r}</SelectItem>
+                <SelectItem key={r} value={r} className="focus:bg-white/5">{c(`roles.${r.toLowerCase()}`)}</SelectItem>
               ))}
             </SelectContent>
           </Select>

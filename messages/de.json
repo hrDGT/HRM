@@ -98,7 +98,7 @@
     "fields": {
       "name": "Name",
       "nativeName": "Einheimischer Name",
-      "iso2": "ISO2"
+      "iso2": "ISO2",
       "email": "E-Mail",
       "password": "Passwort",
       "firstName": "Vorname",
@@ -107,6 +107,10 @@
       "position": "Position",
       "role": "Rolle",
       "category": "Kategorie"
+    },
+    "roles": {
+      "employee": "Mitarbeiter",
+      "admin": "Administrator"
     },
     "actions": {
       "create": "Erstellen",
@@ -123,7 +127,8 @@
     "placeholders": {
       "search": "Suchen",
       "selectDepartment": "Abteilung auswählen",
-      "selectPosition": "Position auswählen"
+      "selectPosition": "Position auswählen",
+      "password": "********"
     },
     "alerts": {
       "deleteTitle": "Löschen bestätigen",
@@ -143,7 +148,16 @@
     "updateAction": "Mitarbeiter bearbeiten",
     "deleteAvatar": "Avatar löschen",
     "deleteAvatarConfirm": "Möchten Sie wirklich diesen Avatar löschen?",
+    "deleteAvatarTitle": "Avatar löschen",
     "noResults": "Keine Mitarbeiter gefunden",
+    "memberSince": "Mitglied seit {date}",
+    "uncategorized": "Nicht kategorisiert",
+    "noSkills": "Noch keine Kenntnisse hinzugefügt",
+    "addFirstSkill": "Fügen Sie Ihre erste Kenntnis hinzu",
+    "addSkill": "Kenntnis hinzufügen",
+    "cancelSelection": "Stornieren",
+    "removeSelected": "Löschen",
+    "languagesComingSoon": "Sprachen-Tab kommt bald",
     "tabs": {
       "profile": "PROFIL",
       "skills": "KENNTNISSE",
@@ -153,6 +167,15 @@
       "skills": "Kenntnisse",
       "languages": "Sprachen",
       "cvs": "Lebensläufe"
+    },
+    "skillModal": {
+      "addTitle": "Kenntnis hinzufügen",
+      "updateTitle": "Kenntnis aktualisieren",
+      "skill": "Kenntnis",
+      "selectSkill": "Kenntnis auswählen",
+      "mastery": "Kenntnislevel",
+      "cancel": "Stornieren",
+      "confirm": "Bestätigen"
     },
     "unnamedUser": "Unbenannter Nutzer",
     "uploadAvatar": "Avatar hochladen",

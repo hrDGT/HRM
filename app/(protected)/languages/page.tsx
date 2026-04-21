@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 
 import { fetchLanguages } from "@/components/languages/queries/get-languages-query";
 import { LanguagesPageContent } from "@/components/languages/ui/languages-page-content";
 import { LanguagesTableSkeleton } from "@/components/languages/ui/languages-table-skeleton";
+import { getAuthProps } from "@/lib/auth/get-auth-props";
 import { requireUser } from "@/lib/auth/require-user";
 
 export const metadata: Metadata = {
@@ -15,11 +15,13 @@ export const metadata: Metadata = {
 async function LanguagesData({
   isAdmin,
   token,
+  cookieHeader,
 }: {
   isAdmin: boolean;
   token?: string;
+  cookieHeader?: string;
 }) {
-  const languages = await fetchLanguages(token);
+  const languages = await fetchLanguages(token, cookieHeader);
 
   return (
     <LanguagesPageContent initialLanguages={languages} isAdmin={isAdmin} />
@@ -27,14 +29,15 @@ async function LanguagesData({
 }
 
 export default async function LanguagesPage() {
-  const [user, cookieStore] = await Promise.all([requireUser(), cookies()]);
+  const [user, { token, cookieHeader }] = await Promise.all([
+    requireUser(),
+    getAuthProps(),
+  ]);
   const isAdmin = user?.role === "Admin";
-
-  const token = cookieStore.get("access_token")?.value;
 
   return (
     <Suspense fallback={<LanguagesTableSkeleton isAdmin={isAdmin} />}>
-      <LanguagesData isAdmin={isAdmin} token={token} />
+      <LanguagesData isAdmin={isAdmin} token={token} cookieHeader={cookieHeader} />
     </Suspense>
   );
 }

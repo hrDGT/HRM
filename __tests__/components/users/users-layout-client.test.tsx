@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import React from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { UsersLayoutClient } from "@/app/(protected)/users/_components/users-layout-client";
+import { ProtectedLayoutClient } from "@/components/common/protected-layout-client";
 import messagesEn from "@/messages/en.json";
 import messagesDe from "@/messages/de.json";
 import messagesRu from "@/messages/ru.json";
@@ -76,7 +76,7 @@ const defaultProps = {
   children: <div data-testid="mock-children">Page Content</div>,
 };
 
-describe("UsersLayoutClient", () => {
+describe("ProtectedLayoutClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -87,7 +87,7 @@ describe("UsersLayoutClient", () => {
 
     describe("sidebar rendering", () => {
       it("renders navigation items", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const links = screen.getAllByTestId("mock-link");
         const linkHrefs = links.map((link: HTMLElement) => link.getAttribute("href"));
@@ -99,27 +99,27 @@ describe("UsersLayoutClient", () => {
       });
 
       it("renders profile section with user initials", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const fallback = screen.getByTestId("mock-avatar-fallback");
         expect(fallback).toHaveTextContent("AB");
       });
 
       it("renders user display name", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         expect(screen.getByText("Alice Brown")).toBeInTheDocument();
       });
 
       it("renders collapse/expand toggle button", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const toggleBtn = screen.getByRole("button", { name: new RegExp(`${users.collapseMenu}|${users.expandMenu}`) });
         expect(toggleBtn).toBeInTheDocument();
       });
 
       it("displays navigation labels in correct locale", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         expect(screen.getByText(users.title)).toBeInTheDocument();
         expect(screen.getByText(users.nav.skills)).toBeInTheDocument();
@@ -131,7 +131,7 @@ describe("UsersLayoutClient", () => {
     describe("sidebar toggle", () => {
       it("collapses sidebar when toggle is clicked", async () => {
         const user = userEvent.setup();
-        const { container } = renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        const { container } = renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
         await user.click(toggleBtn);
@@ -142,7 +142,7 @@ describe("UsersLayoutClient", () => {
 
       it("expands sidebar when collapsed and toggle is clicked", async () => {
         const user = userEvent.setup();
-        const { container } = renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        const { container } = renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
         await user.click(toggleBtn);
@@ -156,7 +156,7 @@ describe("UsersLayoutClient", () => {
 
       it("hides nav labels when sidebar is collapsed", async () => {
         const user = userEvent.setup();
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const navLabel = screen.getByText(users.title);
         expect(navLabel).not.toHaveClass("hidden");
@@ -170,7 +170,7 @@ describe("UsersLayoutClient", () => {
 
     describe("profile link", () => {
       it("navigates to /users/me on profile click", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         const profileLink = screen.getAllByTestId("mock-link").find(
           (link: HTMLElement) => link.getAttribute("href") === "/users/me"
@@ -180,7 +180,7 @@ describe("UsersLayoutClient", () => {
       });
 
       it("displays fallback initials when no avatar", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
         expect(screen.queryByTestId("mock-avatar-image")).not.toBeInTheDocument();
@@ -188,7 +188,7 @@ describe("UsersLayoutClient", () => {
 
       it("displays avatar image when provided", () => {
         renderWithLocale(
-          <UsersLayoutClient
+          <ProtectedLayoutClient
             {...defaultProps}
             currentUser={{ ...mockCurrentUser, avatar: "/avatar.jpg" }}
           />,
@@ -201,7 +201,7 @@ describe("UsersLayoutClient", () => {
 
     describe("edge cases", () => {
       it("handles null currentUser gracefully", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} currentUser={null} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} currentUser={null} />, locale);
         
         const fallback = screen.getByTestId("mock-avatar-fallback");
         expect(fallback).toHaveTextContent("U");
@@ -210,7 +210,7 @@ describe("UsersLayoutClient", () => {
 
       it("handles empty name fields", () => {
         renderWithLocale(
-          <UsersLayoutClient
+          <ProtectedLayoutClient
             {...defaultProps}
             currentUser={{ id: 1, firstName: "", lastName: "", avatar: null }}
           />,
@@ -221,7 +221,7 @@ describe("UsersLayoutClient", () => {
       });
 
       it("renders children in main content area", () => {
-        renderWithLocale(<UsersLayoutClient {...defaultProps} />, locale);
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
         
         expect(screen.getByTestId("mock-children")).toBeInTheDocument();
       });

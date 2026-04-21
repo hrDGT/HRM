@@ -98,7 +98,7 @@
     "fields": {
       "name": "Имя",
       "nativeName": "Родное имя",
-      "iso2": "ISO2"
+      "iso2": "ISO2",
       "email": "Email",
       "password": "Пароль",
       "firstName": "Имя",
@@ -107,6 +107,10 @@
       "position": "Должность",
       "role": "Роль",
       "category": "Категория"
+    },
+    "roles": {
+      "employee": "Сотрудник",
+      "admin": "Администратор"
     },
     "actions": {
       "create": "Создать",
@@ -123,7 +127,8 @@
     "placeholders": {
       "search": "Поиск",
       "selectDepartment": "Выберите отдел",
-      "selectPosition": "Выберите должность"
+      "selectPosition": "Выберите должность",
+      "password": "********"
     },
     "alerts": {
       "deleteTitle": "Удаление",
@@ -143,7 +148,16 @@
     "updateAction": "Редактировать пользователя",
     "deleteAvatar": "Удалить аватар",
     "deleteAvatarConfirm": "Вы уверены, что хотите удалить этот аватар?",
+    "deleteAvatarTitle": "Удалить аватар",
     "noResults": "Сотрудники не найдены",
+    "memberSince": "Участник с {date}",
+    "uncategorized": "Без категории",
+    "noSkills": "Навыки еще не добавлены",
+    "addFirstSkill": "Добавьте свой первый навык",
+    "addSkill": "Добавить навык",
+    "cancelSelection": "Отмена",
+    "removeSelected": "Удалить",
+    "languagesComingSoon": "Раздел языков скоро появится",
     "tabs": {
       "profile": "ПРОФИЛЬ",
       "skills": "НАВЫКИ",
@@ -153,6 +167,15 @@
       "skills": "Навыки",
       "languages": "Языки",
       "cvs": "Резюме"
+    },
+    "skillModal": {
+      "addTitle": "Добавить навык",
+      "updateTitle": "Обновить навык",
+      "skill": "Навык",
+      "selectSkill": "Выберите навык",
+      "mastery": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
     },
     "unnamedUser": "Без имени",
     "uploadAvatar": "Загрузить аватар",

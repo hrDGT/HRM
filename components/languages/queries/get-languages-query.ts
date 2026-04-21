@@ -14,7 +14,7 @@ export const GET_LANGUAGES_QUERY = graphql(`
   }
 `);
 
-export async function fetchLanguages(token?: string) {
+export async function fetchLanguages(token?: string, cookieHeader?: string) {
   'use cache';
   cacheLife('hours');
   cacheTag('languages');
@@ -22,7 +22,7 @@ export async function fetchLanguages(token?: string) {
   const response = await gqlRequestAuthed(
     GET_LANGUAGES_QUERY,
     undefined,
-    { token }
+    { token, cookieHeader }
   );
 
   return response.languages;
