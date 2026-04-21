@@ -160,7 +160,8 @@
       "updating": "Updating...",
       "confirm": "Confirm",
       "confirming": "Confirming...",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "delete": "Delete"
     },
     "placeholders": {
       "search": "Search",
@@ -313,6 +314,7 @@
       "projectsTab": {
         "searchPlaceholder": "Search",
         "addProject": "ADD PROJECT",
+        "noProjects": "No projects found",
         "tableHeaders": {
           "name": "Name",
           "domain": "Domain",
@@ -325,6 +327,7 @@
           "editTitle": "Edit project",
           "fields": {
             "project": "Project",
+            "domain": "Domain",
             "startDate": "Start Date",
             "endDate": "End Date",
             "description": "Description",
@@ -363,6 +366,9 @@
       },
       "previewTab": {
         "education": "Education",
+        "skills": "Skills",
+        "projects": "Projects",
+        "description": "Description",
         "languageProficiency": "Language proficiency",
         "domains": "Domains",
         "englishFluent": "English (Fluent)",

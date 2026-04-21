@@ -160,7 +160,8 @@
       "updating": "Wird aktualisiert...",
       "confirm": "Bestätigen",
       "confirming": "Wird bestätigt...",
-      "saving": "Wird gespeichert..."
+      "saving": "Wird gespeichert...",
+      "delete": "Löschen"
     },
     "placeholders": {
       "search": "Suchen",
@@ -313,6 +314,7 @@
       "projectsTab": {
         "searchPlaceholder": "Suchen",
         "addProject": "PROJEKT HINZUFÜGEN",
+        "noProjects": "Keine Projekte gefunden",
         "tableHeaders": {
           "name": "Name",
           "domain": "Domäne",
@@ -325,6 +327,7 @@
           "editTitle": "Projekt bearbeiten",
           "fields": {
             "project": "Projekt",
+            "domain": "Domäne",
             "startDate": "Startdatum",
             "endDate": "Enddatum",
             "description": "Beschreibung",
@@ -363,6 +366,9 @@
       },
       "previewTab": {
         "education": "Ausbildung",
+        "skills": "Kenntnisse",
+        "projects": "Projekte",
+        "description": "Beschreibung",
         "languageProficiency": "Sprachkenntnisse",
         "domains": "Domänen",
         "englishFluent": "Englisch (Fließend)",

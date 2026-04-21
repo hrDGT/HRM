@@ -160,7 +160,8 @@
       "updating": "Обновление...",
       "confirm": "Подтвердить",
       "confirming": "Подтверждение...",
-      "saving": "Сохранение..."
+      "saving": "Сохранение...",
+      "delete": "Удалить"
     },
     "placeholders": {
       "search": "Поиск",
@@ -313,6 +314,7 @@
       "projectsTab": {
         "searchPlaceholder": "Поиск",
         "addProject": "ДОБАВИТЬ ПРОЕКТ",
+        "noProjects": "Проекты не найдены",
         "tableHeaders": {
           "name": "Название",
           "domain": "Область",
@@ -325,6 +327,7 @@
           "editTitle": "Редактировать проект",
           "fields": {
             "project": "Проект",
+            "domain": "Область",
             "startDate": "Дата начала",
             "endDate": "Дата окончания",
             "description": "Описание",
@@ -363,6 +366,9 @@
       },
       "previewTab": {
         "education": "Образование",
+        "skills": "Навыки",
+        "projects": "Проекты",
+        "description": "Описание",
         "languageProficiency": "Владение языками",
         "domains": "Области",
         "englishFluent": "Английский (свободно)",
