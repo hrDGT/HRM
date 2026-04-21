@@ -39,11 +39,15 @@ export function LanguageModal({
 
   useEffect(() => {
     if (open) {
-      setSelectedLanguage(initialLanguageName || availableLanguages[0]?.name || "");
+      const defaultValue = mode === "update"
+        ? (initialLanguageName || availableLanguages[0]?.name || "")
+        : "";
+      
+      setSelectedLanguage(defaultValue);
       setSelectedProficiency(initialProficiency);
       setError(null);
     }
-  }, [open, initialLanguageName, initialProficiency, availableLanguages]);
+  }, [open, mode, initialLanguageName, initialProficiency, availableLanguages]);
 
   const handleConfirm = async () => {
     if (!selectedLanguage) return;
@@ -78,6 +82,7 @@ export function LanguageModal({
           <legend className="text-[11px] text-zinc-500 px-1">{t("languageModal.language")}</legend>
           <div className="relative">
             <select
+              aria-label={t("languageModal.language")}
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
               disabled={mode === "update"}
@@ -109,6 +114,7 @@ export function LanguageModal({
           <legend className="text-[11px] text-zinc-500 px-1">{t("languageModal.proficiency")}</legend>
           <div className="relative">
             <select
+              aria-label={t("languageModal.proficiency")}
               value={selectedProficiency}
               onChange={(e) => setSelectedProficiency(e.target.value as ProficiencyLevel)}
               className="w-full bg-transparent text-sm text-zinc-200 appearance-none outline-none pr-6 py-1"

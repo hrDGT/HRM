@@ -39,11 +39,12 @@ export function SkillModal({
 
   useEffect(() => {
     if (open) {
-      setSelectedSkill(initialSkillName || availableSkills[0]?.name || "");
+      if (initialSkillName) setSelectedSkill(initialSkillName);
+      else setSelectedSkill(""); // Start empty in "add" mode
       setSelectedMastery(initialMastery);
       setError(null);
     }
-  }, [open, initialSkillName, initialMastery, availableSkills]);
+  }, [open, initialSkillName, initialMastery]);
 
   const handleConfirm = async () => {
     if (!selectedSkill) return;
@@ -78,6 +79,7 @@ export function SkillModal({
           <legend className="text-[11px] text-zinc-500 px-1">{t("skillModal.skill")}</legend>
           <div className="relative">
             <select
+              aria-label={t("skillModal.skill")}
               value={selectedSkill}
               onChange={(e) => setSelectedSkill(e.target.value)}
               disabled={mode === "update"}
@@ -109,9 +111,10 @@ export function SkillModal({
           <legend className="text-[11px] text-zinc-500 px-1">{t("skillModal.mastery")}</legend>
           <div className="relative">
             <select
+              aria-label={t("skillModal.mastery")}
               value={selectedMastery}
               onChange={(e) => setSelectedMastery(e.target.value as MasteryLevel)}
-              className="w-full bg-transparent text-sm text-zinc-200 appearance-none outline-none pr-6 py-1 "
+              className=" w-full bg-transparent text-sm text-zinc-200 appearance-none outline-none pr-6 py-1 "
             >
               {MASTERY_ORDER.map((level) => (
                 <option key={level} value={level} className="bg-[#2c2c2c] text-zinc-200">

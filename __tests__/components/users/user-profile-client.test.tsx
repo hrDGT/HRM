@@ -167,6 +167,7 @@ const defaultProps = {
   currentUserRole: "Admin",
   departments: mockDepartments,
   positions: mockPositions,
+  userId: "1",
 };
 
 describe("UserProfileClient", () => {
