@@ -241,7 +241,7 @@ export function UserSkills({ userId, canEdit }: UserSkillsProps) {
                   onClick={handleAddSkill}
                   variant="outline"
                   disabled={isSaving}
-                  className="h-10 px-5 text-sm font-semibold tracking-wider uppercase transition-all border-none bg-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
+                  className="h-10 px-5 text-sm font-semibold tracking-wider uppercase transition-all border-none bg-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/5 rounded-full"
                 >
                   <Plus size={14} className="mr-2" />
                   {t("addSkill")}

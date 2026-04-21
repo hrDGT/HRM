@@ -158,6 +158,18 @@
     "cancelSelection": "Stornieren",
     "removeSelected": "Löschen",
     "languagesComingSoon": "Sprachen-Tab kommt bald",
+    "noLanguages": "Noch keine Sprachen hinzugefügt",
+    "addFirstLanguage": "Fügen Sie Ihre erste Sprache hinzu",
+    "addLanguage": "Sprache hinzufügen",
+    "languageModal": {
+      "addTitle": "Sprache hinzufügen",
+      "updateTitle": "Sprache aktualisieren",
+      "language": "Sprache",
+      "selectLanguage": "Sprache auswählen",
+      "proficiency": "Sprachniveau",
+      "cancel": "Stornieren",
+      "confirm": "Bestätigen"
+    },
     "tabs": {
       "profile": "PROFIL",
       "skills": "KENNTNISSE",

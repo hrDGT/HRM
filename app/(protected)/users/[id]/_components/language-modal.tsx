@@ -4,53 +4,53 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Loader2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MASTERY_ORDER, type MasteryLevel } from "@/lib/users/skill-utils";
+import { PROFICIENCY_ORDER, type ProficiencyLevel } from "@/lib/users/language-utils";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 
-type AvailableSkill = {
+type AvailableLanguage = {
   id: string;
   name: string;
 };
 
-type SkillModalProps = {
+type LanguageModalProps = {
   open: boolean;
   onClose: () => void;
   mode: "add" | "update";
-  availableSkills: AvailableSkill[];
-  initialSkillName?: string;
-  initialMastery?: MasteryLevel;
-  onConfirm: (skillName: string, mastery: MasteryLevel) => Promise<void>;
+  availableLanguages: AvailableLanguage[];
+  initialLanguageName?: string;
+  initialProficiency?: ProficiencyLevel;
+  onConfirm: (languageName: string, proficiency: ProficiencyLevel) => Promise<void>;
 };
 
-export function SkillModal({
+export function LanguageModal({
   open,
   onClose,
   mode,
-  availableSkills,
-  initialSkillName = "",
-  initialMastery = "Novice",
+  availableLanguages,
+  initialLanguageName = "",
+  initialProficiency = "A1",
   onConfirm,
-}: SkillModalProps) {
+}: LanguageModalProps) {
   const t = useTranslations("Users");
-  const [selectedSkill, setSelectedSkill] = useState(initialSkillName);
-  const [selectedMastery, setSelectedMastery] = useState<MasteryLevel>(initialMastery);
+  const [selectedLanguage, setSelectedLanguage] = useState(initialLanguageName);
+  const [selectedProficiency, setSelectedProficiency] = useState<ProficiencyLevel>(initialProficiency);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
-      setSelectedSkill(initialSkillName || availableSkills[0]?.name || "");
-      setSelectedMastery(initialMastery);
+      setSelectedLanguage(initialLanguageName || availableLanguages[0]?.name || "");
+      setSelectedProficiency(initialProficiency);
       setError(null);
     }
-  }, [open, initialSkillName, initialMastery, availableSkills]);
+  }, [open, initialLanguageName, initialProficiency, availableLanguages]);
 
   const handleConfirm = async () => {
-    if (!selectedSkill) return;
+    if (!selectedLanguage) return;
     setIsLoading(true);
     setError(null);
     try {
-      await onConfirm(selectedSkill, selectedMastery);
+      await onConfirm(selectedLanguage, selectedProficiency);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -59,13 +59,13 @@ export function SkillModal({
     }
   };
 
-  const canConfirm = !!selectedSkill && !isLoading;
+  const canConfirm = !!selectedLanguage && !isLoading;
 
   return (
     <ModalWrapper
       open={open}
       onClose={onClose}
-      title={mode === "add" ? t("skillModal.addTitle") : t("skillModal.updateTitle")}
+      title={mode === "add" ? t("languageModal.addTitle") : t("languageModal.updateTitle")}
     >
       {error && (
         <div className="mb-4 p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
@@ -75,11 +75,11 @@ export function SkillModal({
 
       <div className="space-y-4">
         <fieldset className="border border-zinc-600 rounded-lg px-4 pt-1 pb-3">
-          <legend className="text-[11px] text-zinc-500 px-1">{t("skillModal.skill")}</legend>
+          <legend className="text-[11px] text-zinc-500 px-1">{t("languageModal.language")}</legend>
           <div className="relative">
             <select
-              value={selectedSkill}
-              onChange={(e) => setSelectedSkill(e.target.value)}
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
               disabled={mode === "update"}
               className={cn(
                 "w-full bg-transparent text-sm appearance-none outline-none pr-6 py-1",
@@ -87,11 +87,11 @@ export function SkillModal({
               )}
             >
               {mode === "add" && (
-                <option value="" disabled className="bg-[#2c2c2c]">{t("skillModal.selectSkill")}</option>
+                <option value="" disabled className="bg-[#2c2c2c]">{t("languageModal.selectLanguage")}</option>
               )}
-              {availableSkills.map((s) => (
-                <option key={s.id} value={s.name} className="bg-[#2c2c2c] text-zinc-200">
-                  {s.name}
+              {availableLanguages.map((l) => (
+                <option key={l.id} value={l.name} className="bg-[#2c2c2c] text-zinc-200">
+                  {l.name}
                 </option>
               ))}
             </select>
@@ -106,14 +106,14 @@ export function SkillModal({
         </fieldset>
 
         <fieldset className="border border-zinc-600 rounded-lg px-4 pt-1 pb-3">
-          <legend className="text-[11px] text-zinc-500 px-1">{t("skillModal.mastery")}</legend>
+          <legend className="text-[11px] text-zinc-500 px-1">{t("languageModal.proficiency")}</legend>
           <div className="relative">
             <select
-              value={selectedMastery}
-              onChange={(e) => setSelectedMastery(e.target.value as MasteryLevel)}
-              className="w-full bg-transparent text-sm text-zinc-200 appearance-none outline-none pr-6 py-1 "
+              value={selectedProficiency}
+              onChange={(e) => setSelectedProficiency(e.target.value as ProficiencyLevel)}
+              className="w-full bg-transparent text-sm text-zinc-200 appearance-none outline-none pr-6 py-1"
             >
-              {MASTERY_ORDER.map((level) => (
+              {PROFICIENCY_ORDER.map((level) => (
                 <option key={level} value={level} className="bg-[#2c2c2c] text-zinc-200">
                   {level}
                 </option>
@@ -133,7 +133,7 @@ export function SkillModal({
           disabled={isLoading}
           className="h-10 px-6 text-xs font-semibold tracking-wider uppercase rounded-full border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-500 transition-all cursor-pointer"
         >
-          {t("skillModal.cancel")}
+          {t("languageModal.cancel")}
         </button>
         <button
           onClick={handleConfirm}
@@ -146,7 +146,7 @@ export function SkillModal({
           )}
         >
           {isLoading && <Loader2 size={13} className="mr-2 animate-spin" />}
-          {t("skillModal.confirm")}
+          {t("languageModal.confirm")}
         </button>
       </div>
     </ModalWrapper>

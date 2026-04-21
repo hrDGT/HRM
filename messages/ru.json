@@ -158,6 +158,18 @@
     "cancelSelection": "Отмена",
     "removeSelected": "Удалить",
     "languagesComingSoon": "Раздел языков скоро появится",
+    "noLanguages": "Языки еще не добавлены",
+    "addFirstLanguage": "Добавьте свой первый язык",
+    "addLanguage": "Добавить язык",
+    "languageModal": {
+      "addTitle": "Добавить язык",
+      "updateTitle": "Обновить язык",
+      "language": "Язык",
+      "selectLanguage": "Выберите язык",
+      "proficiency": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
+    },
     "tabs": {
       "profile": "ПРОФИЛЬ",
       "skills": "НАВЫКИ",

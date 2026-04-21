@@ -6,7 +6,6 @@ import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/c
 import { EmployeeProfile } from "@/lib/users/users-types";
 import { UserProfileClient } from "./_components/user-profile-client";
 import { getDepartments, getPositions } from "./actions";
-import { getTranslations } from "next-intl/server";
 import { getAuthProps } from "@/lib/auth/get-auth-props";
 
 const GET_EMPLOYEE_QUERY = graphql(`
@@ -69,10 +68,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const userId = Number(id);
   if (isNaN(userId)) return {};
 
-  const [result, t] = await Promise.all([
-    gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) }),
-    getTranslations("Users"),
-  ]);
+  const result = await gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) });
 
   if (!result.user) return {};
 
@@ -109,6 +105,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
       positions={positions}
       currentUserId={Number(currentUser.id)}
       currentUserRole={currentUser.role}
+      userId={id}
     />
   );
 }

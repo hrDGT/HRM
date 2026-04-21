@@ -158,6 +158,18 @@
     "cancelSelection": "Cancel",
     "removeSelected": "Delete",
     "languagesComingSoon": "Languages tab coming soon",
+    "noLanguages": "No languages added yet",
+    "addFirstLanguage": "Add your first language",
+    "addLanguage": "Add Language",
+    "languageModal": {
+      "addTitle": "Add language",
+      "updateTitle": "Update language",
+      "language": "Language",
+      "selectLanguage": "Select language",
+      "proficiency": "Proficiency",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
     "tabs": {
       "profile": "PROFILE",
       "skills": "SKILLS",
