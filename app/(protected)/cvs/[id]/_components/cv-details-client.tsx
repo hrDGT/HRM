@@ -379,7 +379,7 @@ export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
                       )}
                     </div>
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-500 line-clamp-2 max-w-4xl">{proj.description}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-500 line-clamp-2">{proj.description}</p>
                 </div>
               ))}
               {filteredProjects.length === 0 && <p className="py-8 text-center text-zinc-500 text-sm">{t("details.projectsTab.noProjects") || "No projects found"}</p>}

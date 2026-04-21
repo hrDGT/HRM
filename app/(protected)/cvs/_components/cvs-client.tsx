@@ -207,7 +207,11 @@ export function CVsClient({
               const canDelete = canEdit;
 
               return (
-                <div key={cv.id} className="group py-6 px-4 hover:bg-white/2 transition-colors">
+                <div
+                  key={cv.id}
+                  onClick={() => router.push(`/cvs/${cv.id}`)}
+                  className="group py-6 px-4 hover:bg-white/2 transition-colors cursor-pointer"
+                >
                   <div className="grid grid-cols-[2fr_1.5fr_1.5fr_auto] gap-4 items-start">
                     <h3 className="text-sm font-medium text-zinc-100 truncate pr-2">{cv.name}</h3>
                     <p className="text-sm text-zinc-400 truncate pr-2">{cv.education}</p>
@@ -215,7 +219,10 @@ export function CVsClient({
 
                     <div className="relative">
                       <button
-                        onClick={() => setOpenMenuId(openMenuId === cv.id ? null : cv.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === cv.id ? null : cv.id);
+                        }}
                         className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
                       >
                         <EllipsisVertical size={16} className="text-zinc-400" />
@@ -226,7 +233,11 @@ export function CVsClient({
                           <div className="absolute right-0 top-8 z-50 min-w-32 bg-[#353535] rounded-lg shadow-xl border border-white/10 py-1">
                             {canEdit && (
                               <button
-                                onClick={() => { startEdit(cv); setOpenMenuId(null); }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  startEdit(cv);
+                                  setOpenMenuId(null);
+                                }}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
                               >
                                 <Pencil size={14} /> {t("actions.edit")}
@@ -234,7 +245,8 @@ export function CVsClient({
                             )}
                             {canDelete && (
                               <button
-                                onClick={() => {
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   setDeleteModal({ isOpen: true, cvId: cv.id, cvName: cv.name });
                                   setOpenMenuId(null);
                                 }}
