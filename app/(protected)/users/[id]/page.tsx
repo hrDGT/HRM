@@ -1,12 +1,15 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type { ResultOf } from "@graphql-typed-document-node/core";
+
+import { getAuthProps } from "@/lib/auth/get-auth-props";
 import { requireUser } from "@/lib/auth/require-user";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
-import { graphql } from "@/gqlcodegen";
-import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { EmployeeProfile } from "@/lib/users/users-types";
+import { graphql } from "@/gqlcodegen";
+
 import { UserProfileClient } from "./_components/user-profile-client";
 import { getDepartments, getPositions } from "./actions";
-import { getAuthProps } from "@/lib/auth/get-auth-props";
 
 const GET_EMPLOYEE_QUERY = graphql(`
   query GetEmployee($userId: ID!) {
@@ -29,18 +32,25 @@ const GET_EMPLOYEE_QUERY = graphql(`
       }
     }
   }
-`) as TypedDocumentNode<{ user: any }, { userId: string }>;
+`);
 
 type GetEmployeeResult = ResultOf<typeof GET_EMPLOYEE_QUERY>;
 
-function toEmployeeProfile(user: NonNullable<GetEmployeeResult["user"]>): EmployeeProfile {
+function toEmployeeProfile(
+  user: NonNullable<GetEmployeeResult["user"]>,
+): EmployeeProfile {
   const firstName = user.profile?.first_name ?? "";
   const lastName = user.profile?.last_name ?? "";
-  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
+  const initials =
+    `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
 
   const parseDate = (d: string | null | undefined) => {
     if (!d) return undefined;
-    try { return new Date(d).toDateString(); } catch { return undefined; }
+    try {
+      return new Date(d).toDateString();
+    } catch {
+      return undefined;
+    }
   };
 
   return {
@@ -55,7 +65,7 @@ function toEmployeeProfile(user: NonNullable<GetEmployeeResult["user"]>): Employ
     isVerified: user.is_verified,
     memberSince: parseDate(user.created_at),
     role: user.role,
-    cvs: user.cvs?.map((cv: any) => ({
+    cvs: user.cvs?.map((cv) => ({
       id: Number(cv.id),
       title: "CV",
       uploadedAt: parseDate(cv.created_at),
@@ -63,12 +73,19 @@ function toEmployeeProfile(user: NonNullable<GetEmployeeResult["user"]>): Employ
   };
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const userId = Number(id);
   if (isNaN(userId)) return {};
 
-  const result = await gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) });
+  const [result, t] = await Promise.all([
+    gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) }),
+    getTranslations("Users"),
+  ]);
 
   if (!result.user) return {};
 
@@ -80,7 +97,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: name };
 }
 
-export default async function UserProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function UserProfilePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const userId = Number(id);
   if (isNaN(userId)) notFound();
@@ -91,7 +112,11 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   ]);
 
   const [result, departments, positions] = await Promise.all([
-    gqlRequestAuthed(GET_EMPLOYEE_QUERY, { userId: String(userId) }, { token, cookieHeader }),
+    gqlRequestAuthed(
+      GET_EMPLOYEE_QUERY,
+      { userId: String(userId) },
+      { token, cookieHeader },
+    ),
     getDepartments(),
     getPositions(),
   ]);

@@ -40,7 +40,7 @@ export function SkillModal({
   useEffect(() => {
     if (open) {
       if (initialSkillName) setSelectedSkill(initialSkillName);
-      else setSelectedSkill(""); // Start empty in "add" mode
+      else setSelectedSkill("");
       setSelectedMastery(initialMastery);
       setError(null);
     }

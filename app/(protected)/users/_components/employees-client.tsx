@@ -1,11 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import {
+  ChevronRight,
+  ChevronUp,
+  MoreVertical,
+  Plus,
+  Search,
+  Users,
+} from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -14,24 +30,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Search,
-  MoreVertical,
-  ChevronRight,
-  ChevronUp,
-  Users,
-  Plus,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
 import type { EmployeeCard } from "@/lib/users/users-types";
-import { UpdateUserModal } from "./update-user-modal";
+
 import { CreateUserModal } from "./create-user-modal";
+import { UpdateUserModal } from "./update-user-modal";
 
 type Props = {
   employees: EmployeeCard[];
@@ -53,13 +55,20 @@ export function EmployeesClient({
 
   const [employees, setEmployees] = useState(initialEmployees);
   const [search, setSearch] = useState("");
-  const [sortConfig, setSortConfig] = useState<{ field: string; direction: 'asc' | 'desc' } | null>(null);
-  const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    field: string;
+    direction: "asc" | "desc";
+  } | null>(null);
+  const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(
+    null,
+  );
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const router = useRouter();
 
   const handleUpdate = (updated: EmployeeCard) => {
-    setEmployees((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+    setEmployees((prev) =>
+      prev.map((e) => (e.id === updated.id ? updated : e)),
+    );
   };
 
   const handleCreate = (newEmployee: EmployeeCard) => {
@@ -91,7 +100,9 @@ export function EmployeesClient({
       const { field, direction } = sortConfig;
       const aVal = (a as any)[field]?.toLowerCase() ?? "";
       const bVal = (b as any)[field]?.toLowerCase() ?? "";
-      return direction === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      return direction === "asc"
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
     });
 
   const showActions = (empId: string | number) =>
@@ -141,13 +152,15 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.firstName")}
-                  {sortConfig?.field === "firstName" && (
-                    sortConfig.direction === "asc" ? (
+                  {sortConfig?.field === "firstName" &&
+                    (sortConfig.direction === "asc" ? (
                       <ChevronUp size={12} className="text-zinc-300" />
                     ) : (
-                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
-                    )
-                  )}
+                      <ChevronUp
+                        size={12}
+                        className="text-zinc-300 rotate-180"
+                      />
+                    ))}
                 </span>
               </TableHead>
 
@@ -157,13 +170,15 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.lastName")}
-                  {sortConfig?.field === "lastName" && (
-                    sortConfig.direction === "asc" ? (
+                  {sortConfig?.field === "lastName" &&
+                    (sortConfig.direction === "asc" ? (
                       <ChevronUp size={12} className="text-zinc-300" />
                     ) : (
-                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
-                    )
-                  )}
+                      <ChevronUp
+                        size={12}
+                        className="text-zinc-300 rotate-180"
+                      />
+                    ))}
                 </span>
               </TableHead>
 
@@ -173,13 +188,15 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.email")}
-                  {sortConfig?.field === "email" && (
-                    sortConfig.direction === "asc" ? (
+                  {sortConfig?.field === "email" &&
+                    (sortConfig.direction === "asc" ? (
                       <ChevronUp size={12} className="text-zinc-300" />
                     ) : (
-                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
-                    )
-                  )}
+                      <ChevronUp
+                        size={12}
+                        className="text-zinc-300 rotate-180"
+                      />
+                    ))}
                 </span>
               </TableHead>
 
@@ -189,13 +206,15 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.department")}
-                  {sortConfig?.field === "department" && (
-                    sortConfig.direction === "asc" ? (
+                  {sortConfig?.field === "department" &&
+                    (sortConfig.direction === "asc" ? (
                       <ChevronUp size={12} className="text-zinc-300" />
                     ) : (
-                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
-                    )
-                  )}
+                      <ChevronUp
+                        size={12}
+                        className="text-zinc-300 rotate-180"
+                      />
+                    ))}
                 </span>
               </TableHead>
 
@@ -205,13 +224,15 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.position")}
-                  {sortConfig?.field === "position" && (
-                    sortConfig.direction === "asc" ? (
+                  {sortConfig?.field === "position" &&
+                    (sortConfig.direction === "asc" ? (
                       <ChevronUp size={12} className="text-zinc-300" />
                     ) : (
-                      <ChevronUp size={12} className="text-zinc-300 rotate-180" />
-                    )
-                  )}
+                      <ChevronUp
+                        size={12}
+                        className="text-zinc-300 rotate-180"
+                      />
+                    ))}
                 </span>
               </TableHead>
 
@@ -282,7 +303,7 @@ export function EmployeesClient({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
                             align="end"
-                            className="bg-[#353535] border-white/10 text-zinc-200 text-sm min-w-[140px]"
+                            className="bg-[#353535] border-white/10 text-zinc-200 text-sm min-w-35"
                           >
                             <DropdownMenuItem
                               className="cursor-pointer hover:bg-white/5 focus:bg-white/5"

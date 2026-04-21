@@ -12,9 +12,9 @@ async function robustLogin(page: Page, emailText: string, passText: string) {
   await page.goto('/auth/login');
   await page.waitForLoadState('domcontentloaded');
 
-  const email = page.getByPlaceholder(/Email/i);
-  const password = page.getByPlaceholder(/Password/i);
-  const loginBtn = page.getByRole('button', { name: /log in/i });
+  const email = page.getByPlaceholder(t('Common.fields.email'));
+  const password = page.getByPlaceholder(t('Common.fields.password'));
+  const loginBtn = page.getByRole('button', { name: t('Auth.login.submitAction') });
 
   await email.click();
   await page.keyboard.press(selectAll);
@@ -30,8 +30,7 @@ async function robustLogin(page: Page, emailText: string, passText: string) {
 
   await expect(loginBtn).toBeEnabled();
   await loginBtn.click();
-
-  await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
+  await expect(page).toHaveURL(/.*\/users/, { timeout: 15000 });
 }
 
 test.describe('Departments', () => {

@@ -1,22 +1,36 @@
-import '@testing-library/jest-dom';
+import { TextDecoder, TextEncoder } from 'util';
 
-let mockMessages: Record<string, any> = {};
+import '@testing-library/jest-dom';
+Object.assign(global, { TextDecoder, TextEncoder });
+
+if (typeof global.Request === 'undefined') {
+  (global as unknown as Record<string, unknown>).Request = class Request { };
+}
+if (typeof global.Response === 'undefined') {
+  (global as unknown as Record<string, unknown>).Response = class Response { };
+}
+
+type MockMessages = Record<string, unknown>;
+
+let mockMessages: MockMessages = {};
 let mockLocale = 'en';
 
-function getNestedValue(obj: Record<string, any>, key: string): any {
-  return key.split('.').reduce((acc, part) => acc?.[part], obj) ?? key;
+function getNestedValue(obj: MockMessages, key: string): unknown {
+  return key.split('.').reduce<unknown>((acc, part) => {
+    return (acc as MockMessages)?.[part];
+  }, obj) ?? key;
 }
 
 jest.mock('next-intl', () => {
   return {
-    NextIntlClientProvider: ({ children, locale = 'en', messages = {} }: { children: React.ReactNode; locale?: string; messages?: Record<string, any>; }) => {
+    NextIntlClientProvider: ({ children, locale = 'en', messages = {} }: { children: React.ReactNode; locale?: string; messages?: MockMessages; }) => {
       mockLocale = locale;
       mockMessages = messages;
       return children;
     },
     useTranslations: (namespace?: string) => {
-      const namespaceObj = namespace ? mockMessages[namespace] : mockMessages;
-      return (key: string) => getNestedValue(namespaceObj, key);
+      const namespaceObj = namespace ? (mockMessages[namespace] as MockMessages) : mockMessages;
+      return (key: string) => getNestedValue(namespaceObj, key) as string;
     },
     useLocale: () => mockLocale,
     useMessages: () => mockMessages,
@@ -26,8 +40,8 @@ jest.mock('next-intl', () => {
 jest.mock('use-intl/react', () => ({
   IntlProvider: ({ children }: { children: React.ReactNode }) => children,
   useTranslations: (namespace?: string) => {
-    const namespaceObj = namespace ? mockMessages[namespace] : mockMessages;
-    return (key: string) => getNestedValue(namespaceObj, key);
+    const namespaceObj = namespace ? (mockMessages[namespace] as MockMessages) : mockMessages;
+    return (key: string) => getNestedValue(namespaceObj, key) as string;
   },
   useLocale: () => mockLocale,
 }));

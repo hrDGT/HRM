@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 
 import { AuthHeader } from "@/components/auth/ui/auth-header";
 
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),
 }));
@@ -24,8 +28,8 @@ describe("AuthHeader Component", () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/login");
     render(<AuthHeader />);
 
-    expect(screen.getByText("Sign In")).toBeInTheDocument();
-    expect(screen.getByText("Sign Up")).toBeInTheDocument();
+    expect(screen.getByText("loginLinkTitle")).toBeInTheDocument();
+    expect(screen.getByText("signUpLinkTitle")).toBeInTheDocument();
     expect(screen.getAllByTestId("mock-auth-tab")).toHaveLength(2);
   });
 

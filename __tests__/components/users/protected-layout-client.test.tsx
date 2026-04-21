@@ -7,6 +7,8 @@ import { ProtectedLayoutClient } from "@/components/common/protected-layout-clie
 import messagesEn from "@/messages/en.json";
 import messagesDe from "@/messages/de.json";
 import messagesRu from "@/messages/ru.json";
+import { UserRole } from "@/gqlcodegen/graphql";
+import { useUserStore } from "@/store/use-user-store";
 
 const locales = ["en", "de", "ru"] as const;
 type Locale = typeof locales[number];
@@ -64,22 +66,27 @@ jest.mock("lucide-react", () => ({
   ),
 }));
 
-const mockCurrentUser = {
-  id: 1,
-  firstName: "Alice",
-  lastName: "Brown",
-  avatar: null,
+const mockInitialUser = {
+  id: "1",
+  role: UserRole.Admin,
+  profile: {
+    first_name: "Alice",
+    last_name: "Brown",
+    avatar: null,
+  },
 };
 
 const defaultProps = {
-  currentUser: mockCurrentUser,
+  initialUser: mockInitialUser,
   children: <div data-testid="mock-children">Page Content</div>,
 };
 
 describe("ProtectedLayoutClient", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useUserStore.setState({ user: null });
   });
+
 
   describe.each(locales)("locale: %s", (locale) => {
     const messages = messagesMap[locale];
@@ -190,7 +197,7 @@ describe("ProtectedLayoutClient", () => {
         renderWithLocale(
           <ProtectedLayoutClient
             {...defaultProps}
-            currentUser={{ ...mockCurrentUser, avatar: "/avatar.jpg" }}
+            initialUser={{ ...mockInitialUser, profile: { ...mockInitialUser.profile, avatar: "/avatar.jpg" } }}
           />,
           locale
         );
@@ -200,8 +207,8 @@ describe("ProtectedLayoutClient", () => {
     });
 
     describe("edge cases", () => {
-      it("handles null currentUser gracefully", () => {
-        renderWithLocale(<ProtectedLayoutClient {...defaultProps} currentUser={null} />, locale);
+      it("handles null initialUser gracefully", () => {
+        renderWithLocale(<ProtectedLayoutClient {...defaultProps} initialUser={null} />, locale);
         
         const fallback = screen.getByTestId("mock-avatar-fallback");
         expect(fallback).toHaveTextContent("U");
@@ -212,7 +219,7 @@ describe("ProtectedLayoutClient", () => {
         renderWithLocale(
           <ProtectedLayoutClient
             {...defaultProps}
-            currentUser={{ id: 1, firstName: "", lastName: "", avatar: null }}
+            initialUser={{ id: "2", role: UserRole.Employee, profile: { first_name: "", last_name: "", avatar: null } }}
           />,
           locale
         );

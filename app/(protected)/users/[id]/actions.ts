@@ -6,7 +6,6 @@ import { gql } from "graphql-tag";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import { GET_USER_SKILLS, ADD_PROFILE_SKILL, UPDATE_PROFILE_SKILL, DELETE_PROFILE_SKILL } from "@/lib/user/user-queries";
 import { fetchSkills } from "@/components/skills/queries/get-skills-query";
-import {  } from "@/lib/user/user-queries";
 import type { MasteryLevel } from "@/lib/users/skill-utils";
 import type { ProficiencyLevel } from "@/lib/users/language-utils";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";

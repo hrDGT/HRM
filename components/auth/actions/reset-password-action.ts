@@ -1,6 +1,8 @@
 "use server"
 
-import { ResetPasswordValue } from "@/components/auth/schemas/reset-password-schema";
+import { getTranslations } from "next-intl/server";
+
+import { type ResetPasswordFormValues } from "@/components/auth/schemas/reset-password-schema";
 import { ActionState } from "@/lib/auth/auth-types";
 import { gqlFetch } from "@/lib/gql/graphql-client";
 import { getError } from "@/lib/utils";
@@ -15,10 +17,11 @@ const RESET_PASSWORD_MUTATION = graphql(`
 export async function resetPasswordAction(
   token: string,
   _prevState: ActionState,
-  data: ResetPasswordValue
+  data: ResetPasswordFormValues
 ): Promise<ActionState> {
+  const t = await getTranslations("Auth.resetPassword");
   if (!token) {
-    return { error: "Missing reset token. Please check your email link." };
+    return { error: t('tokenError') };
   }
 
   try {
@@ -29,6 +32,6 @@ export async function resetPasswordAction(
     );
     return { success: true };
   } catch (err) {
-    return { error: getError(err, "Failed to reset password") };
+    return { error: getError(err, t('error')) };
   }
 }

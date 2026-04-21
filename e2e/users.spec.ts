@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+
 import { getT } from './utils/translate';
 
 const locale = (process.env.LOCALE as 'en' | 'ru' | 'de') || 'en';
@@ -81,7 +82,9 @@ test.describe('Users', () => {
     ).toBeVisible({ timeout: 15000 });
 
     const searchInput = page.getByPlaceholder(t('Common.placeholders.search'));
-    await searchInput.fill('NonExistentUser999XYZ');
+
+    await searchInput.click();
+    await searchInput.pressSequentially('NonExistentUser999XYZ', { delay: 20 });
     await page.keyboard.press('Enter');
 
     await expect(page.getByText(t('Users.noResults'))).toBeVisible({ timeout: 10000 });
@@ -161,7 +164,7 @@ test.describe('Users', () => {
 
     const inputs = modal.locator('input');
     await inputs.nth(2).fill('A');
-    
+
     const createBtn = modal.getByRole('button', { name: t('Common.actions.create'), exact: true });
     await expect(createBtn).toBeDisabled();
   });

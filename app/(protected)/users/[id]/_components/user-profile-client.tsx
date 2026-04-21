@@ -1,21 +1,26 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { Upload, ChevronRight, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { ChevronRight, Upload, X } from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import type { EmployeeProfile } from "@/lib/users/users-types";
 import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../actions";
 import { ProfileTabs } from "./profile-tabs";
+import { cn } from "@/lib/utils";
 
 type UserProfileClientProps = {
   employee: EmployeeProfile;
@@ -40,8 +45,8 @@ export function UserProfileClient({
     { id: "languages", label: t("tabs.languages"), href: `/users/${userId}/languages` },
   ];
 
-  const initialDeptId = departments.find(d => d.name === employee.department)?.id ?? null;
-  const initialPosId = positions.find(p => p.name === employee.position)?.id ?? null;
+  const initialDeptId = departments.find((d) => d.name === employee.department)?.id ?? null;
+  const initialPosId = positions.find((p) => p.name === employee.position)?.id ?? null;
 
   const [form, setForm] = useState({
     ...employee,
@@ -55,7 +60,11 @@ export function UserProfileClient({
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(employee.avatar);
-  const [avatarFile, setAvatarFile] = useState<{ base64: string; size: number; type: string } | null>(null);
+  const [avatarFile, setAvatarFile] = useState<{
+    base64: string;
+    size: number;
+    type: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +78,10 @@ export function UserProfileClient({
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 1024 * 1024) { setError(t("fileSizeError")); return; }
+    if (file.size > 1024 * 1024) {
+      setError(t("fileSizeError"));
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = reader.result as string;
@@ -82,8 +94,8 @@ export function UserProfileClient({
   };
 
   const handleDeleteAvatar = async () => {
-    if (!confirm(t("deleteAvatarConfirm"))) return;
-    
+    if (!confirm(t("deleteAvatarConfirm") || "Delete avatar?")) return;
+
     setIsDeleting(true);
     setError(null);
     try {
@@ -118,7 +130,10 @@ export function UserProfileClient({
           form.departmentId != null ? Number(form.departmentId) : null,
           form.positionId != null ? Number(form.positionId) : null,
         );
-        setOriginalValues({ departmentId: form.departmentId, positionId: form.positionId });
+        setOriginalValues({
+          departmentId: form.departmentId,
+          positionId: form.positionId,
+        });
       }
 
       setIsDirty(false);
@@ -175,13 +190,21 @@ export function UserProfileClient({
                 </button>
               )}
             </div>
-            
+
             {canEdit && (
               <>
-                <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/gif"
-                  className="hidden" onChange={handleAvatarChange} />
-                <button type="button" onClick={() => fileInputRef.current?.click()}
-                  className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer"
+                >
                   <div className="flex items-center gap-2 text-zinc-200">
                     <Upload size={18} className="text-zinc-400" />
                     <span className="text-sm font-medium">{t("uploadAvatar")}</span>
@@ -195,13 +218,17 @@ export function UserProfileClient({
           <div className="text-center space-y-1">
             <h1 className="text-xl font-semibold text-zinc-100">{nameDisplay}</h1>
             <p className="text-sm text-zinc-400">{form.email}</p>
-            {employee.memberSince && <p className="text-xs text-zinc-500">{t("memberSince", { date: employee.memberSince })}</p>}
+            {employee.memberSince && (
+              <p className="text-xs text-zinc-500">{t("memberSince", { date: employee.memberSince })}</p>
+            )}
           </div>
 
           {error && <p className="text-center text-sm text-red-400">{error}</p>}
 
-          <fieldset disabled={!canEdit}
-            className="grid grid-cols-2 gap-4 pt-4 disabled:opacity-60 disabled:cursor-not-allowed">
+          <fieldset
+            disabled={!canEdit}
+            className="grid grid-cols-2 gap-4 pt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
             <div className={fieldWrapper}>
               <Label className={fieldLabel}>{c("fields.firstName")}</Label>
               <Input value={form.firstName} onChange={(e) => set("firstName", e.target.value)} className={fieldInput} />
@@ -216,8 +243,11 @@ export function UserProfileClient({
               <Select
                 value={form.departmentId ?? ""}
                 onValueChange={(v) => {
-                  const dept = departments.find(d => d.id === v);
-                  if (dept) { set("departmentId", dept.id); set("department", dept.name); }
+                  const dept = departments.find((d) => d.id === v);
+                  if (dept) {
+                    set("departmentId", dept.id);
+                    set("department", dept.name);
+                  }
                 }}
                 disabled={!canEdit}
               >
@@ -237,8 +267,11 @@ export function UserProfileClient({
               <Select
                 value={form.positionId ?? ""}
                 onValueChange={(v) => {
-                  const pos = positions.find(p => p.id === v);
-                  if (pos) { set("positionId", pos.id); set("position", pos.name); }
+                  const pos = positions.find((p) => p.id === v);
+                  if (pos) {
+                    set("positionId", pos.id);
+                    set("position", pos.name);
+                  }
                 }}
                 disabled={!canEdit}
               >
@@ -257,12 +290,16 @@ export function UserProfileClient({
           {canEdit && (
             <div className="flex justify-end pt-4">
               <div className="w-1/2 flex gap-3">
-                <Button onClick={handleUpdate} disabled={!isDirty || isSaving}
-                  className={cn("flex-1 uppercase text-xs tracking-widest rounded-4xl transition-all",
+                <Button
+                  onClick={handleUpdate}
+                  disabled={!isDirty || isSaving}
+                  className={cn(
+                    "flex-1 uppercase text-xs tracking-widest rounded-4xl transition-all",
                     !isDirty || isSaving
                       ? "bg-zinc-500 text-zinc-200 cursor-not-allowed border border-white/5"
                       : "bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10"
-                  )}>
+                  )}
+                >
                   {isSaving ? c("actions.saving") : c("actions.update")}
                 </Button>
               </div>

@@ -1,29 +1,34 @@
-import { forgotPasswordSchema } from "@/components/auth/schemas/forgot-password-schema";
-import { loginSchema } from "@/components/auth/schemas/login-schema";
-import { resetPasswordSchema } from "@/components/auth/schemas/reset-password-schema";
-import { signupSchema } from "@/components/auth/schemas/signup-schema";
-
+import { getForgotPasswordSchema } from "@/components/auth/schemas/forgot-password-schema";
+import { getLoginSchema } from "@/components/auth/schemas/login-schema";
+import { getResetPasswordSchema } from "@/components/auth/schemas/reset-password-schema";
+import { getSignupSchema } from "@/components/auth/schemas/signup-schema";
 
 describe("Zod Auth Schemas", () => {
+  const t = (key: string) => key;
+
+  const forgotPasswordSchema = getForgotPasswordSchema(t);
+  const loginSchema = getLoginSchema(t);
+  const signupSchema = getSignupSchema(t);
+  const resetPasswordSchema = getResetPasswordSchema(t);
 
   describe("emailField validation", () => {
-    it("throws a custom 'Invalid email' error for invalid formats", () => {
+    it("throws a custom 'invalidEmail' error for invalid formats", () => {
       const result = forgotPasswordSchema.safeParse({ email: "not-an-email" });
 
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe("Invalid email");
+        expect(result.error.issues[0].message).toBe("invalidEmail");
       }
     });
   });
 
   describe("passwordField validation", () => {
-    it("throws a 'Password is required' error when password is empty", () => {
+    it("throws a 'passwordRequired' error when password is empty", () => {
       const result = loginSchema.safeParse({ email: 'validemail@gmail.com', password: '' })
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe('Password is required')
+        expect(result.error.issues[0].message).toBe('passwordRequired')
       }
     })
 
@@ -32,7 +37,7 @@ describe("Zod Auth Schemas", () => {
 
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe('Password must be at least 5 characters long')
+        expect(result.error.issues[0].message).toBe('passwordMinLength')
       }
     })
   })
@@ -59,6 +64,11 @@ describe("Zod Auth Schemas", () => {
 
       expect(resetPasswordSchema.safeParse(validData).success).toBe(true);
       expect(resetPasswordSchema.safeParse(invalidData).success).toBe(false);
+
+      if (!resetPasswordSchema.safeParse(invalidData).success) {
+        const result = resetPasswordSchema.safeParse(invalidData);
+        expect(result.error!.issues[0].message).toBe('passwordMinLength');
+      }
     });
   });
 })

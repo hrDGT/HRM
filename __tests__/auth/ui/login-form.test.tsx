@@ -4,6 +4,10 @@ import userEvent from "@testing-library/user-event";
 
 import { LoginForm } from "@/components/auth/ui/login-form";
 
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 jest.mock("@/components/auth/actions/login-action", () => ({
   loginUserAction: jest.fn(),
 }));
@@ -18,6 +22,7 @@ describe("LoginForm Component", () => {
     jest
       .spyOn(React, "useActionState")
       .mockReturnValue([null, mockFormAction, false]);
+
     jest.spyOn(React, "startTransition").mockImplementation((cb) => cb());
   });
 
@@ -28,17 +33,17 @@ describe("LoginForm Component", () => {
   it("renders all form elements correctly", () => {
     render(<LoginForm />);
 
-    expect(screen.getByText("Welcome back")).toBeInTheDocument();
+    expect(screen.getByText("title")).toBeInTheDocument();
+    expect(screen.getByText("subtitle")).toBeInTheDocument();
+
+    expect(screen.getByPlaceholderText("fields.email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("fields.password")).toBeInTheDocument();
+
     expect(
-      screen.getByText("Hello again! Log in to continue"),
+      screen.getByRole("button", { name: "submitAction" }),
     ).toBeInTheDocument();
-
-    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
-
-    expect(screen.getByRole("button", { name: "Log in" })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Forgot password" }),
+      screen.getByRole("link", { name: "forgotPasswordAction" }),
     ).toBeInTheDocument();
   });
 
@@ -46,9 +51,9 @@ describe("LoginForm Component", () => {
     const user = userEvent.setup();
     render(<LoginForm />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: "Log in" });
+    const emailInput = screen.getByPlaceholderText("fields.email");
+    const passwordInput = screen.getByPlaceholderText("fields.password");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(emailInput, "test@example.com");
     await user.type(passwordInput, "SecurePassword123!");
@@ -67,8 +72,8 @@ describe("LoginForm Component", () => {
     const user = userEvent.setup();
     render(<LoginForm />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const submitButton = screen.getByRole("button", { name: "Log in" });
+    const emailInput = screen.getByPlaceholderText("fields.email");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(emailInput, "not-an-email");
     await user.click(submitButton);
@@ -79,17 +84,14 @@ describe("LoginForm Component", () => {
   });
 
   it("displays a root error message if the server action returns an error", () => {
+    const errorMessage = "Invalid email or password";
     jest
       .spyOn(React, "useActionState")
-      .mockReturnValue([
-        { error: "Invalid email or password" },
-        mockFormAction,
-        false,
-      ]);
+      .mockReturnValue([{ error: errorMessage }, mockFormAction, false]);
 
     render(<LoginForm />);
 
-    expect(screen.getByText("Invalid email or password")).toBeInTheDocument();
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
 
   it("disables the submit button and shows loading state when isPending is true", () => {
@@ -99,13 +101,13 @@ describe("LoginForm Component", () => {
 
     render(<LoginForm />);
 
-    const loadingButton = screen.getByRole("button", { name: "Loading..." });
+    const loadingButton = screen.getByRole("button", { name: /loading/i });
 
     expect(loadingButton).toBeInTheDocument();
     expect(loadingButton).toBeDisabled();
 
     expect(
-      screen.queryByRole("button", { name: "Log in" }),
+      screen.queryByRole("button", { name: "submitAction" }),
     ).not.toBeInTheDocument();
   });
 });
