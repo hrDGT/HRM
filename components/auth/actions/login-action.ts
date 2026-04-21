@@ -35,5 +35,5 @@ export async function loginUserAction(_prevState: ActionState, data: LoginFormVa
   } catch (err) {
     return { error: getError(err, t("error")) };
   }
-  redirect("/");
+  redirect("/users");
 }

@@ -17,11 +17,13 @@ export default async function middleware(request: NextRequest) {
 
   const accessToken = request.cookies.get("access_token")?.value;
   const isPublic = ["/auth/login", "/auth/signup", "/forgot-password", "/reset-password"].some(route => pathname.startsWith(route));
+  const isAtRoot = pathname === "/";
 
   if (!accessToken && !isPublic) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
-  if (accessToken && isPublic) {
+
+  if (accessToken && (isPublic || isAtRoot)) {
     return NextResponse.redirect(new URL("/users", request.url));
   }
 

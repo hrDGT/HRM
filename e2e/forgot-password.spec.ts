@@ -28,7 +28,9 @@ test.describe('Forgot Password Flow', () => {
     await submitBtn.scrollIntoViewIfNeeded();
     await submitBtn.click({ force: true });
 
-    await expect(page).toHaveURL('/auth/login', { timeout: 10000 });
+    await expect(page.getByText(t('Auth.forgotPassword.success'))).toBeVisible({ timeout: 10000 });
+
+    await expect(page).toHaveURL(/.*\/auth\/login/, { timeout: 10000 });
   });
 
   test('Should show validation error for invalid email format', async ({ page }) => {
@@ -56,6 +58,6 @@ test.describe('Forgot Password Flow', () => {
     await cancelBtn.scrollIntoViewIfNeeded();
     await cancelBtn.click({ force: true });
 
-    await expect(page).toHaveURL('/auth/login', { timeout: 10000 });
+    await expect(page).toHaveURL(/.*\/auth\/login/, { timeout: 10000 });
   });
 });

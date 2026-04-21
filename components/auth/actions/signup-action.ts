@@ -35,5 +35,5 @@ export async function signUpUserAction(_prevState: ActionState, data: SignupForm
   } catch (err) {
     return { error: getError(err, t("error")) };
   }
-  redirect("/");
+  redirect("/users");
 }
