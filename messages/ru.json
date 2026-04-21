@@ -106,12 +106,44 @@
       "categoryRequired": "Пожалуйста, выберите категорию"
     }
   },
+  "Languages": {
+    "title": "Языки",
+    "deleteModalTitle": "Удалить язык",
+    "deleteConfirmation": "Вы уверены, что хотите удалить язык",
+    "createButton": "Создать язык",
+    "createModalTitle": "Создать язык",
+    "updateModalTitle": "Редактировать язык",
+    "updateAction": "Редактировать язык",
+    "deleteAction": "Удалить язык",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Язык успешно создан",
+      "createError": "Не удалось создать язык",
+      "updated": "Язык успешно обновлен",
+      "updateError": "Не удалось обновить язык",
+      "deleted": "Язык успешно удален",
+      "deleteError": "Не удалось удалить язык"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное",
+      "onlyLetters": "Можно использовать только буквы",
+      "isoLength": "ISO2 должен состоять из 2 букв"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Имя",
-      "email": "Почта",
-      "password": "Пароль",
       "newPassword": "Новый пароль",
+      "nativeName": "Родное имя",
+      "iso2": "ISO2"
+      "email": "Email",
+      "password": "Пароль",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "department": "Отдел",
+      "position": "Должность",
+      "role": "Роль",
       "category": "Категория"
     },
     "actions": {
@@ -123,7 +155,17 @@
       "creating": "Создание...",
       "updating": "Обновление...",
       "confirm": "Подтвердить",
-      "confirming": "Подтверждение..."
+      "confirming": "Подтверждение...",
+      "saving": "Сохранение..."
+    },
+    "placeholders": {
+      "search": "Поиск",
+      "selectDepartment": "Выберите отдел",
+      "selectPosition": "Выберите должность"
+    },
+    "alerts": {
+      "deleteTitle": "Удаление",
+      "deleteDescription": "Это действие нельзя отменить. Запись будет безвозвратно удалена с наших серверов."
     },
     "noResults": {
       "title": "Ничего не найдено",
@@ -134,5 +176,33 @@
       "passwordRequired": "Пароль обязателен",
       "passwordMinLength": "Пароль должен состоять минимум из 5 символов"
     }
+  },
+  "Users": {
+    "title": "Сотрудники",
+    "createUserButton": "СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ",
+    "createModalTitle": "Создать пользователя",
+    "updateModalTitle": "Редактировать пользователя",
+    "viewProfile": "Просмотреть профиль",
+    "updateAction": "Редактировать пользователя",
+    "deleteAvatar": "Удалить аватар",
+    "deleteAvatarConfirm": "Вы уверены, что хотите удалить этот аватар?",
+    "noResults": "Сотрудники не найдены",
+    "tabs": {
+      "profile": "ПРОФИЛЬ",
+      "skills": "НАВЫКИ",
+      "languages": "ЯЗЫКИ"
+    },
+    "nav": {
+      "skills": "Навыки",
+      "languages": "Языки",
+      "cvs": "Резюме"
+    },
+    "unnamedUser": "Без имени",
+    "uploadAvatar": "Загрузить аватар",
+    "uploadHint": "png, jpg или gif не более 1 МБ",
+    "fileSizeError": "Файл должен быть не более 1 МБ",
+    "collapseMenu": "Свернуть меню",
+    "expandMenu": "Развернуть меню",
+    "defaultUser": "Пользователь"
   }
 }

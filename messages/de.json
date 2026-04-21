@@ -106,12 +106,44 @@
       "categoryRequired": "Bitte wählen Sie eine Kategorie aus"
     }
   },
+  "Languages": {
+    "title": "Sprachen",
+    "deleteModalTitle": "Sprache löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Sprache löschen:",
+    "createButton": "Sprache erstellen",
+    "createModalTitle": "Sprache erstellen",
+    "updateModalTitle": "Sprache bearbeiten",
+    "updateAction": "Sprache bearbeiten",
+    "deleteAction": "Sprache löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Sprache erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Sprache",
+      "updated": "Sprache erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Sprache",
+      "deleted": "Sprache erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Sprache"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang",
+      "onlyLetters": "Es sind nur Buchstaben erlaubt",
+      "isoLength": "ISO2 muss aus 2 Buchstaben bestehen"
+    }
+  },
   "Common": {
     "fields": {
       "name": "Name",
+      "newPassword": "Neues Passwort",
+      "nativeName": "Einheimischer Name",
+      "iso2": "ISO2"
       "email": "E-Mail",
       "password": "Passwort",
-      "newPassword": "Neues Passwort",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "department": "Abteilung",
+      "position": "Position",
+      "role": "Rolle",
       "category": "Kategorie"
     },
     "actions": {
@@ -123,7 +155,17 @@
       "creating": "Wird erstellt...",
       "updating": "Wird aktualisiert...",
       "confirm": "Bestätigen",
-      "confirming": "Wird bestätigt..."
+      "confirming": "Wird bestätigt...",
+      "saving": "Wird gespeichert..."
+    },
+    "placeholders": {
+      "search": "Suchen",
+      "selectDepartment": "Abteilung auswählen",
+      "selectPosition": "Position auswählen"
+    },
+    "alerts": {
+      "deleteTitle": "Löschen bestätigen",
+      "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
     },
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
@@ -134,5 +176,33 @@
       "passwordRequired": "Passwort ist erforderlich",
       "passwordMinLength": "Das Passwort muss mindestens 5 Zeichen lang sein"
     }
+  },
+  "Users": {
+    "title": "Mitarbeiter",
+    "createUserButton": "MITARBEITER ERSTELLEN",
+    "createModalTitle": "Mitarbeiter erstellen",
+    "updateModalTitle": "Mitarbeiter bearbeiten",
+    "viewProfile": "Profil ansehen",
+    "updateAction": "Mitarbeiter bearbeiten",
+    "deleteAvatar": "Avatar löschen",
+    "deleteAvatarConfirm": "Möchten Sie wirklich diesen Avatar löschen?",
+    "noResults": "Keine Mitarbeiter gefunden",
+    "tabs": {
+      "profile": "PROFIL",
+      "skills": "KENNTNISSE",
+      "languages": "SPRACHEN"
+    },
+    "nav": {
+      "skills": "Kenntnisse",
+      "languages": "Sprachen",
+      "cvs": "Lebensläufe"
+    },
+    "unnamedUser": "Unbenannter Nutzer",
+    "uploadAvatar": "Avatar hochladen",
+    "uploadHint": "png, jpg oder gif maximal 1MB",
+    "fileSizeError": "Datei darf nicht größer als 1MB sein",
+    "collapseMenu": "Menü einklappen",
+    "expandMenu": "Menü ausklappen",
+    "defaultUser": "Nutzer"
   }
 }

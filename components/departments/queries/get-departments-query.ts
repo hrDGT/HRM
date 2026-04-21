@@ -12,7 +12,7 @@ export const GET_DEPARTMENTS_QUERY = graphql(`
   }
 `);
 
-export async function fetchDepartments(token?: string) {
+export async function fetchDepartments(token?: string, cookieHeader?: string) {
   'use cache';
   cacheLife('hours');
   cacheTag('departments');
@@ -20,7 +20,7 @@ export async function fetchDepartments(token?: string) {
   const response = await gqlRequestAuthed(
     GET_DEPARTMENTS_QUERY,
     undefined,
-    { token }
+    { token, cookieHeader }
   );
 
   return response.departments;

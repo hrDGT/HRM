@@ -16,7 +16,7 @@ export const GET_SKILLS_QUERY = graphql(`
   }
 `);
 
-export async function fetchSkills(token?: string) {
+export async function fetchSkills(token?: string, cookieHeader?: string) {
   'use cache'
   cacheLife('hours')
   cacheTag('skills')
@@ -24,8 +24,7 @@ export async function fetchSkills(token?: string) {
   const response = await gqlRequestAuthed(
     GET_SKILLS_QUERY,
     undefined,
-    { token }
+    { token, cookieHeader },
   )
-
   return response.skills
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { GetUserForStoreQuery } from "@/gqlcodegen/graphql";
 import { useUserStore } from "@/store/use-user-store";
@@ -11,12 +11,22 @@ interface UserProviderProps {
 }
 
 export function UserProvider({ children, user }: UserProviderProps) {
-  const isInitialized = useRef(false);
+  const hasInitialized = useRef(false);
 
-  if (!isInitialized.current) {
-    useUserStore.getState().setUser(user);
-    isInitialized.current = true;
-  }
+  useEffect(() => {
+    if (!hasInitialized.current && user) {
+      useUserStore.getState().setUser({
+        ...user,
+        profile: {
+          ...user.profile,
+          first_name: user.profile?.first_name ?? null,
+          last_name: user.profile?.last_name ?? null,
+          avatar: user.profile?.avatar ?? null,
+        },
+      });
+      hasInitialized.current = true;
+    }
+  }, [user]);
 
   return <>{children}</>;
 }
