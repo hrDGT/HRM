@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run codegen && next dev",
+    "build": "npm run codegen && next build",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
-    "build": "npm run codegen && next build",
     "start": "next start",
     "lint": "eslint",
     "e2e-test": "npx playwright test --ui",

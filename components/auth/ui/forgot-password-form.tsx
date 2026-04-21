@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useId } from "react";
+import { useTranslations } from "next-intl";
 
 import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
 import { Form } from "@/components/forms/ui/form";
@@ -11,22 +12,25 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { forgotPasswordAction } from "../actions/forgot-password-action";
 import {
-  forgotPasswordSchema,
-  ForgotPasswordValues,
+  type ForgotPasswordFormValues,
+  getForgotPasswordSchema,
 } from "../schemas/forgot-password-schema";
 
 import { FormRootError } from "./auth-root-error";
 
 export function ForgotPasswordForm() {
+  const t = useTranslations("Auth.forgotPassword");
+  const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Common.validation");
   const id = useId();
   const [state, formAction, isPending] = useActionState(
     forgotPasswordAction,
     null,
   );
 
-  useActionFeedback(state?.success, "Check your email inbox", "/auth/login");
+  useActionFeedback(state?.success, t("success"), "/auth/login");
 
-  const handleFormSubmit = (values: ForgotPasswordValues) => {
+  const handleFormSubmit = (values: ForgotPasswordFormValues) => {
     startTransition(() => {
       formAction(values);
     });
@@ -34,21 +38,18 @@ export function ForgotPasswordForm() {
 
   return (
     <Card className="w-full max-w-xl">
-      <FormHeader
-        title="Forgot password"
-        description="We will sent you an email with further instructions"
-      />
+      <FormHeader title={t("title")} description={t("subtitle")} />
       <CardContent className="mb-14">
         <Form
           className="space-y-2"
           id={id}
-          schema={forgotPasswordSchema}
+          schema={getForgotPasswordSchema(tValidation)}
           defaultValues={{ email: "" }}
           onSubmit={handleFormSubmit}
         >
           <FormInput
             name="email"
-            placeholder="Email"
+            placeholder={tCommon("fields.email")}
             autoFocus
             autocompleteValue="email"
           />
@@ -57,8 +58,8 @@ export function ForgotPasswordForm() {
       </CardContent>
       <FormActions
         formId={id}
-        buttonText="Reset password"
-        linkText="Cancel"
+        buttonText={t("submitAction")}
+        linkText={t("cancelAction")}
         linkHref="/auth/login"
         isPending={isPending}
       />

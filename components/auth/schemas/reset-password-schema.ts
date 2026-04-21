@@ -1,10 +1,10 @@
-import z from "zod"
+import z from "zod";
 
-export const resetPasswordSchema = z.object({
-  newPassword: z
-    .string()
-    .min(1, "Password is required")
-    .min(5, "Password must be at least 5 characters long")
-})
+export const getResetPasswordSchema = (t: (arg: string) => string) =>
+  z.object({
+    newPassword: z.string()
+      .min(1, t("passwordRequired"))
+      .min(5, t("passwordMinLength"))
+  });
 
-export type ResetPasswordValue = z.infer<typeof resetPasswordSchema>
+export type ResetPasswordFormValues = z.infer<ReturnType<typeof getResetPasswordSchema>>;

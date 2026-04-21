@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+
 import { getT } from './utils/translate';
 
 const locale = (process.env.LOCALE as 'en' | 'ru' | 'de') || 'en';
@@ -28,8 +29,7 @@ async function robustLogin(page: Page, emailText: string, passText: string) {
 
   await expect(loginBtn).toBeEnabled();
   await loginBtn.click();
-
-  await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
+  await expect(page).toHaveURL(/.*\/users/, { timeout: 15000 });
 }
 
 test.describe('Users', () => {
@@ -49,7 +49,7 @@ test.describe('Users', () => {
     await page.goto('/users');
 
     await expect(
-      page.locator('main').getByText(t('Users.title'), { exact: true })
+      page.locator('main p').filter({ hasText: t('Users.title') })
     ).toBeVisible({ timeout: 15000 });
 
     await expect(page.locator('tbody tr').first()).toBeVisible({ timeout: 15000 });
@@ -67,7 +67,7 @@ test.describe('Users', () => {
     await page.goto('/users');
 
     await expect(
-      page.locator('main').getByText(t('Users.title'), { exact: true })
+      page.locator('main p').filter({ hasText: t('Users.title') })
     ).toBeVisible({ timeout: 15000 });
 
     await expect(page.locator('tbody tr').first()).toBeVisible({ timeout: 15000 });
@@ -82,10 +82,14 @@ test.describe('Users', () => {
     await robustLogin(page, 'admin@test.com', '12345');
     await page.goto('/users');
 
-    await expect(page.locator('main').getByText(t('Users.title'), { exact: true })).toBeVisible({ timeout: 15000 });
+    await expect(
+      page.locator('main p').filter({ hasText: t('Users.title') })
+    ).toBeVisible({ timeout: 15000 });
 
     const searchInput = page.getByPlaceholder(t('Common.placeholders.search'));
-    await searchInput.fill('NonExistentUser999XYZ');
+
+    await searchInput.click();
+    await searchInput.pressSequentially('NonExistentUser999XYZ', { delay: 20 });
     await page.keyboard.press('Enter');
 
     await expect(page.getByText(t('Users.noResults'))).toBeVisible({ timeout: 10000 });
@@ -158,7 +162,7 @@ test.describe('Users', () => {
 
     const inputs = modal.locator('input');
     await inputs.nth(2).fill('A');
-    
+
     const createBtn = modal.getByRole('button', { name: t('Common.actions.create'), exact: true });
     await expect(createBtn).toBeDisabled();
   });

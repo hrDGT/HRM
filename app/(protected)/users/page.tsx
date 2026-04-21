@@ -1,12 +1,14 @@
-import { requireUser } from "@/lib/auth/require-user";
-import { EmployeesClient } from "./_components/employees-client";
-import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
-import { graphql } from "@/gqlcodegen";
-import type { ResultOf } from "@graphql-typed-document-node/core";
-import { EmployeeCard } from "@/lib/users/users-types";
-import { getDepartments, getPositions } from "./[id]/actions";
 import { getTranslations } from "next-intl/server";
+import type { ResultOf } from "@graphql-typed-document-node/core";
+
 import { getAuthProps } from "@/lib/auth/get-auth-props";
+import { requireUser } from "@/lib/auth/require-user";
+import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
+import { EmployeeCard } from "@/lib/users/users-types";
+import { graphql } from "@/gqlcodegen";
+
+import { EmployeesClient } from "./_components/employees-client";
+import { getDepartments, getPositions } from "./[id]/actions";
 
 const GET_EMPLOYEES_QUERY = graphql(`
   query GetEmployees {
@@ -23,14 +25,17 @@ const GET_EMPLOYEES_QUERY = graphql(`
       position_name
     }
   }
-`)
+`);
 
 type GetEmployeesResult = ResultOf<typeof GET_EMPLOYEES_QUERY>;
 
-function toEmployeeCard(user: GetEmployeesResult["users"][number]): EmployeeCard {
+function toEmployeeCard(
+  user: GetEmployeesResult["users"][number],
+): EmployeeCard {
   const firstName = user.profile?.first_name ?? "";
   const lastName = user.profile?.last_name ?? "";
-  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
+  const initials =
+    `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
 
   return {
     id: Number(user.id),

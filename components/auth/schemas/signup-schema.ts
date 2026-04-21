@@ -1,11 +1,11 @@
-import z from "zod"
+import z from "zod";
 
-export const signupSchema = z.object({
-  email: z.email('Invalid email'),
+export const getSignupSchema = (t: (arg: string) => string) => z.object({
+  email: z.email(t("invalidEmail")),
   password: z
     .string()
-    .min(1, "Password is required")
-    .min(5, "Password must be at least 5 characters long")
-})
+    .min(1, t("passwordRequired"))
+    .min(5, t("passwordMinLength"))
+});
 
-export type SignupFormValues = z.infer<typeof signupSchema>
+export type SignupFormValues = z.infer<ReturnType<typeof getSignupSchema>>;

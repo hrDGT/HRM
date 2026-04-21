@@ -1,9 +1,46 @@
 {
+  "Auth": {
+    "header": {
+      "loginLinkTitle": "Войти",
+      "signUpLinkTitle": "Создать"
+    },
+    "login": {
+      "title": "С возвращением",
+      "subtitle": "Рады видеть вас снова! Войдите, чтобы продолжить",
+      "submitAction": "Войти",
+      "forgotPasswordAction": "Забыли пароль?",
+      "error": "Ошибка входа"
+    },
+    "signUp": {
+      "title": "Регистрация",
+      "subtitle": "Добро пожаловать! Зарегистрируйтесь, чтобы продолжить",
+      "submitAction": "Создать аккаунт",
+      "haveAccountAction": "У меня есть аккаунт",
+      "error": "Ошибка регистрации"
+    },
+    "forgotPassword": {
+      "title": "Восстановление пароля",
+      "subtitle": "Мы отправим вам письмо с дальнейшими инструкциями",
+      "submitAction": "Сбросить пароль",
+      "cancelAction": "Отмена",
+      "success": "Проверьте папку «Входящие»",
+      "sendError": "Не удалось отправить письмо"
+    },
+    "resetPassword": {
+      "title": "Задать новый пароль",
+      "subtitle": "Почти готово! Теперь создайте новый пароль",
+      "submitAction": "Сохранить",
+      "backToLoginAction": "Вернуться ко входу",
+      "success": "Пароль успешно сброшен",
+      "error": "Не удалось сбросить пароль",
+      "tokenError": "Отсутствует токен сброса. Пожалуйста, проверьте ссылку из письма"
+    }
+  },
   "Departments": {
     "title": "Отделы",
     "deleteModalTitle": "Удалить отдел",
+    "deleteConfirmation": "Вы уверены, что хотите удалить отдел?",
     "createButton": "Создать отдел",
-    "deleteConfirmation": "Вы уверены, что хотите удалить отдел",
     "createModalTitle": "Создать отдел",
     "updateModalTitle": "Редактировать отдел",
     "updateAction": "Редактировать отдел",
@@ -25,7 +62,7 @@
   "Positions": {
     "title": "Должности",
     "deleteModalTitle": "Удалить должность",
-    "deleteConfirmation": "Вы уверены, что хотите удалить должность",
+    "deleteConfirmation": "Вы уверены, что хотите удалить должность?",
     "createButton": "Создать должность",
     "createModalTitle": "Создать должность",
     "updateModalTitle": "Обновить должность",
@@ -48,7 +85,7 @@
   "Skills": {
     "title": "Навыки",
     "deleteModalTitle": "Удалить навык",
-    "deleteConfirmation": "Вы уверены, что хотите удалить навык",
+    "deleteConfirmation": "Вы уверены, что хотите удалить навык?",
     "createButton": "Создать навык",
     "createModalTitle": "Создать навык",
     "updateModalTitle": "Редактировать навык",
@@ -97,8 +134,9 @@
   "Common": {
     "fields": {
       "name": "Имя",
+      "newPassword": "Новый пароль",
       "nativeName": "Родное имя",
-      "iso2": "ISO2"
+      "iso2": "ISO2",
       "email": "Email",
       "password": "Пароль",
       "firstName": "Имя",
@@ -132,6 +170,11 @@
     "noResults": {
       "title": "Ничего не найдено",
       "description": "Попробуйте другой запрос, проверьте орфографию или используйте более общие термины"
+    },
+    "validation": {
+      "invalidEmail": "Неверный формат почты",
+      "passwordRequired": "Пароль обязателен",
+      "passwordMinLength": "Пароль должен состоять минимум из 5 символов"
     }
   },
   "Users": {

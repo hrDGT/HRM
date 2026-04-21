@@ -2,6 +2,7 @@
 
 import { startTransition, useActionState, useId } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
 import { ControlledPasswordInput } from "@/components/forms/ui/controlled-password-input";
@@ -13,51 +14,51 @@ import { ActionState } from "@/lib/auth/auth-types";
 
 import { resetPasswordAction } from "../actions/reset-password-action";
 import {
-  resetPasswordSchema,
-  ResetPasswordValue,
+  getResetPasswordSchema,
+  type ResetPasswordFormValues,
 } from "../schemas/reset-password-schema";
 
 import { FormRootError } from "./auth-root-error";
 
 export function ResetPasswordForm() {
+  const t = useTranslations("Auth.resetPassword");
+  const tCommon = useTranslations("Common");
+  const tValidation = useTranslations("Common.validation");
   const id = useId();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
 
   const actionWrapper = async (
     state: ActionState,
-    data: ResetPasswordValue,
+    data: ResetPasswordFormValues,
   ) => {
     return resetPasswordAction(token, state, data);
   };
 
   const [state, formAction, isPending] = useActionState(actionWrapper, null);
 
-  const handleFormSubmit = (data: ResetPasswordValue) => {
+  const handleFormSubmit = (data: ResetPasswordFormValues) => {
     startTransition(() => {
       formAction(data);
     });
   };
 
-  useActionFeedback(state?.success, "Password has been reset", "/auth/login");
+  useActionFeedback(state?.success, t("success"), "/auth/login");
 
   return (
     <Card className="w-full max-w-xl">
-      <FormHeader
-        title="Set a new password"
-        description="Almost done! Now create a new password"
-      />
+      <FormHeader title={t("title")} description={t("subtitle")} />
       <CardContent className="mb-14">
         <Form
           className="space-y-2"
           id={id}
-          schema={resetPasswordSchema}
+          schema={getResetPasswordSchema(tValidation)}
           defaultValues={{ newPassword: "" }}
           onSubmit={handleFormSubmit}
         >
           <ControlledPasswordInput
             name="newPassword"
-            placeholder="Password"
+            placeholder={tCommon("fields.newPassword")}
             autoComplete="new-password"
             autoFocus
             hasProtectIcon={false}
@@ -67,8 +68,8 @@ export function ResetPasswordForm() {
       </CardContent>
       <FormActions
         formId={id}
-        buttonText="Submit"
-        linkText="Back to log in"
+        buttonText={t("submitAction")}
+        linkText={t("backToLoginAction")}
         linkHref="/auth/login"
         isPending={isPending}
       />

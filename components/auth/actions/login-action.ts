@@ -1,8 +1,9 @@
 "use server"
 
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
-import { LoginFormValues } from "@/components/auth/schemas/login-schema";
+import { type LoginFormValues } from "@/components/auth/schemas/login-schema";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { ActionState } from "@/lib/auth/auth-types";
 import { gqlFetch } from "@/lib/gql/graphql-client";
@@ -22,6 +23,7 @@ const LOGIN_QUERY = graphql(`
 `);
 
 export async function loginUserAction(_prevState: ActionState, data: LoginFormValues): Promise<ActionState> {
+  const t = await getTranslations("Auth.login");
   try {
     const result = await gqlFetch(LOGIN_QUERY, { auth: data });
 
@@ -31,7 +33,7 @@ export async function loginUserAction(_prevState: ActionState, data: LoginFormVa
       result.login.user.id
     );
   } catch (err) {
-    return { error: getError(err, "Login failed") };
+    return { error: getError(err, t("error")) };
   }
   redirect("/");
 }

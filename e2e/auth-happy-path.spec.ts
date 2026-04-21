@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test';
 import crypto from 'crypto';
 
+import { getT } from './utils/translate';
+
+const locale = (process.env.LOCALE as 'en' | 'ru' | 'de') || 'en';
+const t = getT(locale);
+
+const selectAll = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
+
 test.describe('Authentication Happy Path', () => {
   const uniqueId = crypto.randomUUID().split('-')[0];
   const testEmail = `e2e_user_${uniqueId}@mailinator.com`;
@@ -40,36 +47,53 @@ test.describe('Authentication Happy Path', () => {
     }
   });
 
-  test('Signup and Login Flow', async ({ page }) => {
+  test('Signup and Login Flow', async ({ page, context }) => {
+    await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
+
     await page.goto('/auth/signup');
 
-    await page.getByPlaceholder('Email').click();
-    await page.getByPlaceholder('Email').fill(testEmail);
+    const emailInput = page.getByPlaceholder(t('Common.fields.email'));
+    const passwordInput = page.getByPlaceholder(t('Common.fields.password'));
 
-    await page.getByPlaceholder('Password').click();
-    await page.getByPlaceholder('Password').fill(testPassword);
+    await emailInput.click();
+    await page.keyboard.press(selectAll);
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type(testEmail, { delay: 30 });
 
-    const signupButton = page.getByRole('button', { name: 'Create account' });
+    await passwordInput.click();
+    await page.keyboard.press(selectAll);
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type(testPassword, { delay: 30 });
+
+    const signupButton = page.getByRole('button', { name: t('Auth.signUp.submitAction') });
     await signupButton.scrollIntoViewIfNeeded();
     await signupButton.click({ force: true });
 
-    await expect(page).toHaveURL('/', { timeout: 10000 });
+    await expect(page).toHaveURL(/.*\/users/, { timeout: 10000 });
 
     await page.context().clearCookies();
     await page.evaluate(() => window.localStorage.clear());
 
+    await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, domain: 'localhost', path: '/' }]);
     await page.goto('/auth/login');
 
-    await page.getByPlaceholder('Email').click();
-    await page.getByPlaceholder('Email').fill(testEmail);
+    const loginEmailInput = page.getByPlaceholder(t('Common.fields.email'));
+    const loginPasswordInput = page.getByPlaceholder(t('Common.fields.password'));
 
-    await page.getByPlaceholder('Password').click();
-    await page.getByPlaceholder('Password').fill(testPassword);
+    await loginEmailInput.click();
+    await page.keyboard.press(selectAll);
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type(testEmail, { delay: 30 });
 
-    const loginButton = page.getByRole('button', { name: 'Log in' });
+    await loginPasswordInput.click();
+    await page.keyboard.press(selectAll);
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type(testPassword, { delay: 30 });
+
+    const loginButton = page.getByRole('button', { name: t('Auth.login.submitAction') });
     await loginButton.scrollIntoViewIfNeeded();
     await loginButton.click({ force: true });
 
-    await expect(page).toHaveURL('/', { timeout: 10000 });
+    await expect(page).toHaveURL(/.*\/users/, { timeout: 10000 });
   });
 });

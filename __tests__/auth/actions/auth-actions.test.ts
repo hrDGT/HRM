@@ -7,6 +7,10 @@ import { signUpUserAction } from "@/components/auth/actions/signup-action";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { gqlFetch } from "@/lib/gql/graphql-client";
 
+jest.mock("next-intl/server", () => ({
+  getTranslations: jest.fn(() => Promise.resolve((key: string) => key)),
+}));
+
 jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
@@ -64,7 +68,7 @@ describe("Auth Server Actions", () => {
 
       const response = await signUpUserAction(null, mockSignupData);
 
-      expect(response).toEqual({ error: "Registration failed" });
+      expect(response).toEqual({ error: "error" });
     });
   });
 
@@ -124,7 +128,7 @@ describe("Auth Server Actions", () => {
     it("returns an error if token is missing", async () => {
       const response = await resetPasswordAction("", null, mockData);
 
-      expect(response).toEqual({ error: "Missing reset token. Please check your email link." });
+      expect(response).toEqual({ error: "tokenError" });
       expect(gqlFetch).not.toHaveBeenCalled();
     });
 

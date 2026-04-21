@@ -1,4 +1,41 @@
 {
+  "Auth": {
+    "header": {
+      "loginLinkTitle": "Anmelden",
+      "signUpLinkTitle": "Registrieren"
+    },
+    "login": {
+      "title": "Willkommen zurück",
+      "subtitle": "Hallo nochmal! Melden Sie sich an, um fortzufahren",
+      "submitAction": "Anmelden",
+      "forgotPasswordAction": "Passwort vergessen?",
+      "error": "Anmeldung fehlgeschlagen"
+    },
+    "signUp": {
+      "title": "Jetzt registrieren",
+      "subtitle": "Willkommen! Registrieren Sie sich, um fortzufahren",
+      "submitAction": "Konto erstellen",
+      "haveAccountAction": "Ich habe bereits ein Konto",
+      "error": "Registrierung fehlgeschlagen"
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen",
+      "subtitle": "Wir senden Ihnen eine E-Mail mit weiteren Anweisungen",
+      "submitAction": "Passwort zurücksetzen",
+      "cancelAction": "Abbrechen",
+      "success": "Überprüfen Sie Ihren Posteingang",
+      "sendError": "E-Mail konnte nicht gesendet werden"
+    },
+    "resetPassword": {
+      "title": "Neues Passwort festlegen",
+      "subtitle": "Fast geschafft! Erstellen Sie nun ein neues Passwort",
+      "submitAction": "Bestätigen",
+      "backToLoginAction": "Zurück zur Anmeldung",
+      "success": "Passwort wurde zurückgesetzt",
+      "error": "Passwort konnte nicht zurückgesetzt werden",
+      "tokenError": "Reset-Token fehlt. Bitte überprüfen Sie den Link in Ihrer E-Mail"
+    }
+  },
   "Departments": {
     "title": "Abteilungen",
     "deleteModalTitle": "Abteilung löschen",
@@ -97,8 +134,9 @@
   "Common": {
     "fields": {
       "name": "Name",
+      "newPassword": "Neues Passwort",
       "nativeName": "Einheimischer Name",
-      "iso2": "ISO2"
+      "iso2": "ISO2",
       "email": "E-Mail",
       "password": "Passwort",
       "firstName": "Vorname",
@@ -111,7 +149,7 @@
     "actions": {
       "create": "Erstellen",
       "update": "Aktualisieren",
-      "cancel": "Stornieren",
+      "cancel": "Abbrechen",
       "search": "Suchen",
       "resetSearch": "Suche zurücksetzen",
       "creating": "Wird erstellt...",
@@ -132,6 +170,11 @@
     "noResults": {
       "title": "Keine Ergebnisse gefunden",
       "description": "Versuchen Sie eine andere Suche, überprüfen Sie die Rechtschreibung oder verwenden Sie einen allgemeineren Begriff"
+    },
+    "validation": {
+      "invalidEmail": "Ungültiges E-Mail-Format",
+      "passwordRequired": "Passwort ist erforderlich",
+      "passwordMinLength": "Das Passwort muss mindestens 5 Zeichen lang sein"
     }
   },
   "Users": {

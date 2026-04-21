@@ -5,6 +5,10 @@ import userEvent from "@testing-library/user-event";
 import { useActionFeedback } from "@/components/auth/hooks/use-action-feedback";
 import { ForgotPasswordForm } from "@/components/auth/ui/forgot-password-form";
 
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
 jest.mock("@/components/auth/hooks/use-action-feedback", () => ({
   useActionFeedback: jest.fn(),
 }));
@@ -33,24 +37,25 @@ describe("ForgotPasswordForm Component", () => {
   it("renders all form elements correctly", () => {
     render(<ForgotPasswordForm />);
 
-    expect(screen.getByText("Forgot password")).toBeInTheDocument();
-    expect(
-      screen.getByText("We will sent you an email with further instructions"),
-    ).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Email")).toBeInTheDocument();
+    expect(screen.getByText("title")).toBeInTheDocument();
+    expect(screen.getByText("subtitle")).toBeInTheDocument();
+
+    expect(screen.getByPlaceholderText("fields.email")).toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", { name: "Reset password" }),
+      screen.getByRole("button", { name: "submitAction" }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Cancel" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "cancelAction" }),
+    ).toBeInTheDocument();
   });
 
   it("calls the form action with valid data on submit", async () => {
     const user = userEvent.setup();
     render(<ForgotPasswordForm />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const submitButton = screen.getByRole("button", { name: "Reset password" });
+    const emailInput = screen.getByPlaceholderText("fields.email");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(emailInput, "test@example.com");
     await user.click(submitButton);
@@ -67,8 +72,8 @@ describe("ForgotPasswordForm Component", () => {
     const user = userEvent.setup();
     render(<ForgotPasswordForm />);
 
-    const emailInput = screen.getByPlaceholderText("Email");
-    const submitButton = screen.getByRole("button", { name: "Reset password" });
+    const emailInput = screen.getByPlaceholderText("fields.email");
+    const submitButton = screen.getByRole("button", { name: "submitAction" });
 
     await user.type(emailInput, "not-an-email");
     await user.click(submitButton);
@@ -79,19 +84,14 @@ describe("ForgotPasswordForm Component", () => {
   });
 
   it("displays a root error message if the action state contains an error", () => {
+    const errorMsg = "User not found in the system";
     jest
       .spyOn(React, "useActionState")
-      .mockReturnValue([
-        { error: "User not found in the system" },
-        mockFormAction,
-        false,
-      ]);
+      .mockReturnValue([{ error: errorMsg }, mockFormAction, false]);
 
     render(<ForgotPasswordForm />);
 
-    expect(
-      screen.getByText("User not found in the system"),
-    ).toBeInTheDocument();
+    expect(screen.getByText(errorMsg)).toBeInTheDocument();
   });
 
   it("disables the submit button when isPending is true", () => {
@@ -101,7 +101,9 @@ describe("ForgotPasswordForm Component", () => {
 
     render(<ForgotPasswordForm />);
 
-    const loadingButton = screen.getByRole("button", { name: "Loading..." });
+    const loadingButton = screen.getByRole("button", {
+      name: /loading|confirming/i,
+    });
     expect(loadingButton).toBeInTheDocument();
     expect(loadingButton).toBeDisabled();
   });
@@ -115,7 +117,7 @@ describe("ForgotPasswordForm Component", () => {
 
     expect(useActionFeedback).toHaveBeenCalledWith(
       true,
-      "Check your email inbox",
+      "success",
       "/auth/login",
     );
   });

@@ -1,11 +1,14 @@
+import { PropsWithChildren } from "react";
+
 import { requireUser } from "@/lib/auth/require-user";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
-import type { GetUserForStoreQuery, UserRole } from "@/gqlcodegen/graphql";
 import { GET_USER_FOR_STORE } from "@/lib/user/user-queries";
-import { UsersLayoutClient } from "./_components/users-layout-client";
+import type { UserRole } from "@/gqlcodegen/graphql";
 import { type StoreUser } from "@/store/use-user-store";
 
-export default async function UsersLayout({ children }: { children: React.ReactNode }) {
+import { UsersLayoutClient } from "./_components/users-layout-client";
+
+export default async function UsersLayout({ children }: PropsWithChildren) {
   const currentUser = await requireUser();
 
   const result = await gqlRequestAuthed(GET_USER_FOR_STORE, {
@@ -25,8 +28,6 @@ export default async function UsersLayout({ children }: { children: React.ReactN
     : null;
 
   return (
-    <UsersLayoutClient initialUser={storeUser}>
-      {children}
-    </UsersLayoutClient>
+    <UsersLayoutClient initialUser={storeUser}>{children}</UsersLayoutClient>
   );
 }

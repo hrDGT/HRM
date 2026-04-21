@@ -5,6 +5,8 @@ import { print } from "graphql";
 
 import { graphql } from "@/gqlcodegen";
 
+import { setAuthCookies } from "./auth-cookies";
+
 const UPDATE_TOKEN_MUTATION = graphql(`
   mutation UpdateToken {
     updateToken {
@@ -14,12 +16,7 @@ const UPDATE_TOKEN_MUTATION = graphql(`
   }
 `);
 
-export async function refreshTokensAction() {
-  const cookieStore = await cookies();
-  const refreshToken = cookieStore.get("refresh_token")?.value;
-
-  if (!refreshToken) return null;
-
+export async function getNewTokens(refreshToken: string) {
   try {
     const response = await fetch(process.env.GRAPHQL_URL!, {
       method: "POST",
@@ -31,10 +28,27 @@ export async function refreshTokensAction() {
     });
 
     const result = await response.json();
+    return result.data?.updateToken || null;
+  } catch (error) {
+    console.error("Failed to fetch new tokens:", error);
+    return null;
+  }
+}
 
-    if (result.data?.updateToken) {
-      return result.data.updateToken.access_token;
+export async function refreshTokensAction() {
+  try {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get("refresh_token")?.value;
+
+    if (!refreshToken) return null;
+
+    const tokens = await getNewTokens(refreshToken);
+
+    if (tokens) {
+      await setAuthCookies(tokens.access_token, tokens.refresh_token);
+      return tokens.access_token;
     }
+
     return null;
   } catch (error) {
     console.error("Refresh error:", error);

@@ -1,6 +1,7 @@
 "use server"
 
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { type SignupFormValues } from "@/components/auth/schemas/signup-schema";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
@@ -22,6 +23,7 @@ const SIGNUP_MUTATION = graphql(`
 `);
 
 export async function signUpUserAction(_prevState: ActionState, data: SignupFormValues): Promise<ActionState> {
+  const t = await getTranslations("Auth.signUp");
   try {
     const result = await gqlFetch(SIGNUP_MUTATION, { auth: data });
 
@@ -31,7 +33,7 @@ export async function signUpUserAction(_prevState: ActionState, data: SignupForm
       result.signup.user.id
     );
   } catch (err) {
-    return { error: getError(err, "Registration failed") };
+    return { error: getError(err, t("error")) };
   }
   redirect("/");
 }
