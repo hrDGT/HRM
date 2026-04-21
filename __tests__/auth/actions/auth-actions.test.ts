@@ -48,8 +48,7 @@ describe("Auth Server Actions", () => {
 
       expect(gqlFetch).toHaveBeenCalledTimes(1);
       expect(setAuthCookies).toHaveBeenCalledWith("access-123", "refresh-123", "user-123");
-      expect(redirect).toHaveBeenCalledWith("/");
-
+      expect(redirect).toHaveBeenCalledWith("/users");
       expect(response).toBeUndefined();
     });
 
@@ -88,7 +87,7 @@ describe("Auth Server Actions", () => {
 
       expect(gqlFetch).toHaveBeenCalledTimes(1);
       expect(setAuthCookies).toHaveBeenCalledWith("acc-token", "ref-token", "1");
-      expect(redirect).toHaveBeenCalledWith("/");
+      expect(redirect).toHaveBeenCalledWith("/users");
     });
 
     it("returns an error if login fails", async () => {
