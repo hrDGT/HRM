@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useId, useState } from "react";
 import { DefaultValues, FieldValues } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
@@ -48,6 +48,7 @@ export function BaseFormModal<T extends FieldValues>({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: BaseFormModalProps<T>) {
+  const formId = useId();
   const t = useTranslations("Common");
   const [internalOpen, setInternalOpen] = useState(false);
 
@@ -92,7 +93,7 @@ export function BaseFormModal<T extends FieldValues>({
         </DialogHeader>
 
         <Form
-          id="universal-form"
+          id={formId}
           schema={schema}
           defaultValues={defaultValues}
           onSubmit={handleFormSubmit}

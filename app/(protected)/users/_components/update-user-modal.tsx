@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import {
   Select,
   SelectContent,
@@ -12,9 +14,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ModalWrapper } from "@/components/ui/modal-wrapper";
-import { updateProfile, updateUserMeta } from "@/app/(protected)/users/[id]/actions";
 import type { EmployeeCard } from "@/lib/users/users-types";
+import {
+  updateProfile,
+  updateUserMeta,
+} from "@/app/(protected)/users/[id]/actions";
 import { UserRole } from "@/gqlcodegen/graphql";
 
 const ROLES: UserRole[] = [UserRole.Employee, UserRole.Admin];
@@ -38,12 +42,21 @@ type UpdateFormState = {
   role: UserRole;
 };
 
-export function UpdateUserModal({ open, onClose, employee, onUpdate, departments, positions }: UpdateUserModalProps) {
+export function UpdateUserModal({
+  open,
+  onClose,
+  employee,
+  onUpdate,
+  departments,
+  positions,
+}: UpdateUserModalProps) {
   const t = useTranslations("Users");
   const c = useTranslations("Common");
 
-  const initialDeptId = departments.find(d => d.name === employee.department)?.id ?? "";
-  const initialPosId = positions.find(p => p.name === employee.position)?.id ?? "";
+  const initialDeptId =
+    departments.find((d) => d.name === employee.department)?.id ?? "";
+  const initialPosId =
+    positions.find((p) => p.name === employee.position)?.id ?? "";
 
   const [form, setForm] = useState<UpdateFormState>({
     email: employee.email,
@@ -56,18 +69,22 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
   });
 
   const set = (field: keyof UpdateFormState, value: string) =>
-    setForm((prev) => ({ ...prev, [field]: value } as UpdateFormState));
+    setForm((prev) => ({ ...prev, [field]: value }) as UpdateFormState);
 
   const handleUpdate = async () => {
     await updateProfile(employee.id, form.firstName, form.lastName);
     await updateUserMeta(
       employee.id,
       form.departmentId ? Number(form.departmentId) : null,
-      form.positionId ? Number(form.positionId) : null
+      form.positionId ? Number(form.positionId) : null,
     );
 
-    const updatedDept = departments.find(d => d.id === form.departmentId)?.name ?? employee.department;
-    const updatedPos = positions.find(p => p.id === form.positionId)?.name ?? employee.position;
+    const updatedDept =
+      departments.find((d) => d.id === form.departmentId)?.name ??
+      employee.department;
+    const updatedPos =
+      positions.find((p) => p.id === form.positionId)?.name ??
+      employee.position;
 
     onUpdate({
       ...employee,
@@ -81,40 +98,72 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
     onClose();
   };
 
-  const fieldWrapper = "relative rounded-lg border border-white/15 bg-[#1e1e1e] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
-  const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#1e1e1e] px-1.5 text-xs text-zinc-400 pointer-events-none select-none";
-  const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
+  const fieldWrapper =
+    "relative rounded-lg border border-white/15 bg-[#1e1e1e] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
+  const fieldLabel =
+    "absolute left-3 -top-2.5 z-10 bg-[#1e1e1e] px-1.5 text-xs text-zinc-400 pointer-events-none select-none";
+  const fieldInput =
+    "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
 
   return (
     <ModalWrapper open={open} onClose={onClose} title={t("updateModalTitle")}>
       <div className="grid grid-cols-2 gap-4">
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.email")}</Label>
-          <Input value={form.email} onChange={(e) => set("email", e.target.value)} className={fieldInput} />
+          <Input
+            value={form.email}
+            onChange={(e) => set("email", e.target.value)}
+            className={fieldInput}
+          />
         </div>
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.password")}</Label>
-          <Input type="password" value={form.password} onChange={(e) => set("password", e.target.value)} placeholder="********" className={fieldInput} />
+          <Input
+            type="password"
+            value={form.password}
+            onChange={(e) => set("password", e.target.value)}
+            placeholder="********"
+            className={fieldInput}
+          />
         </div>
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.firstName")}</Label>
-          <Input value={form.firstName} onChange={(e) => set("firstName", e.target.value)} className={fieldInput} />
+          <Input
+            value={form.firstName}
+            onChange={(e) => set("firstName", e.target.value)}
+            className={fieldInput}
+          />
         </div>
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.lastName")}</Label>
-          <Input value={form.lastName} onChange={(e) => set("lastName", e.target.value)} className={fieldInput} />
+          <Input
+            value={form.lastName}
+            onChange={(e) => set("lastName", e.target.value)}
+            className={fieldInput}
+          />
         </div>
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.department")}</Label>
-          <Select value={form.departmentId} onValueChange={(v) => set("departmentId", v)}>
-            <SelectTrigger className={fieldInput}><SelectValue placeholder={c("placeholders.selectDepartment")} /></SelectTrigger>
+          <Select
+            value={form.departmentId}
+            onValueChange={(v) => set("departmentId", v)}
+          >
+            <SelectTrigger className={fieldInput}>
+              <SelectValue placeholder={c("placeholders.selectDepartment")} />
+            </SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {departments.map((d) => (
-                <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
+                <SelectItem
+                  key={d.id}
+                  value={d.id}
+                  className="focus:bg-white/5"
+                >
+                  {d.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -122,11 +171,22 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.position")}</Label>
-          <Select value={form.positionId} onValueChange={(v) => set("positionId", v)}>
-            <SelectTrigger className={fieldInput}><SelectValue placeholder={c("placeholders.selectPosition")} /></SelectTrigger>
+          <Select
+            value={form.positionId}
+            onValueChange={(v) => set("positionId", v)}
+          >
+            <SelectTrigger className={fieldInput}>
+              <SelectValue placeholder={c("placeholders.selectPosition")} />
+            </SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {positions.map((p) => (
-                <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
+                <SelectItem
+                  key={p.id}
+                  value={p.id}
+                  className="focus:bg-white/5"
+                >
+                  {p.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -134,11 +194,18 @@ export function UpdateUserModal({ open, onClose, employee, onUpdate, departments
 
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.role")}</Label>
-          <Select value={form.role} onValueChange={(v) => set("role", v as UserRole)}>
-            <SelectTrigger className={fieldInput}><SelectValue /></SelectTrigger>
+          <Select
+            value={form.role}
+            onValueChange={(v) => set("role", v as UserRole)}
+          >
+            <SelectTrigger className={fieldInput}>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
               {ROLES.map((r) => (
-                <SelectItem key={r} value={r} className="focus:bg-white/5">{r}</SelectItem>
+                <SelectItem key={r} value={r} className="focus:bg-white/5">
+                  {r}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>

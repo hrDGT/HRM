@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { gql } from "graphql-tag";
-import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { gql } from "graphql-tag";
+
+import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import type { UserRole } from "@/gqlcodegen/graphql";
 
 type CreateUserInput = {

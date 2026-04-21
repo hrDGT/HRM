@@ -69,7 +69,7 @@ test.describe('Authentication Happy Path', () => {
     await signupButton.scrollIntoViewIfNeeded();
     await signupButton.click({ force: true });
 
-    await expect(page).toHaveURL('/', { timeout: 10000 });
+    await expect(page).toHaveURL(/.*\/users/, { timeout: 10000 });
 
     await page.context().clearCookies();
     await page.evaluate(() => window.localStorage.clear());
@@ -94,6 +94,6 @@ test.describe('Authentication Happy Path', () => {
     await loginButton.scrollIntoViewIfNeeded();
     await loginButton.click({ force: true });
 
-    await expect(page).toHaveURL('/', { timeout: 10000 });
+    await expect(page).toHaveURL(/.*\/users/, { timeout: 10000 });
   });
 });

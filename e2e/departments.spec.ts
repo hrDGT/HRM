@@ -30,8 +30,7 @@ async function robustLogin(page: Page, emailText: string, passText: string) {
 
   await expect(loginBtn).toBeEnabled();
   await loginBtn.click();
-
-  await expect(page).not.toHaveURL(/.*\/auth\/login/, { timeout: 15000 });
+  await expect(page).toHaveURL(/.*\/users/, { timeout: 15000 });
 }
 
 test.describe('Departments', () => {
