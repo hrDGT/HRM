@@ -1,0 +1,380 @@
+{
+  "Auth": {
+    "header": {
+      "loginLinkTitle": "Войти",
+      "signUpLinkTitle": "Создать"
+    },
+    "login": {
+      "title": "С возвращением",
+      "subtitle": "Рады видеть вас снова! Войдите, чтобы продолжить",
+      "submitAction": "Войти",
+      "forgotPasswordAction": "Забыли пароль?",
+      "error": "Ошибка входа"
+    },
+    "signUp": {
+      "title": "Регистрация",
+      "subtitle": "Добро пожаловать! Зарегистрируйтесь, чтобы продолжить",
+      "submitAction": "Создать аккаунт",
+      "haveAccountAction": "У меня есть аккаунт",
+      "error": "Ошибка регистрации"
+    },
+    "forgotPassword": {
+      "title": "Восстановление пароля",
+      "subtitle": "Мы отправим вам письмо с дальнейшими инструкциями",
+      "submitAction": "Сбросить пароль",
+      "cancelAction": "Отмена",
+      "success": "Проверьте папку «Входящие»",
+      "sendError": "Не удалось отправить письмо"
+    },
+    "resetPassword": {
+      "title": "Задать новый пароль",
+      "subtitle": "Почти готово! Теперь создайте новый пароль",
+      "submitAction": "Сохранить",
+      "backToLoginAction": "Вернуться ко входу",
+      "success": "Пароль успешно сброшен",
+      "error": "Не удалось сбросить пароль",
+      "tokenError": "Отсутствует токен сброса. Пожалуйста, проверьте ссылку из письма"
+    }
+  },
+  "Departments": {
+    "title": "Отделы",
+    "deleteModalTitle": "Удалить отдел",
+    "deleteConfirmation": "Вы уверены, что хотите удалить отдел?",
+    "createButton": "Создать отдел",
+    "createModalTitle": "Создать отдел",
+    "updateModalTitle": "Редактировать отдел",
+    "updateAction": "Редактировать отдел",
+    "deleteAction": "Удалить отдел",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Отдел успешно создан",
+      "createError": "Не удалось создать отдел",
+      "updated": "Отдел успешно обновлен",
+      "updateError": "Не удалось обновить отдел",
+      "deleted": "Отдел успешно удален",
+      "deleteError": "Не удалось удалить отдел"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное"
+    }
+  },
+  "Positions": {
+    "title": "Должности",
+    "deleteModalTitle": "Удалить должность",
+    "deleteConfirmation": "Вы уверены, что хотите удалить должность?",
+    "createButton": "Создать должность",
+    "createModalTitle": "Создать должность",
+    "updateModalTitle": "Обновить должность",
+    "updateAction": "Обновить должность",
+    "deleteAction": "Удалить должность",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Должность успешно создана",
+      "createError": "Не удалось создать должность",
+      "updated": "Должность успешно обновлена",
+      "updateError": "Не удалось обновить должность",
+      "deleted": "Должность успешно удалена",
+      "deleteError": "Не удалось удалить должность"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное"
+    }
+  },
+  "Skills": {
+    "title": "Навыки",
+    "deleteModalTitle": "Удалить навык",
+    "deleteConfirmation": "Вы уверены, что хотите удалить навык?",
+    "createButton": "Создать навык",
+    "createModalTitle": "Создать навык",
+    "updateModalTitle": "Редактировать навык",
+    "updateAction": "Редактировать навык",
+    "deleteAction": "Удалить навык",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Навык успешно создан",
+      "createError": "Не удалось создать навык",
+      "updated": "Навык успешно обновлен",
+      "updateError": "Не удалось обновить навык",
+      "deleted": "Навык успешно удален",
+      "deleteError": "Не удалось удалить навык"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное",
+      "categoryRequired": "Пожалуйста, выберите категорию"
+    }
+  },
+  "Languages": {
+    "title": "Языки",
+    "deleteModalTitle": "Удалить язык",
+    "deleteConfirmation": "Вы уверены, что хотите удалить язык",
+    "createButton": "Создать язык",
+    "createModalTitle": "Создать язык",
+    "updateModalTitle": "Редактировать язык",
+    "updateAction": "Редактировать язык",
+    "deleteAction": "Удалить язык",
+    "openMenu": "Открыть меню",
+    "toasts": {
+      "created": "Язык успешно создан",
+      "createError": "Не удалось создать язык",
+      "updated": "Язык успешно обновлен",
+      "updateError": "Не удалось обновить язык",
+      "deleted": "Язык успешно удален",
+      "deleteError": "Не удалось удалить язык"
+    },
+    "validation": {
+      "nameMin": "Название должно содержать минимум 2 символа",
+      "nameMax": "Название слишком длинное",
+      "onlyLetters": "Можно использовать только буквы",
+      "isoLength": "ISO2 должен состоять из 2 букв"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Имя",
+      "newPassword": "Новый пароль",
+      "nativeName": "Родное имя",
+      "iso2": "ISO2",
+      "email": "Email",
+      "password": "Пароль",
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "department": "Отдел",
+      "position": "Должность",
+      "role": "Роль",
+      "category": "Категория"
+    },
+    "roles": {
+      "employee": "Сотрудник",
+      "admin": "Администратор"
+    },
+    "actions": {
+      "create": "Создать",
+      "update": "Обновить",
+      "cancel": "Отмена",
+      "search": "Поиск",
+      "resetSearch": "Сбросить поиск",
+      "creating": "Создание...",
+      "updating": "Обновление...",
+      "confirm": "Подтвердить",
+      "confirming": "Подтверждение...",
+      "saving": "Сохранение..."
+    },
+    "placeholders": {
+      "search": "Поиск",
+      "selectDepartment": "Выберите отдел",
+      "selectPosition": "Выберите должность",
+      "password": "********"
+    },
+    "alerts": {
+      "deleteTitle": "Удаление",
+      "deleteDescription": "Это действие нельзя отменить. Запись будет безвозвратно удалена с наших серверов."
+    },
+    "noResults": {
+      "title": "Ничего не найдено",
+      "description": "Попробуйте другой запрос, проверьте орфографию или используйте более общие термины"
+    },
+    "validation": {
+      "invalidEmail": "Неверный формат почты",
+      "passwordRequired": "Пароль обязателен",
+      "passwordMinLength": "Пароль должен состоять минимум из 5 символов"
+    }
+  },
+  "Users": {
+    "title": "Сотрудники",
+    "createUserButton": "СОЗДАТЬ ПОЛЬЗОВАТЕЛЯ",
+    "createModalTitle": "Создать пользователя",
+    "updateModalTitle": "Редактировать пользователя",
+    "viewProfile": "Просмотреть профиль",
+    "updateAction": "Редактировать пользователя",
+    "deleteAvatar": "Удалить аватар",
+    "deleteAvatarConfirm": "Вы уверены, что хотите удалить этот аватар?",
+    "deleteAvatarTitle": "Удалить аватар",
+    "noResults": "Сотрудники не найдены",
+    "memberSince": "Участник с {date}",
+    "uncategorized": "Без категории",
+    "noSkills": "Навыки еще не добавлены",
+    "addFirstSkill": "Добавьте свой первый навык",
+    "addSkill": "Добавить навык",
+    "cancelSelection": "Отмена",
+    "removeSelected": "Удалить",
+    "languagesComingSoon": "Раздел языков скоро появится",
+    "noLanguages": "Языки еще не добавлены",
+    "addFirstLanguage": "Добавьте свой первый язык",
+    "addLanguage": "Добавить язык",
+    "languageModal": {
+      "addTitle": "Добавить язык",
+      "updateTitle": "Обновить язык",
+      "language": "Язык",
+      "selectLanguage": "Выберите язык",
+      "proficiency": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
+    },
+    "tabs": {
+      "profile": "ПРОФИЛЬ",
+      "skills": "НАВЫКИ",
+      "languages": "ЯЗЫКИ"
+    },
+    "nav": {
+      "skills": "Навыки",
+      "languages": "Языки",
+      "cvs": "Резюме"
+    },
+    "skillModal": {
+      "addTitle": "Добавить навык",
+      "updateTitle": "Обновить навык",
+      "skill": "Навык",
+      "selectSkill": "Выберите навык",
+      "mastery": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
+    },
+    "unnamedUser": "Без имени",
+    "uploadAvatar": "Загрузить аватар",
+    "uploadHint": "png, jpg или gif не более 1 МБ",
+    "fileSizeError": "Файл должен быть не более 1 МБ",
+    "collapseMenu": "Свернуть меню",
+    "expandMenu": "Развернуть меню",
+    "defaultUser": "Пользователь"
+  },
+  "CVs": {
+    "title": "Резюме",
+    "searchPlaceholder": "Поиск",
+    "createButton": "СОЗДАТЬ РЕЗЮМЕ",
+    "emptyState": "Резюме не найдены",
+    "name": "Название",
+    "education": "Образование",
+    "employee": "Сотрудник",
+    "fields": {
+      "name": "Название",
+      "education": "Образование",
+      "description": "Описание"
+    },
+    "actions": {
+      "edit": "Редактировать",
+      "delete": "Удалить",
+      "cancel": "Отмена",
+      "saving": "Сохранение...",
+      "update": "Обновить",
+      "create": "Создать",
+      "deleting": "Удаление...",
+      "confirmDelete": "Подтвердить"
+    },
+    "dialog": {
+      "createTitle": "Создать новое резюме",
+      "editTitle": "Редактировать резюме",
+      "deleteTitle": "Удалить резюме",
+      "deleteMessage": "Вы уверены, что хотите удалить резюме \"{name}\"?"
+    },
+    "validation": {
+      "nameRequired": "Название обязательно",
+      "educationRequired": "Образование обязательно",
+      "descriptionRequired": "Описание обязательно"
+    },
+    "details": {
+      "tabs": {
+        "details": "ДЕТАЛИ",
+        "skills": "НАВЫКИ",
+        "projects": "ПРОЕКТЫ",
+        "preview": "ПРОСМОТР"
+      },
+      "breadcrumb": {
+        "cvs": "Резюме"
+      },
+      "detailsTab": {
+        "fields": {
+          "name": "Имя",
+          "education": "Образование",
+          "description": "Описание"
+        },
+        "updateButton": "ОБНОВИТЬ",
+        "updating": "ОБНОВЛЕНИЕ...",
+        "validation": {
+          "fullnameRequired": "Полное имя обязательно",
+          "educationRequired": "Образование обязательно",
+          "descriptionRequired": "Описание обязательно"
+        }
+      },
+      "skillsTab": {
+        "addSkill": "ДОБАВИТЬ НАВЫК",
+        "removeSkills": "УДАЛИТЬ НАВЫКИ",
+        "addSkillModal": {
+          "title": "Добавить навык",
+          "category": "Категория",
+          "skillName": "Название навыка",
+          "proficiency": "Уровень владения",
+          "color": "Цвет",
+          "addButton": "Добавить навык"
+        }
+      },
+      "projectsTab": {
+        "searchPlaceholder": "Поиск",
+        "addProject": "ДОБАВИТЬ ПРОЕКТ",
+        "tableHeaders": {
+          "name": "Название",
+          "domain": "Область",
+          "startDate": "Дата начала",
+          "endDate": "Дата окончания"
+        },
+        "environment": "Окружение",
+        "projectModal": {
+          "addTitle": "Добавить проект",
+          "editTitle": "Редактировать проект",
+          "fields": {
+            "project": "Проект",
+            "startDate": "Дата начала",
+            "endDate": "Дата окончания",
+            "description": "Описание",
+            "environment": "Окружение",
+            "responsibilities": "Обязанности"
+          },
+          "placeholders": {
+            "project": "Платформа обучения сотрудников",
+            "startDate": "ДД/ММ/ГГГГ",
+            "endDate": "ДД/ММ/ГГГГ",
+            "description": "Игровая платформа для обучения сотрудников компании...",
+            "environment": "напр., TypeScript, CSS3, Vue",
+            "responsibilities": "• Разработал веб-компоненты...\n• Интегрировал OAuth...\n• Управлял IoT-устройствами..."
+          },
+          "responsibilitiesHint": "Вводите каждую обязанность с новой строки.",
+          "validation": {
+            "nameRequired": "Название проекта обязательно",
+            "domainRequired": "Область обязательна",
+            "startDateRequired": "Дата начала обязательна",
+            "endDateRequired": "Дата окончания обязательна",
+            "descriptionRequired": "Описание обязательно"
+          },
+          "buttons": {
+            "cancel": "Отмена",
+            "add": "Добавить",
+            "update": "Обновить"
+          }
+        },
+        "deleteModal": {
+          "title": "Удалить проект",
+          "message": "Вы уверены, что хотите удалить проект \"{name}\"?",
+          "confirm": "Подтвердить",
+          "cancel": "Отмена"
+        },
+        "validationErrors": "Ошибки валидации"
+      },
+      "previewTab": {
+        "education": "Образование",
+        "languageProficiency": "Владение языками",
+        "domains": "Области",
+        "englishFluent": "Английский (свободно)",
+        "experienceYears": "с опытом более 5 лет"
+      },
+      "export": {
+        "button": "ЭКСПОРТ",
+        "exporting": "ЭКСПОРТ...",
+        "error": "Не удалось экспортировать PDF. Пожалуйста, попробуйте снова."
+      },
+      "notFound": "Резюме не найдено",
+      "readOnly": "У вас нет прав на редактирование этого резюме"
+    }
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "Auth": {
+    "header": {
+      "loginLinkTitle": "Sign in",
+      "signUpLinkTitle": "Sign up"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Hello again! Log in to continue",
+      "submitAction": "Log in",
+      "forgotPasswordAction": "Forgot password",
+      "error": "Login failed"
+    },
+    "signUp": {
+      "title": "Register now",
+      "subtitle": "Welcome! Sign up to continue",
+      "submitAction": "Create account",
+      "haveAccountAction": "I have an account",
+      "error": "Registration failed"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "We will sent you an email with further instructions",
+      "submitAction": "Reset password",
+      "cancelAction": "Cancel",
+      "success": "Check your email inbox",
+      "sendError": "Failed to send email"
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "subtitle": "Almost done! Now create a new password",
+      "submitAction": "Submit",
+      "backToLoginAction": "Back to log in",
+      "success": "Password has been reset",
+      "error": "Failed to reset password",
+      "tokenError": "Missing reset token. Please check your email link"
+    }
+  },
+  "Departments": {
+    "title": "Departments",
+    "deleteModalTitle": "Delete department",
+    "deleteConfirmation": "Are you sure you want to delete department",
+    "createButton": "Create department",
+    "createModalTitle": "Create Department",
+    "updateModalTitle": "Update Department",
+    "updateAction": "Update department",
+    "deleteAction": "Delete department",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Department created successfully",
+      "createError": "Failed to create department",
+      "updated": "Department updated successfully",
+      "updateError": "Failed to update department",
+      "deleted": "Department deleted successfully",
+      "deleteError": "Failed to delete department"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long"
+    }
+  },
+  "Positions": {
+    "title": "Positions",
+    "deleteModalTitle": "Delete position",
+    "deleteConfirmation": "Are you sure you want to delete position",
+    "createButton": "Create position",
+    "createModalTitle": "Create position",
+    "updateModalTitle": "Update position",
+    "updateAction": "Update position",
+    "deleteAction": "Delete position",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Position created successfully",
+      "createError": "Failed to create position",
+      "updated": "Position updated successfully",
+      "updateError": "Failed to update position",
+      "deleted": "Position deleted successfully",
+      "deleteError": "Failed to delete position"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long"
+    }
+  },
+  "Skills": {
+    "title": "Skills",
+    "deleteModalTitle": "Delete skill",
+    "deleteConfirmation": "Are you sure you want to delete skill",
+    "createButton": "Create skill",
+    "createModalTitle": "Create skill",
+    "updateModalTitle": "Update skill",
+    "updateAction": "Update skill",
+    "deleteAction": "Delete skill",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Skill created successfully",
+      "createError": "Failed to create skill",
+      "updated": "Skill updated successfully",
+      "updateError": "Failed to update skill",
+      "deleted": "Skill deleted successfully",
+      "deleteError": "Failed to delete skill"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long",
+      "categoryRequired": "Please select a category"
+    }
+  },
+  "Languages": {
+    "title": "Languages",
+    "deleteModalTitle": "Delete language",
+    "deleteConfirmation": "Are you sure you want to delete language",
+    "createButton": "Create language",
+    "createModalTitle": "Create language",
+    "updateModalTitle": "Update language",
+    "updateAction": "Update language",
+    "deleteAction": "Delete language",
+    "openMenu": "Open menu",
+    "toasts": {
+      "created": "Language created successfully",
+      "createError": "Failed to create language",
+      "updated": "Language updated successfully",
+      "updateError": "Failed to update language",
+      "deleted": "Language deleted successfully",
+      "deleteError": "Failed to delete language"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name is too long",
+      "onlyLetters": "You can use only letters",
+      "isoLength": "ISO2 must be 2 letters"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Name",
+      "newPassword": "New password",
+      "nativeName": "Native name",
+      "iso2": "ISO2",
+      "email": "Email",
+      "password": "Password",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "department": "Department",
+      "position": "Position",
+      "role": "Role",
+      "category": "Category"
+    },
+    "roles": {
+      "employee": "Employee",
+      "admin": "Admin"
+    },
+    "actions": {
+      "create": "Create",
+      "update": "Update",
+      "cancel": "Cancel",
+      "search": "Search",
+      "resetSearch": "Reset Search",
+      "creating": "Creating...",
+      "updating": "Updating...",
+      "confirm": "Confirm",
+      "confirming": "Confirming...",
+      "saving": "Saving..."
+    },
+    "placeholders": {
+      "search": "Search",
+      "selectDepartment": "Select department",
+      "selectPosition": "Select position",
+      "password": "********"
+    },
+    "alerts": {
+      "deleteTitle": "Delete department",
+      "deleteDescription": "This action cannot be undone. This will permanently delete this record from our servers."
+    },
+    "noResults": {
+      "title": "No results found",
+      "description": "Try another search, check the spelling or use a broader term"
+    },
+    "validation": {
+      "invalidEmail": "Invalid email format",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 5 characters long"
+    }
+  },
+  "Users": {
+    "title": "Employees",
+    "createUserButton": "CREATE USER",
+    "createModalTitle": "Create user",
+    "updateModalTitle": "Update user",
+    "viewProfile": "View profile",
+    "updateAction": "Update user",
+    "deleteAvatar": "Delete avatar",
+    "deleteAvatarConfirm": "Delete this avatar?",
+    "deleteAvatarTitle": "Delete avatar",
+    "noResults": "No employees found",
+    "memberSince": "A member since {date}",
+    "uncategorized": "Uncategorized",
+    "noSkills": "No skills added yet",
+    "addFirstSkill": "Add your first skill",
+    "addSkill": "Add Skill",
+    "cancelSelection": "Cancel",
+    "removeSelected": "Delete",
+    "languagesComingSoon": "Languages tab coming soon",
+    "noLanguages": "No languages added yet",
+    "addFirstLanguage": "Add your first language",
+    "addLanguage": "Add Language",
+    "languageModal": {
+      "addTitle": "Add language",
+      "updateTitle": "Update language",
+      "language": "Language",
+      "selectLanguage": "Select language",
+      "proficiency": "Proficiency",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "tabs": {
+      "profile": "PROFILE",
+      "skills": "SKILLS",
+      "languages": "LANGUAGES"
+    },
+    "nav": {
+      "skills": "Skills",
+      "languages": "Languages",
+      "cvs": "CVs"
+    },
+    "skillModal": {
+      "addTitle": "Add skill",
+      "updateTitle": "Update skill",
+      "skill": "Skill",
+      "selectSkill": "Select skill",
+      "mastery": "Skill mastery",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "unnamedUser": "Unnamed User",
+    "uploadAvatar": "Upload avatar image",
+    "uploadHint": "png, jpg or gif no more than 1MB",
+    "fileSizeError": "File must be no more than 1MB",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "defaultUser": "User"
+  },
+  "CVs": {
+    "title": "CVs",
+    "searchPlaceholder": "Search",
+    "createButton": "CREATE CV",
+    "emptyState": "No CVs found",
+    "name": "Name",
+    "education": "Education",
+    "employee": "Employee",
+    "fields": {
+      "name": "Title",
+      "education": "Education",
+      "description": "Description"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update",
+      "create": "Create",
+      "deleting": "Deleting...",
+      "confirmDelete": "Confirm"
+    },
+    "dialog": {
+      "createTitle": "Create New CV",
+      "editTitle": "Edit CV",
+      "deleteTitle": "Delete CV",
+      "deleteMessage": "Are you sure you want to delete CV \"{name}\"?"
+    },
+    "validation": {
+      "nameRequired": "Title is required",
+      "educationRequired": "Education is required",
+      "descriptionRequired": "Description is required"
+    },
+    "details": {
+      "tabs": {
+        "details": "DETAILS",
+        "skills": "SKILLS",
+        "projects": "PROJECTS",
+        "preview": "PREVIEW"
+      },
+      "breadcrumb": {
+        "cvs": "CVs"
+      },
+      "detailsTab": {
+        "fields": {
+          "name": "Name",
+          "education": "Education",
+          "description": "Description"
+        },
+        "updateButton": "UPDATE",
+        "updating": "UPDATING...",
+        "validation": {
+          "fullnameRequired": "Full name is required",
+          "educationRequired": "Education is required",
+          "descriptionRequired": "Description is required"
+        }
+      },
+      "skillsTab": {
+        "addSkill": "ADD SKILL",
+        "removeSkills": "REMOVE SKILLS",
+        "addSkillModal": {
+          "title": "Add Skill",
+          "category": "Category",
+          "skillName": "Skill Name",
+          "proficiency": "Proficiency Level",
+          "color": "Color",
+          "addButton": "Add Skill"
+        }
+      },
+      "projectsTab": {
+        "searchPlaceholder": "Search",
+        "addProject": "ADD PROJECT",
+        "tableHeaders": {
+          "name": "Name",
+          "domain": "Domain",
+          "startDate": "Start Date",
+          "endDate": "End Date"
+        },
+        "environment": "Environment",
+        "projectModal": {
+          "addTitle": "Add project",
+          "editTitle": "Edit project",
+          "fields": {
+            "project": "Project",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "description": "Description",
+            "environment": "Environment",
+            "responsibilities": "Responsibilities"
+          },
+          "placeholders": {
+            "project": "Employee Training Platform",
+            "startDate": "DD/MM/YYYY",
+            "endDate": "DD/MM/YYYY",
+            "description": "A gaming platform for training company employees...",
+            "environment": "e.g., TypeScript, CSS3, Vue",
+            "responsibilities": "• Developed web components...\n• Integrated OAuth...\n• Managed IoT devices..."
+          },
+          "responsibilitiesHint": "Enter each responsibility on a new line.",
+          "validation": {
+            "nameRequired": "Project name is required",
+            "domainRequired": "Domain is required",
+            "startDateRequired": "Start date is required",
+            "endDateRequired": "End date is required",
+            "descriptionRequired": "Description is required"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "add": "Add",
+            "update": "Update"
+          }
+        },
+        "deleteModal": {
+          "title": "Delete Project",
+          "message": "Are you sure you want to delete project \"{name}\"?",
+          "confirm": "Confirm",
+          "cancel": "Cancel"
+        },
+        "validationErrors": "Validation errors"
+      },
+      "previewTab": {
+        "education": "Education",
+        "languageProficiency": "Language proficiency",
+        "domains": "Domains",
+        "englishFluent": "English (Fluent)",
+        "experienceYears": "with 5+ years of experience"
+      },
+      "export": {
+        "button": "EXPORT",
+        "exporting": "EXPORTING...",
+        "error": "PDF export failed. Please try again."
+      },
+      "notFound": "CV not found",
+      "readOnly": "You do not have permission to edit this CV"
+    }
+  }
+}

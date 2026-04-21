@@ -1,0 +1,380 @@
+{
+  "Auth": {
+    "header": {
+      "loginLinkTitle": "Anmelden",
+      "signUpLinkTitle": "Registrieren"
+    },
+    "login": {
+      "title": "Willkommen zurück",
+      "subtitle": "Hallo nochmal! Melden Sie sich an, um fortzufahren",
+      "submitAction": "Anmelden",
+      "forgotPasswordAction": "Passwort vergessen?",
+      "error": "Anmeldung fehlgeschlagen"
+    },
+    "signUp": {
+      "title": "Jetzt registrieren",
+      "subtitle": "Willkommen! Registrieren Sie sich, um fortzufahren",
+      "submitAction": "Konto erstellen",
+      "haveAccountAction": "Ich habe bereits ein Konto",
+      "error": "Registrierung fehlgeschlagen"
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen",
+      "subtitle": "Wir senden Ihnen eine E-Mail mit weiteren Anweisungen",
+      "submitAction": "Passwort zurücksetzen",
+      "cancelAction": "Abbrechen",
+      "success": "Überprüfen Sie Ihren Posteingang",
+      "sendError": "E-Mail konnte nicht gesendet werden"
+    },
+    "resetPassword": {
+      "title": "Neues Passwort festlegen",
+      "subtitle": "Fast geschafft! Erstellen Sie nun ein neues Passwort",
+      "submitAction": "Bestätigen",
+      "backToLoginAction": "Zurück zur Anmeldung",
+      "success": "Passwort wurde zurückgesetzt",
+      "error": "Passwort konnte nicht zurückgesetzt werden",
+      "tokenError": "Reset-Token fehlt. Bitte überprüfen Sie den Link in Ihrer E-Mail"
+    }
+  },
+  "Departments": {
+    "title": "Abteilungen",
+    "deleteModalTitle": "Abteilung löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Abteilung löschen:",
+    "createButton": "Abteilung erstellen",
+    "createModalTitle": "Abteilung erstellen",
+    "updateModalTitle": "Abteilung bearbeiten",
+    "updateAction": "Abteilung bearbeiten",
+    "deleteAction": "Abteilung löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Abteilung erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Abteilung",
+      "updated": "Abteilung erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Abteilung",
+      "deleted": "Abteilung erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Abteilung"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang"
+    }
+  },
+  "Positions": {
+    "title": "Positionen",
+    "deleteModalTitle": "Position löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Position löschen:",
+    "createButton": "Position erstellen",
+    "createModalTitle": "Position erstellen",
+    "updateModalTitle": "Position bearbeiten",
+    "updateAction": "Position bearbeiten",
+    "deleteAction": "Position löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Position erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Position",
+      "updated": "Position erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Position",
+      "deleted": "Position erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Position"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang"
+    }
+  },
+  "Skills": {
+    "title": "Fähigkeiten",
+    "deleteModalTitle": "Fähigkeit löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Fähigkeit löschen:",
+    "createButton": "Fähigkeit erstellen",
+    "createModalTitle": "Fähigkeit erstellen",
+    "updateModalTitle": "Fähigkeit bearbeiten",
+    "updateAction": "Fähigkeit bearbeiten",
+    "deleteAction": "Fähigkeit löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Fähigkeit erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Fähigkeit",
+      "updated": "Fähigkeit erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Fähigkeit",
+      "deleted": "Fähigkeit erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Fähigkeit"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang",
+      "categoryRequired": "Bitte wählen Sie eine Kategorie aus"
+    }
+  },
+  "Languages": {
+    "title": "Sprachen",
+    "deleteModalTitle": "Sprache löschen",
+    "deleteConfirmation": "Möchten Sie wirklich die folgende Sprache löschen:",
+    "createButton": "Sprache erstellen",
+    "createModalTitle": "Sprache erstellen",
+    "updateModalTitle": "Sprache bearbeiten",
+    "updateAction": "Sprache bearbeiten",
+    "deleteAction": "Sprache löschen",
+    "openMenu": "Menü öffnen",
+    "toasts": {
+      "created": "Sprache erfolgreich erstellt",
+      "createError": "Fehler beim Erstellen der Sprache",
+      "updated": "Sprache erfolgreich aktualisiert",
+      "updateError": "Fehler beim Aktualisieren der Sprache",
+      "deleted": "Sprache erfolgreich gelöscht",
+      "deleteError": "Fehler beim Löschen der Sprache"
+    },
+    "validation": {
+      "nameMin": "Der Name muss mindestens 2 Zeichen lang sein",
+      "nameMax": "Der Name ist zu lang",
+      "onlyLetters": "Es sind nur Buchstaben erlaubt",
+      "isoLength": "ISO2 muss aus 2 Buchstaben bestehen"
+    }
+  },
+  "Common": {
+    "fields": {
+      "name": "Name",
+      "newPassword": "Neues Passwort",
+      "nativeName": "Einheimischer Name",
+      "iso2": "ISO2",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "department": "Abteilung",
+      "position": "Position",
+      "role": "Rolle",
+      "category": "Kategorie"
+    },
+    "roles": {
+      "employee": "Mitarbeiter",
+      "admin": "Administrator"
+    },
+    "actions": {
+      "create": "Erstellen",
+      "update": "Aktualisieren",
+      "cancel": "Abbrechen",
+      "search": "Suchen",
+      "resetSearch": "Suche zurücksetzen",
+      "creating": "Wird erstellt...",
+      "updating": "Wird aktualisiert...",
+      "confirm": "Bestätigen",
+      "confirming": "Wird bestätigt...",
+      "saving": "Wird gespeichert..."
+    },
+    "placeholders": {
+      "search": "Suchen",
+      "selectDepartment": "Abteilung auswählen",
+      "selectPosition": "Position auswählen",
+      "password": "********"
+    },
+    "alerts": {
+      "deleteTitle": "Löschen bestätigen",
+      "deleteDescription": "Diese Aktion kann nicht rückgängig gemacht werden. Der Datensatz wird dauerhaft von unseren Servern gelöscht."
+    },
+    "noResults": {
+      "title": "Keine Ergebnisse gefunden",
+      "description": "Versuchen Sie eine andere Suche, überprüfen Sie die Rechtschreibung oder verwenden Sie einen allgemeineren Begriff"
+    },
+    "validation": {
+      "invalidEmail": "Ungültiges E-Mail-Format",
+      "passwordRequired": "Passwort ist erforderlich",
+      "passwordMinLength": "Das Passwort muss mindestens 5 Zeichen lang sein"
+    }
+  },
+  "Users": {
+    "title": "Mitarbeiter",
+    "createUserButton": "MITARBEITER ERSTELLEN",
+    "createModalTitle": "Mitarbeiter erstellen",
+    "updateModalTitle": "Mitarbeiter bearbeiten",
+    "viewProfile": "Profil ansehen",
+    "updateAction": "Mitarbeiter bearbeiten",
+    "deleteAvatar": "Avatar löschen",
+    "deleteAvatarConfirm": "Möchten Sie wirklich diesen Avatar löschen?",
+    "deleteAvatarTitle": "Avatar löschen",
+    "noResults": "Keine Mitarbeiter gefunden",
+    "memberSince": "Mitglied seit {date}",
+    "uncategorized": "Nicht kategorisiert",
+    "noSkills": "Noch keine Kenntnisse hinzugefügt",
+    "addFirstSkill": "Fügen Sie Ihre erste Kenntnis hinzu",
+    "addSkill": "Kenntnis hinzufügen",
+    "cancelSelection": "Stornieren",
+    "removeSelected": "Löschen",
+    "languagesComingSoon": "Sprachen-Tab kommt bald",
+    "noLanguages": "Noch keine Sprachen hinzugefügt",
+    "addFirstLanguage": "Fügen Sie Ihre erste Sprache hinzu",
+    "addLanguage": "Sprache hinzufügen",
+    "languageModal": {
+      "addTitle": "Sprache hinzufügen",
+      "updateTitle": "Sprache aktualisieren",
+      "language": "Sprache",
+      "selectLanguage": "Sprache auswählen",
+      "proficiency": "Sprachniveau",
+      "cancel": "Stornieren",
+      "confirm": "Bestätigen"
+    },
+    "tabs": {
+      "profile": "PROFIL",
+      "skills": "KENNTNISSE",
+      "languages": "SPRACHEN"
+    },
+    "nav": {
+      "skills": "Kenntnisse",
+      "languages": "Sprachen",
+      "cvs": "Lebensläufe"
+    },
+    "skillModal": {
+      "addTitle": "Kenntnis hinzufügen",
+      "updateTitle": "Kenntnis aktualisieren",
+      "skill": "Kenntnis",
+      "selectSkill": "Kenntnis auswählen",
+      "mastery": "Kenntnislevel",
+      "cancel": "Stornieren",
+      "confirm": "Bestätigen"
+    },
+    "unnamedUser": "Unbenannter Nutzer",
+    "uploadAvatar": "Avatar hochladen",
+    "uploadHint": "png, jpg oder gif maximal 1MB",
+    "fileSizeError": "Datei darf nicht größer als 1MB sein",
+    "collapseMenu": "Menü einklappen",
+    "expandMenu": "Menü ausklappen",
+    "defaultUser": "Nutzer"
+  },
+  "CVs": {
+    "title": "Lebensläufe",
+    "searchPlaceholder": "Suchen",
+    "createButton": "LEBENSLAUF ERSTELLEN",
+    "emptyState": "Keine Lebensläufe gefunden",
+    "name": "Name",
+    "education": "Ausbildung",
+    "employee": "Mitarbeiter",
+    "fields": {
+      "name": "Titel",
+      "education": "Ausbildung",
+      "description": "Beschreibung"
+    },
+    "actions": {
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "cancel": "Abbrechen",
+      "saving": "Wird gespeichert...",
+      "update": "Aktualisieren",
+      "create": "Erstellen",
+      "deleting": "Wird gelöscht...",
+      "confirmDelete": "Bestätigen"
+    },
+    "dialog": {
+      "createTitle": "Neuen Lebenslauf erstellen",
+      "editTitle": "Lebenslauf bearbeiten",
+      "deleteTitle": "Lebenslauf löschen",
+      "deleteMessage": "Sind Sie sicher, dass Sie den Lebenslauf \"{name}\" löschen möchten?"
+    },
+    "validation": {
+      "nameRequired": "Titel ist erforderlich",
+      "educationRequired": "Ausbildung ist erforderlich",
+      "descriptionRequired": "Beschreibung ist erforderlich"
+    },
+    "details": {
+      "tabs": {
+        "details": "DETAILS",
+        "skills": "FÄHIGKEITEN",
+        "projects": "PROJEKTE",
+        "preview": "VORSCHAU"
+      },
+      "breadcrumb": {
+        "cvs": "Lebensläufe"
+      },
+      "detailsTab": {
+        "fields": {
+          "name": "Name",
+          "education": "Ausbildung",
+          "description": "Beschreibung"
+        },
+        "updateButton": "AKTUALISIEREN",
+        "updating": "AKTUALISIERE...",
+        "validation": {
+          "fullnameRequired": "Vollständiger Name ist erforderlich",
+          "educationRequired": "Ausbildung ist erforderlich",
+          "descriptionRequired": "Beschreibung ist erforderlich"
+        }
+      },
+      "skillsTab": {
+        "addSkill": "FÄHIGKEIT HINZUFÜGEN",
+        "removeSkills": "FÄHIGKEITEN ENTFERNEN",
+        "addSkillModal": {
+          "title": "Fähigkeit hinzufügen",
+          "category": "Kategorie",
+          "skillName": "Name der Fähigkeit",
+          "proficiency": "Kenntnisstand",
+          "color": "Farbe",
+          "addButton": "Fähigkeit hinzufügen"
+        }
+      },
+      "projectsTab": {
+        "searchPlaceholder": "Suchen",
+        "addProject": "PROJEKT HINZUFÜGEN",
+        "tableHeaders": {
+          "name": "Name",
+          "domain": "Domäne",
+          "startDate": "Startdatum",
+          "endDate": "Enddatum"
+        },
+        "environment": "Umgebung",
+        "projectModal": {
+          "addTitle": "Projekt hinzufügen",
+          "editTitle": "Projekt bearbeiten",
+          "fields": {
+            "project": "Projekt",
+            "startDate": "Startdatum",
+            "endDate": "Enddatum",
+            "description": "Beschreibung",
+            "environment": "Umgebung",
+            "responsibilities": "Verantwortlichkeiten"
+          },
+          "placeholders": {
+            "project": "Mitarbeiter-Schulungsplattform",
+            "startDate": "TT/MM/JJJJ",
+            "endDate": "TT/MM/JJJJ",
+            "description": "Eine Spieleplattform zur Schulung von Mitarbeitern...",
+            "environment": "z.B. TypeScript, CSS3, Vue",
+            "responsibilities": "• Webkomponenten entwickelt...\n• OAuth integriert...\n• IoT-Geräte verwaltet..."
+          },
+          "responsibilitiesHint": "Geben Sie jede Verantwortlichkeit in eine neue Zeile ein.",
+          "validation": {
+            "nameRequired": "Projektname ist erforderlich",
+            "domainRequired": "Domäne ist erforderlich",
+            "startDateRequired": "Startdatum ist erforderlich",
+            "endDateRequired": "Enddatum ist erforderlich",
+            "descriptionRequired": "Beschreibung ist erforderlich"
+          },
+          "buttons": {
+            "cancel": "Abbrechen",
+            "add": "Hinzufügen",
+            "update": "Aktualisieren"
+          }
+        },
+        "deleteModal": {
+          "title": "Projekt löschen",
+          "message": "Sind Sie sicher, dass Sie das Projekt \"{name}\" löschen möchten?",
+          "confirm": "Bestätigen",
+          "cancel": "Abbrechen"
+        },
+        "validationErrors": "Validierungsfehler"
+      },
+      "previewTab": {
+        "education": "Ausbildung",
+        "languageProficiency": "Sprachkenntnisse",
+        "domains": "Domänen",
+        "englishFluent": "Englisch (Fließend)",
+        "experienceYears": "mit über 5 Jahren Erfahrung"
+      },
+      "export": {
+        "button": "EXPORTIEREN",
+        "exporting": "EXPORTIERE...",
+        "error": "PDF-Export fehlgeschlagen. Bitte versuchen Sie es erneut."
+      },
+      "notFound": "Lebenslauf nicht gefunden",
+      "readOnly": "Sie haben keine Berechtigung, diesen Lebenslauf zu bearbeiten"
+    }
+  }
+}
