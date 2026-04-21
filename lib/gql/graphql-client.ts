@@ -79,33 +79,11 @@ export async function gqlRequestAuthed<T, V>(
       next: options?.next,
     });
 
-  let response = await makeRequest(token);
-  let result: GraphQLResponse<T> = await response.json();
+  const response = await makeRequest(token);
+  const result: GraphQLResponse<T> = await response.json();
 
   if (isUnauthorizedError(result.errors)) {
-    const appUrl = `http://localhost:${process.env.PORT || 3000}`;
-    const allCookies =
-      cookieStore?.getAll().map((c) => `${c.name}=${c.value}`).join("; ") ??
-      options?.cookieHeader ??
-      "";
-
-
-    const refreshResponse = await fetch(`${appUrl}/api/auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Cookie: allCookies },
-    });
-
-    if (refreshResponse.ok) {
-      const { access_token: newToken } = await refreshResponse.json();
-      if (newToken) {
-        response = await makeRequest(newToken);
-        result = await response.json();
-      } else {
-        throw new Error("Session expired. Please login again.");
-      }
-    } else {
-      throw new Error("Session expired. Please login again.");
-    }
+    throw new Error("Session expired. Please login again.");
   }
 
   if (result.errors) {

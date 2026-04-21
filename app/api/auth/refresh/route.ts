@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { print } from "graphql";
+
 import { graphql } from "@/gqlcodegen";
 
 const UPDATE_TOKEN_MUTATION = graphql(`
@@ -12,12 +13,34 @@ const UPDATE_TOKEN_MUTATION = graphql(`
   }
 `);
 
-export async function POST() {
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  path: "/",
+  sameSite: "lax" as const,
+};
+
+async function clearAndRedirect(url: string, callbackUrl: string) {
+  const cookieStore = await cookies();
+  cookieStore.delete("access_token");
+  cookieStore.delete("refresh_token");
+  cookieStore.delete("user_id");
+
+  const loginUrl = new URL("/auth/login", url);
+  return NextResponse.redirect(loginUrl);
+}
+
+export async function GET(request: Request) {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get("refresh_token")?.value;
+  const userId = cookieStore.get("user_id")?.value;
 
-  if (!refreshToken) {
-    return NextResponse.json({ error: "No refresh token" }, { status: 401 });
+  const { searchParams } = new URL(request.url);
+  const rawCallbackUrl = searchParams.get("callbackUrl") || "/users";
+  const safeCallbackUrl = rawCallbackUrl.startsWith("/") ? rawCallbackUrl : "/users";
+
+  if (!refreshToken || !userId) {
+    return clearAndRedirect(request.url, safeCallbackUrl);
   }
 
   try {
@@ -35,34 +58,15 @@ export async function POST() {
     if (result.data?.updateToken) {
       const { access_token, refresh_token } = result.data.updateToken;
 
-      const nextResponse = NextResponse.json({ 
-        success: true,
-        access_token,
-        refresh_token 
-      });
+      const nextResponse = NextResponse.redirect(new URL(safeCallbackUrl, request.url));
 
-      const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        sameSite: "lax" as const,
-      };
-
-      nextResponse.cookies.set("access_token", access_token, {
-        ...options,
-        maxAge: 60 * 60 * 24 * 7,
-      });
-      nextResponse.cookies.set("refresh_token", refresh_token, {
-        ...options,
-        maxAge: 60 * 60 * 24 * 30,
-      });
+      nextResponse.cookies.set("access_token", access_token, { ...cookieOptions, maxAge: 60 * 60 * 24 * 7 });
+      nextResponse.cookies.set("refresh_token", refresh_token, { ...cookieOptions, maxAge: 60 * 60 * 24 * 30 });
 
       return nextResponse;
     }
-
-    return NextResponse.json({ error: "Token refresh failed" }, { status: 401 });
-  } catch (error) {
-    console.error("Refresh error:", error);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    return clearAndRedirect(request.url, safeCallbackUrl);
+  } catch {
+    return clearAndRedirect(request.url, safeCallbackUrl);
   }
 }

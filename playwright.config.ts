@@ -80,9 +80,9 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    env: {
-      GRAPHQL_URL: 'http://localhost:3001/api/graphql',
-    },
+    reuseExistingServer: true,
+    stdout: 'ignore',
+    stderr: 'pipe',
+    timeout: 180 * 1000,
   },
 });
