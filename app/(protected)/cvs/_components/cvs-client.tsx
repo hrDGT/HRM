@@ -3,18 +3,14 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Search, Plus, EllipsisVertical, X, ArrowUp, ArrowDown, Pencil, Trash2 } from "lucide-react";
+import { Search, EllipsisVertical, X, Plus, ArrowUp, ArrowDown, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
 import { createCVAction, updateCVAction, deleteCVAction } from "../actions";
+import { CreateCVModal, CVFormData } from "./create-cv-modal";
+import { UpdateCVModal } from "./update-cv-modal";
 
 type CVItem = {
   id: string;
@@ -30,14 +26,6 @@ type CVsClientProps = {
   currentUserEmail: string;
 };
 
-const cvSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  education: z.string().min(1, "Education is required"),
-  description: z.string().min(1, "Description is required"),
-});
-
-type CVFormData = z.infer<typeof cvSchema>;
-
 export function CVsClient({
   initialCVs,
   currentUserRole,
@@ -50,8 +38,6 @@ export function CVsClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState<"name" | "education" | "userEmail">("name");
   const [sortAsc, setSortAsc] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [isMutating, setIsMutating] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; cvId: string; cvName: string }>({
     isOpen: false,
@@ -59,18 +45,10 @@ export function CVsClient({
     cvName: "",
   });
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [updatingCV, setUpdatingCV] = useState<CVItem | null>(null);
 
   const isAdmin = currentUserRole?.toUpperCase() === "ADMIN";
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CVFormData>({
-    resolver: zodResolver(cvSchema),
-    defaultValues: { name: "", education: "", description: "" },
-  });
 
   const visibleCVs = useMemo(
     () => (isAdmin ? cvs : cvs.filter((cv) => cv.userEmail === currentUserEmail)),
@@ -94,18 +72,25 @@ export function CVsClient({
       });
   }, [visibleCVs, searchQuery, sortField, sortAsc]);
 
-  const onSubmit = async (data: CVFormData) => {
+  const handleCreate = async (data: CVFormData) => {
     setIsMutating(true);
     try {
-      if (editingId) {
-        await updateCVAction({ ...data, id: editingId });
-      } else {
-        await createCVAction(data);
-      }
-      reset();
-      setEditingId(null);
-      setDialogOpen(false);
+      await createCVAction(data);
       router.refresh();
+      setIsCreateOpen(false);
+    } catch (err) {
+      console.error("CV mutation failed:", err);
+    } finally {
+      setIsMutating(false);
+    }
+  };
+
+  const handleUpdate = async (data: CVFormData & { id: string }) => {
+    setIsMutating(true);
+    try {
+      await updateCVAction({ name: data.name, education: data.education, description: data.description, id: data.id });
+      router.refresh();
+      setUpdatingCV(null);
     } catch (err) {
       console.error("CV mutation failed:", err);
     } finally {
@@ -127,18 +112,6 @@ export function CVsClient({
     }
   };
 
-  const startEdit = (cv: CVItem) => {
-    reset({ name: cv.name, education: cv.education, description: cv.description });
-    setEditingId(cv.id);
-    setDialogOpen(true);
-  };
-
-  const openCreateDialog = () => {
-    reset({ name: "", education: "", description: "" });
-    setEditingId(null);
-    setDialogOpen(true);
-  };
-
   const handleSort = (field: typeof sortField) => {
     if (sortField === field) setSortAsc((p) => !p);
     else {
@@ -156,30 +129,30 @@ export function CVsClient({
       )
     ) : null;
 
-  const fieldWrapper = "relative rounded-lg border border-white/15 bg-[#353535] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
-  const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#353535] px-1.5 text-[10px] uppercase tracking-wider text-zinc-500";
-  const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
-
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
-      <div className="px-8 pt-6 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className="text-xl font-semibold text-zinc-100">{t("title")}</h1>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+      <div className="px-8 pt-5 pb-4 border-white/5">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold">
+            {t("title")}
+          </p>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <div className="relative flex-1 max-w-xs">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t("searchPlaceholder")}
-              className="pl-9 h-10 bg-[#2a2a2a] border-white/10 text-zinc-200 rounded-4xl"
+              placeholder={c("placeholders.search")}
+              className="pl-8 h-9 border-white/10 rounded-4xl text-sm text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:border-white/20"
             />
           </div>
           <Button
-            onClick={openCreateDialog}
-            className="h-10 px-4 bg-zinc-700 hover:bg-zinc-600 text-zinc-100 rounded-4xl uppercase text-xs tracking-widest border border-white/10"
+            onClick={() => setIsCreateOpen(true)}
+            className="h-9 px-3 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400 whitespace-nowrap"
           >
-            <Plus size={16} className="mr-2" />
-            {c("actions.create")}
+            <Plus size={14} className="mr-1.5" />
+            {t("createButton")}
           </Button>
         </div>
       </div>
@@ -198,7 +171,7 @@ export function CVsClient({
           <div className="w-10" />
         </div>
 
-        <div className="divide-y divide-white/10">
+        <div className="divide-y divide-white/10 overflow-hidden">
           {filteredCVs.length === 0 ? (
             <div className="py-12 text-center text-zinc-500">{t("emptyState")}</div>
           ) : (
@@ -210,7 +183,7 @@ export function CVsClient({
                 <div
                   key={cv.id}
                   onClick={() => router.push(`/cvs/${cv.id}`)}
-                  className="group py-6 px-4 hover:bg-white/2 transition-colors cursor-pointer"
+                  className="group py-6 px-4 hover:bg-white/2 cursor-pointer"
                 >
                   <div className="grid grid-cols-[2fr_1.5fr_1.5fr_auto] gap-4 items-start">
                     <h3 className="text-sm font-medium text-zinc-100 truncate pr-2">{cv.name}</h3>
@@ -235,7 +208,7 @@ export function CVsClient({
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  startEdit(cv);
+                                  setUpdatingCV(cv);
                                   setOpenMenuId(null);
                                 }}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
@@ -270,52 +243,20 @@ export function CVsClient({
         </div>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) { setEditingId(null); reset(); } }}>
-        <DialogContent className="bg-[#353535] border-white/10 text-zinc-200 sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{editingId ? t("dialog.editTitle") : t("dialog.createTitle")}</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
-            <div className={fieldWrapper}>
-              <Label className={fieldLabel}>{t("fields.name")}</Label>
-              <Input {...register("name")} className={fieldInput} />
-              {errors.name && <p className="text-xs text-red-400 mt-1 px-1">{errors.name.message}</p>}
-            </div>
-            <div className={fieldWrapper}>
-              <Label className={fieldLabel}>{t("fields.education")}</Label>
-              <Input {...register("education")} className={fieldInput} />
-              {errors.education && <p className="text-xs text-red-400 mt-1 px-1">{errors.education.message}</p>}
-            </div>
-            <div className={fieldWrapper}>
-              <Label className={fieldLabel}>{t("fields.description")}</Label>
-              <textarea
-                {...register("description")}
-                rows={4}
-                className={cn(fieldInput, "resize-none h-auto pt-3 pb-2 min-h-[80px]")}
-              />
-              {errors.description && <p className="text-xs text-red-400 mt-1 px-1">{errors.description.message}</p>}
-            </div>
-            <div className="flex justify-end gap-3 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => { setDialogOpen(false); setEditingId(null); reset(); }}
-                className="border-white/10 text-zinc-300 hover:bg-white/5"
-                disabled={isMutating}
-              >
-                {t("actions.cancel")}
-              </Button>
-              <Button
-                type="submit"
-                disabled={isMutating}
-                className="bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10"
-              >
-                {isMutating ? t("actions.saving") : editingId ? t("actions.update") : t("actions.create")}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <CreateCVModal
+        open={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onCreate={handleCreate}
+        isPending={isMutating}
+      />
+
+      <UpdateCVModal
+        open={!!updatingCV}
+        onClose={() => setUpdatingCV(null)}
+        cv={updatingCV}
+        onUpdate={handleUpdate}
+        isPending={isMutating}
+      />
 
       {deleteModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">

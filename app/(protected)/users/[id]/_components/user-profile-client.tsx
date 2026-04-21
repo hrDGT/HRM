@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import type { EmployeeProfile } from "@/lib/users/users-types";
 import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../actions";
-import { ProfileTabs } from "./profile-tabs";
+import { TabsNav } from "@/components/common/tabs-nav";
 import { cn } from "@/lib/utils";
 
 type UserProfileClientProps = {
@@ -43,6 +43,7 @@ export function UserProfileClient({
     { id: "profile", label: t("tabs.profile"), href: `/users/${userId}` },
     { id: "skills", label: t("tabs.skills"), href: `/users/${userId}/skills` },
     { id: "languages", label: t("tabs.languages"), href: `/users/${userId}/languages` },
+    { id: "cvs", label: t("nav.cvs"), href: `/users/${userId}/cvs` },
   ];
 
   const initialDeptId = departments.find((d) => d.name === employee.department)?.id ?? null;
@@ -164,7 +165,7 @@ export function UserProfileClient({
       </div>
 
       <div className="px-8 pb-6">
-        <ProfileTabs tabs={TABS} userId={userId} />
+        <TabsNav tabs={TABS} />
       </div>
 
       <div className="flex-1 px-8 pb-8">

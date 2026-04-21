@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
-import { CVDetailsClient } from "./_components/cv-details-client";
+import { CVDetailsClient } from "../_components/cv-details-client";
 
 const GET_CV_DETAILS = graphql(`
   query GetCVDetails($cvId: ID!) {
@@ -43,13 +43,10 @@ const GET_CV_DETAILS = graphql(`
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const t = await getTranslations("CVs");
-  const { token, cookieHeader } = await getAuthProps();
-  const result = await gqlRequestAuthed(GET_CV_DETAILS, { cvId: id }, { token, cookieHeader }).catch(() => null);
-  const cvName = result?.cv?.name ?? "CV";
-  return { title: `${cvName} | ${t("title")}` };
+  return { title: `${t("details.tabs.projects")}` };
 }
 
-export default async function CVDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CVProjectsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [currentUser, { token, cookieHeader }] = await Promise.all([
     requireUser(),
@@ -89,7 +86,7 @@ export default async function CVDetailsPage({ params }: { params: Promise<{ id: 
         currentUserId={String(currentUser.id)}
         currentUserRole={currentUser.role}
         canEdit={canEdit}
-        activeTab="details"
+        activeTab="projects"
       />
     </div>
   );

@@ -217,7 +217,8 @@
     "tabs": {
       "profile": "PROFIL",
       "skills": "KENNTNISSE",
-      "languages": "SPRACHEN"
+      "languages": "SPRACHEN",
+      "cvs": "LEBENSLAUF"
     },
     "nav": {
       "skills": "Kenntnisse",
@@ -265,7 +266,7 @@
       "confirmDelete": "Bestätigen"
     },
     "dialog": {
-      "createTitle": "Neuen Lebenslauf erstellen",
+      "createTitle": "Lebenslauf erstellen",
       "editTitle": "Lebenslauf bearbeiten",
       "deleteTitle": "Lebenslauf löschen",
       "deleteMessage": "Sind Sie sicher, dass Sie den Lebenslauf \"{name}\" löschen möchten?"

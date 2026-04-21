@@ -217,7 +217,8 @@
     "tabs": {
       "profile": "ПРОФИЛЬ",
       "skills": "НАВЫКИ",
-      "languages": "ЯЗЫКИ"
+      "languages": "ЯЗЫКИ",
+      "cvs": "РЕЗЮМЕ"
     },
     "nav": {
       "skills": "Навыки",
@@ -265,7 +266,7 @@
       "confirmDelete": "Подтвердить"
     },
     "dialog": {
-      "createTitle": "Создать новое резюме",
+      "createTitle": "Создать резюме",
       "editTitle": "Редактировать резюме",
       "deleteTitle": "Удалить резюме",
       "deleteMessage": "Вы уверены, что хотите удалить резюме \"{name}\"?"

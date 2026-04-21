@@ -8,7 +8,7 @@ import { getAuthProps } from "@/lib/auth/get-auth-props";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { ProfileTabs } from "../_components/profile-tabs";
+import { TabsNav } from "@/components/common/tabs-nav";
 
 const GET_EMPLOYEE_LANGUAGES_QUERY = graphql(`
   query GetEmployeeLanguages($userId: ID!) {
@@ -68,6 +68,7 @@ export default async function UserLanguagesPage({ params }: { params: Promise<{ 
     { id: "profile", label: t("tabs.profile"), href: `/users/${id}` },
     { id: "skills", label: t("tabs.skills"), href: `/users/${id}/skills` },
     { id: "languages", label: t("tabs.languages"), href: `/users/${id}/languages` },
+    { id: "cvs", label: t("nav.cvs"), href: `/users/${id}/cvs` },
   ];
 
   return (
@@ -85,7 +86,7 @@ export default async function UserLanguagesPage({ params }: { params: Promise<{ 
       </div>
 
       <div className="px-8 pb-6">
-        <ProfileTabs tabs={TABS} userId={id} />
+        <TabsNav tabs={TABS} />
       </div>
 
       <UserLanguages userId={userId} canEdit={canEdit} />

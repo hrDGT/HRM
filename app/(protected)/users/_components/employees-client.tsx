@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
+  ArrowDown,
+  ArrowUp,
   ChevronRight,
-  ChevronUp,
   MoreVertical,
   Plus,
   Search,
@@ -108,6 +109,15 @@ export function EmployeesClient({
   const showActions = (empId: string | number) =>
     empId === currentUserId || currentUserRole === "Admin";
 
+  const SortIndicator = ({ field }: { field: string }) => {
+    if (sortConfig?.field !== field) return null;
+    return sortConfig.direction === "asc" ? (
+      <ArrowUp size={12} className="text-zinc-300" />
+    ) : (
+      <ArrowDown size={12} className="text-zinc-300" />
+    );
+  };
+
   return (
     <>
       <div className="px-6 pt-5 pb-4 border-white/5">
@@ -115,28 +125,30 @@ export function EmployeesClient({
           <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold">
             {t("title")}
           </p>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <div className="relative flex-1 max-w-xs">
+            <Search
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+            />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={c("placeholders.search")}
+              className="pl-8 h-9 border-white/10 rounded-4xl text-sm text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:border-white/20"
+            />
+          </div>
           {currentUserRole === "Admin" && (
             <Button
               data-testid="create-user-button"
               onClick={() => setIsCreateOpen(true)}
-              className="h-7 px-2 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400"
+              className="h-9 px-3 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400 whitespace-nowrap"
             >
               <Plus size={14} className="mr-1.5" />
               {t("createUserButton")}
             </Button>
           )}
-        </div>
-        <div className="relative max-w-xs">
-          <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
-          />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={c("placeholders.search")}
-            className="pl-8 h-9 border-white/10 rounded-4xl text-sm text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:border-white/20"
-          />
         </div>
       </div>
 
@@ -152,15 +164,7 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.firstName")}
-                  {sortConfig?.field === "firstName" &&
-                    (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
-                        size={12}
-                        className="text-zinc-300 rotate-180"
-                      />
-                    ))}
+                  <SortIndicator field="firstName" />
                 </span>
               </TableHead>
 
@@ -170,15 +174,7 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.lastName")}
-                  {sortConfig?.field === "lastName" &&
-                    (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
-                        size={12}
-                        className="text-zinc-300 rotate-180"
-                      />
-                    ))}
+                  <SortIndicator field="lastName" />
                 </span>
               </TableHead>
 
@@ -188,15 +184,7 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.email")}
-                  {sortConfig?.field === "email" &&
-                    (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
-                        size={12}
-                        className="text-zinc-300 rotate-180"
-                      />
-                    ))}
+                  <SortIndicator field="email" />
                 </span>
               </TableHead>
 
@@ -206,15 +194,7 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.department")}
-                  {sortConfig?.field === "department" &&
-                    (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
-                        size={12}
-                        className="text-zinc-300 rotate-180"
-                      />
-                    ))}
+                  <SortIndicator field="department" />
                 </span>
               </TableHead>
 
@@ -224,15 +204,7 @@ export function EmployeesClient({
               >
                 <span className="flex items-center gap-1">
                   {c("fields.position")}
-                  {sortConfig?.field === "position" &&
-                    (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
-                        size={12}
-                        className="text-zinc-300 rotate-180"
-                      />
-                    ))}
+                  <SortIndicator field="position" />
                 </span>
               </TableHead>
 

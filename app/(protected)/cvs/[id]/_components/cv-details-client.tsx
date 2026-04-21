@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
-import { ChevronRight, Search, Plus, EllipsisVertical, X, Trash2, Download } from "lucide-react";
+import { ChevronRight, Search, Plus, EllipsisVertical, Trash2, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -19,6 +19,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 
 import { updateCVDetailsAction, addSkillAction, removeSkillAction, addProjectAction, updateProjectAction, removeProjectAction } from "../../actions";
+
+export type TabType = "details" | "skills" | "projects" | "preview";
 
 type CVDetailsClientProps = {
   cv: {
@@ -43,9 +45,8 @@ type CVDetailsClientProps = {
   currentUserId: string;
   currentUserRole: string;
   canEdit: boolean;
+  activeTab: TabType;
 };
-
-type TabType = "details" | "skills" | "projects" | "preview";
 
 const detailsSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -67,7 +68,7 @@ const projectSchema = z.object({
 
 type ProjectFormData = z.infer<typeof projectSchema>;
 
-export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
+export function CVDetailsClient({ cv, canEdit, activeTab }: CVDetailsClientProps) {
   const t = useTranslations("CVs");
   const c = useTranslations("Common");
   const router = useRouter();
@@ -76,7 +77,6 @@ export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
   const projects = cv.projects ?? [];
   const skills = cv.skills ?? [];
 
-  const [activeTab, setActiveTab] = useState<TabType>("details");
   const [isExporting, setIsExporting] = useState(false);
   const [selectedSkillNames, setSelectedSkillNames] = useState<Set<string>>(new Set());
   const [projectSearchQuery, setProjectSearchQuery] = useState("");
@@ -104,13 +104,6 @@ export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
     resolver: zodResolver(projectSchema),
     defaultValues: { name: "", domain: "", startDate: "", endDate: "", description: "", environment: "", responsibilities: "" },
   });
-
-  const tabs = [
-    { id: "details" as TabType, label: t("details.tabs.details") },
-    { id: "skills" as TabType, label: t("details.tabs.skills") },
-    { id: "projects" as TabType, label: t("details.tabs.projects") },
-    { id: "preview" as TabType, label: t("details.tabs.preview") },
-  ];
 
   const filteredProjects = useMemo(() => {
     const q = projectSearchQuery.toLowerCase();
@@ -202,9 +195,10 @@ export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
     if (!previewRef.current || !canEdit) return;
     setIsExporting(true);
     try {
-      const originalTab = activeTab;
-      setActiveTab("preview");
-      await new Promise(r => setTimeout(r, 200));
+      if (activeTab !== "preview") {
+        router.push(`/cvs/${cv.id}/preview`);
+        await new Promise(r => setTimeout(r, 300));
+      }
       const dataUrl = await toPng(previewRef.current, { backgroundColor: "#353535", pixelRatio: 2 });
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const img = new Image();
@@ -214,7 +208,6 @@ export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
       const pdfHeight = (img.height * pdfWidth) / img.width;
       pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${cv.name.replace(/\s+/g, "_")}_CV.pdf`);
-      setActiveTab(originalTab);
     } catch (err) {
       console.error("PDF export failed:", err);
     } finally {
@@ -270,17 +263,6 @@ export function CVDetailsClient({ cv, canEdit }: CVDetailsClientProps) {
           <Download size={16} className="mr-2" />
           {isExporting ? t("details.export.exporting") : t("details.export.button")}
         </Button>
-      </div>
-
-      <div className="px-8 pb-4 border-b border-white/10">
-        <div className="flex gap-6">
-          {tabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={cn("pb-3 px-1 text-xs uppercase tracking-wider font-medium transition-colors relative", activeTab === tab.id ? "text-red-400" : "text-zinc-500 hover:text-zinc-300")}>
-              {tab.label}
-              {activeTab === tab.id && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-400" />}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="flex-1 px-8 pb-8">

@@ -2,66 +2,74 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth/require-user";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
-import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { UserSkills } from "../_components/user-skills";
 import { getAuthProps } from "@/lib/auth/get-auth-props";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
+import { CVsClient } from "@/app/(protected)/cvs/_components/cvs-client";
 
-const GET_EMPLOYEE_SKILLS_QUERY = graphql(`
-  query GetEmployeeSkills($userId: ID!) {
+const GET_USER_CVS_QUERY = graphql(`
+  query GetUserCVs {
+    cvs {
+      id
+      name
+      education
+      description
+      user {
+        id
+        email
+      }
+    }
+  }
+`);
+
+const GET_USER_PROFILE_QUERY = graphql(`
+  query GetUserProfile($userId: ID!) {
     user(userId: $userId) {
       id
       email
-      role
       profile {
         first_name
         last_name
       }
     }
   }
-`) as TypedDocumentNode<{ user: any }, { userId: string }>;
+`);
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const userId = Number(id);
-  if (isNaN(userId)) return {};
-
-  const [result, t] = await Promise.all([
-    gqlRequestAuthed(GET_EMPLOYEE_SKILLS_QUERY, { userId: String(userId) }),
-    getTranslations("Users"),
-  ]);
-
-  if (!result.user) return {};
-
-  const profile = result.user.profile;
-  const firstName = profile?.first_name ?? "";
-  const lastName = profile?.last_name ?? "";
-  const name = `${firstName} ${lastName}`.trim() || result.user.email;
-
-  return { title: `${name} — ${t("tabs.skills")}` };
+  const t = await getTranslations("CVs");
+  return { title: `${t("title")} | User ${id}` };
 }
 
-export default async function UserSkillsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function UserCVsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const userId = Number(id);
-  if (isNaN(userId)) notFound();
-
   const [currentUser, { token, cookieHeader }] = await Promise.all([
     requireUser(),
     getAuthProps(),
   ]);
 
-  const result = await gqlRequestAuthed(GET_EMPLOYEE_SKILLS_QUERY, { userId: String(userId) }, { token, cookieHeader });
+  const [cvResult, userResult] = await Promise.all([
+    gqlRequestAuthed(GET_USER_CVS_QUERY, undefined, { token, cookieHeader }).catch(() => null),
+    gqlRequestAuthed(GET_USER_PROFILE_QUERY, { userId: id }, { token, cookieHeader }).catch(() => null),
+  ]);
 
-  if (!result.user) notFound();
+  if (!cvResult?.cvs || !userResult?.user) notFound();
 
-  const firstName = result.user.profile?.first_name ?? "";
-  const lastName = result.user.profile?.last_name ?? "";
-  const fullName = `${firstName} ${lastName}`.trim() || result.user.email;
-  const canEdit = result.user.id === currentUser.id || currentUser.role?.toUpperCase() === "ADMIN";
+  const userCvs = cvResult.cvs.filter((cv) => cv.user?.id === id);
+  const cvs = userCvs.map((cv) => ({
+    id: cv.id,
+    name: cv.name ?? "",
+    education: cv.education ?? "",
+    description: cv.description ?? "",
+    userEmail: cv.user?.email ?? "",
+  }));
+
+  const profile = userResult.user.profile;
+  const firstName = profile?.first_name ?? "";
+  const lastName = profile?.last_name ?? "";
+  const fullName = `${firstName} ${lastName}`.trim() || userResult.user.email;
 
   const t = await getTranslations("Users");
   const TABS = [
@@ -82,14 +90,18 @@ export default async function UserSkillsPage({ params }: { params: Promise<{ id:
           {fullName}
         </Link>
         <ChevronRight size={16} className="text-zinc-600" />
-        <span className="text-red-500">{t("tabs.skills")}</span>
+        <span className="text-red-500">{t("nav.cvs")}</span>
       </div>
 
       <div className="px-8 pb-6">
         <TabsNav tabs={TABS} />
       </div>
 
-      <UserSkills userId={userId} canEdit={canEdit} />
+      <CVsClient
+        initialCVs={cvs}
+        currentUserRole={currentUser.role}
+        currentUserEmail={currentUser.email ?? ""}
+      />
     </div>
   );
 }

@@ -217,7 +217,8 @@
     "tabs": {
       "profile": "PROFILE",
       "skills": "SKILLS",
-      "languages": "LANGUAGES"
+      "languages": "LANGUAGES",
+      "cvs": "CVs"
     },
     "nav": {
       "skills": "Skills",
@@ -265,7 +266,7 @@
       "confirmDelete": "Confirm"
     },
     "dialog": {
-      "createTitle": "Create New CV",
+      "createTitle": "Create CV",
       "editTitle": "Edit CV",
       "deleteTitle": "Delete CV",
       "deleteMessage": "Are you sure you want to delete CV \"{name}\"?"

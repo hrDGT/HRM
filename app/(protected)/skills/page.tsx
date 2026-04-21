@@ -17,12 +17,10 @@ async function SkillsData({
   isAdmin,
   token,
   cookieHeader,
-  user,
 }: {
   isAdmin: boolean;
   token?: string;
   cookieHeader?: string;
-  user: Awaited<ReturnType<typeof requireUser>>;
 }) {
   const [skills, skillsCategories] = await Promise.all([
     fetchSkills(token, cookieHeader),
@@ -34,7 +32,6 @@ async function SkillsData({
       initialSkills={skills}
       skillsCategories={skillsCategories}
       isAdmin={isAdmin}
-      user={user}
     />
   );
 }
@@ -48,7 +45,7 @@ export default async function SkillsPage() {
 
   return (
     <Suspense fallback={<SkillsTableSkeleton isAdmin={isAdmin} />}>
-      <SkillsData isAdmin={isAdmin} token={token} cookieHeader={cookieHeader} user={user} />
+      <SkillsData isAdmin={isAdmin} token={token} cookieHeader={cookieHeader} />
     </Suspense>
   );
 }
