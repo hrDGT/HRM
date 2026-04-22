@@ -338,6 +338,7 @@
         "searchPlaceholder": "Search",
         "addProject": "ADD PROJECT",
         "noProjects": "No projects found",
+        "tillNow": "Till now",
         "tableHeaders": {
           "name": "Name",
           "domain": "Domain",
@@ -372,6 +373,9 @@
             "startDateRequired": "Start date is required",
             "endDateRequired": "End date is required",
             "descriptionRequired": "Description is required"
+          },
+          "errors": {
+            "endDateBeforeStart": "End date must be after start date"
           },
           "buttons": {
             "cancel": "Cancel",

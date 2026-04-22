@@ -338,6 +338,7 @@
         "searchPlaceholder": "Поиск",
         "addProject": "ДОБАВИТЬ ПРОЕКТ",
         "noProjects": "Проекты не найдены",
+        "tillNow": "До настоящего времени",
         "tableHeaders": {
           "name": "Название",
           "domain": "Область",
@@ -372,6 +373,9 @@
             "startDateRequired": "Дата начала обязательна",
             "endDateRequired": "Дата окончания обязательна",
             "descriptionRequired": "Описание обязательно"
+          },
+          "errors": {
+            "endDateBeforeStart": "Дата окончания должна быть позже даты начала"
           },
           "buttons": {
             "cancel": "Отмена",
