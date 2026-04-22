@@ -135,8 +135,8 @@ jest.mock("@/components/ui/select", () => {
   };
 });
 
-jest.mock("@/app/(protected)/users/[id]/actions", () => ({
-  createUser: jest.fn().mockResolvedValue({
+jest.mock("@/app/(protected)/users/actions", () => ({
+    createUser: jest.fn().mockResolvedValue({
     id: "999",
     email: "test@example.com",
     profile: { first_name: "John", last_name: "Doe", avatar: null },

@@ -14,7 +14,8 @@ const GET_USER_CVS_QUERY = graphql(`
     cvs {
       id
       name
-      created_at
+      education
+      description
       user {
         id
       }
@@ -37,8 +38,24 @@ const GET_USER_PROFILE_QUERY = graphql(`
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const t = await getTranslations("CVs");
-  return { title: `${t("title")} | User ${id}` };
+  const userId = Number(id);
+  if (isNaN(userId)) return {};
+
+  const [{ token, cookieHeader }, t] = await Promise.all([
+    getAuthProps(),
+    getTranslations("Users"),
+  ]);
+
+  const result = await gqlRequestAuthed(GET_USER_PROFILE_QUERY, { userId: id }, { token, cookieHeader }).catch(() => null);
+
+  if (!result?.user) return {};
+
+  const profile = result.user.profile;
+  const firstName = profile?.first_name ?? "";
+  const lastName = profile?.last_name ?? "";
+  const name = `${firstName} ${lastName}`.trim() || result.user.email;
+
+  return { title: `${name} — ${t("nav.cvs")}` };
 }
 
 export default async function UserCVsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -57,7 +74,8 @@ export default async function UserCVsPage({ params }: { params: Promise<{ id: st
     .map((cv) => ({
       id: cv.id,
       name: cv.name,
-      created_at: cv.created_at,
+      education: cv.education,
+      description: cv.description,
     }));
 
   const canEdit = currentUser.id === id || currentUser.role?.toUpperCase() === "ADMIN";

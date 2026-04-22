@@ -18,7 +18,6 @@ type CVItem = {
   name: string;
   education: string;
   description: string;
-  created_at: string;
 };
 
 type UserCVsProps = {
@@ -34,7 +33,7 @@ export function UserCVs({ userId, cvs: initialCVs, canEdit }: UserCVsProps) {
   
   const [cvs, setCvs] = useState<CVItem[]>(initialCVs);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortField, setSortField] = useState<"name" | "education" | "created_at">("name");
+  const [sortField, setSortField] = useState<"name" | "education">("name");
   const [sortAsc, setSortAsc] = useState(true);
   const [isMutating, setIsMutating] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; cvId: string; cvName: string }>({
@@ -56,17 +55,8 @@ export function UserCVs({ userId, cvs: initialCVs, canEdit }: UserCVsProps) {
           cv.description.toLowerCase().includes(q)
       )
       .sort((a, b) => {
-        let aVal = "";
-        let bVal = "";
-        
-        if (sortField === "created_at") {
-          aVal = new Date(a[sortField]).toISOString();
-          bVal = new Date(b[sortField]).toISOString();
-        } else {
-          aVal = a[sortField];
-          bVal = b[sortField];
-        }
-        
+        const aVal = a[sortField];
+        const bVal = b[sortField];
         const cmp = aVal.localeCompare(bVal);
         return sortAsc ? cmp : -cmp;
       });
@@ -148,7 +138,7 @@ export function UserCVs({ userId, cvs: initialCVs, canEdit }: UserCVsProps) {
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
-      <div className="px-8 pt-5 pb-4 border-white/5">
+      <div className="px-8 pb-4 border-white/5">
         <div className="flex items-center justify-between mb-3">
           <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold">
             {t("title")}
@@ -177,15 +167,9 @@ export function UserCVs({ userId, cvs: initialCVs, canEdit }: UserCVsProps) {
       </div>
 
       <div className="flex-1 px-8 pb-8">
-        <div className="grid grid-cols-[2fr_1.5fr_1.5fr_auto] gap-4 px-4 py-3 border-b border-white/10 text-xs uppercase tracking-wider text-zinc-500">
+        <div className="grid grid-cols-[2fr_1.5fr_auto] gap-4 px-4 py-3 border-b border-white/10 text-xs uppercase tracking-wider text-zinc-500">
           <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("name")}>
             {t("name")} <SortIcon field="name" />
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("education")}>
-            {t("education")} <SortIcon field="education" />
-          </div>
-          <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("created_at")}>
-            Date <SortIcon field="created_at" />
           </div>
           <div className="w-10" />
         </div>
@@ -196,12 +180,9 @@ export function UserCVs({ userId, cvs: initialCVs, canEdit }: UserCVsProps) {
           ) : (
             filteredCVs.map((cv) => (
               <div key={cv.id} className="group py-6 px-4">
-                <div className="grid grid-cols-[2fr_1.5fr_1.5fr_auto] gap-4 items-start">
+                <div className="grid grid-cols-[2fr_1.5fr_auto] gap-4 items-start">
                   <h3 className="text-sm font-medium text-zinc-100 truncate pr-2">{cv.name}</h3>
                   <p className="text-sm text-zinc-400 truncate pr-2">{cv.education}</p>
-                  <p className="text-sm text-zinc-400 truncate">
-                    {new Date(cv.created_at).toLocaleDateString()}
-                  </p>
 
                   <div className="relative">
                     <button
@@ -217,7 +198,7 @@ export function UserCVs({ userId, cvs: initialCVs, canEdit }: UserCVsProps) {
                     {openMenuId === cv.id && (
                       <>
                         <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />
-                        <div className="fixed right-4 top-[--menu-top] z-[100] min-w-32 bg-[#353535] rounded-lg shadow-xl border border-white/10 py-1">
+                        <div className="absolute right-0 top-8 z-50 min-w-32 bg-[#353535] rounded-lg shadow-xl border border-white/10 py-1">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

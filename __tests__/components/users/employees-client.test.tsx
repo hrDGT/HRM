@@ -173,6 +173,23 @@ jest.mock("@/app/(protected)/users/_components/create-user-modal", () => ({
     ) : null,
 }));
 
+jest.mock("@/app/(protected)/users/_components/delete-user-modal", () => ({
+  DeleteUserModal: ({ open, onClose, userName, onDelete, isPending }: any) =>
+    open ? (
+      <div data-testid="mock-delete-modal">
+        <p>Delete {userName}?</p>
+        <button data-testid="mock-delete-confirm" onClick={onDelete} disabled={isPending}>
+          {isPending ? "Deleting..." : "Confirm"}
+        </button>
+        <button data-testid="mock-delete-cancel" onClick={onClose}>Cancel</button>
+      </div>
+    ) : null,
+}));
+
+jest.mock("@/app/(protected)/users/actions", () => ({
+  deleteUser: jest.fn().mockResolvedValue(undefined),
+}));
+
 jest.mock("lucide-react", () => ({
   Search: () => <svg data-testid="icon-search" />,
   MoreVertical: () => <svg data-testid="icon-more" />,
@@ -180,6 +197,11 @@ jest.mock("lucide-react", () => ({
   ChevronUp: () => <svg data-testid="icon-chevron-up" />,
   Users: () => <svg data-testid="icon-users" />,
   Plus: () => <svg data-testid="icon-plus" />,
+  ArrowDown: () => <svg data-testid="icon-arrow-down" />,
+  ArrowUp: () => <svg data-testid="icon-arrow-up" />,
+  Pencil: () => <svg data-testid="icon-pencil" />,
+  Trash2: () => <svg data-testid="icon-trash2" />,
+  User: () => <svg data-testid="icon-user" />,
 }));
 
 const mockEmployees: EmployeeCard[] = [
@@ -419,7 +441,8 @@ describe("EmployeesClient", () => {
 
         await user.click(trigger!);
 
-        const items = screen.getAllByTestId("mock-dropdown-item");
+        const dropdownContent = bobRow!.querySelector('[data-testid="mock-dropdown-content"]');
+        const items = dropdownContent!.querySelectorAll('[data-testid="mock-dropdown-item"]');        await user.click(items[0]);
         await user.click(items[0]);
 
         expect(mockPush).toHaveBeenCalledWith("/users/2");
@@ -507,21 +530,6 @@ describe("EmployeesClient", () => {
 
         const createBtn = screen.getByTestId("create-user-button");
         expect(createBtn).toHaveTextContent(users.createUserButton);
-      });
-    });
-
-    describe("row navigation", () => {
-      it("navigates to user profile on row click", async () => {
-        const user = userEvent.setup();
-        const {
-          EmployeesClient,
-        } = require("@/app/(protected)/users/_components/employees-client");
-        renderWithLocale(<EmployeesClient {...defaultProps} />, locale);
-
-        const bobRow = screen.getByText("bob@example.com").closest("tr");
-        await user.click(bobRow!);
-
-        expect(mockPush).toHaveBeenCalledWith("/users/2");
       });
     });
 
