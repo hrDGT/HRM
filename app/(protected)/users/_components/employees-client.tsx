@@ -167,11 +167,7 @@ export function EmployeesClient({
               <TableHead className="p-4 text-main-text text-sm select-none transition-colors font-medium">
                 <div
                   className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
-<<<<<<< HEAD
                   onClick={() => handleSort("lastName")}
-=======
-                  onClick={() => handleSort("firstName")}
->>>>>>> 8e4f01ae90594f3199052e68e2a1a54ba3b3232f
                 >
                   {c("fields.lastName")}
                   {sortConfig?.field === "lastName" &&
@@ -192,11 +188,7 @@ export function EmployeesClient({
               <TableHead className="p-4 text-main-text text-sm select-none hover:text-main-text transition-colors font-medium">
                 <div
                   className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
-<<<<<<< HEAD
                   onClick={() => handleSort("email")}
-=======
-                  onClick={() => handleSort("firstName")}
->>>>>>> 8e4f01ae90594f3199052e68e2a1a54ba3b3232f
                 >
                   {c("fields.email")}
                   {sortConfig?.field === "email" &&
@@ -217,11 +209,7 @@ export function EmployeesClient({
               <TableHead className="p-4 text-main-text text-sm select-none hover:text-main-text transition-colors font-medium">
                 <div
                   className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
-<<<<<<< HEAD
                   onClick={() => handleSort("department")}
-=======
-                  onClick={() => handleSort("firstName")}
->>>>>>> 8e4f01ae90594f3199052e68e2a1a54ba3b3232f
                 >
                   {c("fields.department")}
                   {sortConfig?.field === "department" &&
