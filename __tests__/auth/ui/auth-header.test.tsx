@@ -37,7 +37,7 @@ describe("AuthHeader Component", () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/login");
 
     const { container } = render(<AuthHeader />);
-    const animatedLine = container.querySelector(".bg-main-red");
+    const animatedLine = container.querySelector(".bg-primary");
 
     expect(animatedLine).toBeInTheDocument();
     expect(animatedLine).toHaveClass("translate-x-0");
@@ -48,7 +48,7 @@ describe("AuthHeader Component", () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/signup");
 
     const { container } = render(<AuthHeader />);
-    const animatedLine = container.querySelector(".bg-main-red");
+    const animatedLine = container.querySelector(".bg-primary");
 
     expect(animatedLine).toBeInTheDocument();
     expect(animatedLine).toHaveClass("translate-x-full");
@@ -59,7 +59,7 @@ describe("AuthHeader Component", () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/forgot-password");
 
     const { container } = render(<AuthHeader />);
-    const animatedLine = container.querySelector(".bg-main-red");
+    const animatedLine = container.querySelector(".bg-primary");
 
     expect(animatedLine).toHaveClass("translate-x-0");
   });

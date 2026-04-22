@@ -8,33 +8,38 @@
   --color-main-bg: var(--main-bg);
   --color-main-text: var(--main-text);
   --color-secondary-text: var(--secondary-text);
-  --color-main-red: var(--main-red);
-  --color-main-red-hover: var(--main-red-hover);
+  --color-action-btn: var(--action-btn);
+  --color-disabled-btn-bg: var(--disabled-btn-bg);
+  --color-disabled-btn: var(--disabled-btn-color);
+  --color-input-icon: var(--input-icon);
+  --color-active-sidebar-bg: var(--active-sidebar-bg);
   --color-main-border: var(--main-border);
-  --color-skeleton-bg: var(--skeleton-bg);
+  --color-avatar-bg: var(--avatar-bg);
+  --color-hover-action-create-btn: var(--hover-action-create-btn);
+  --color-hover-action-submit-btn: rgb(138, 33, 34);
+  --color-select-checked: rgba(198, 48, 49, 0.08);
+  --color-background: var(--main-bg);
+  --color-foreground: var(--main-text);
+  --color-action-menu-bg: var(--action-menu-bg);
+  --color-border: var(--main-border);
+  --color-input: var(--main-border);
+  --color-modal-cancel-btn: rgba(118, 118, 118, 0.04);
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-destructive: var(--destructive);
+  --color-primary: rgba(198, 48, 49, 1);
+  --color-primary-foreground: rgba(255, 255, 255, 1);
 
-  --color-disabled-bg: var(--disabled-bg);
-  --color-disabled-text: var(--disabled-text);
-
-  --shadow-btn: var(--shadow-btn);
-
+  --shadow-btn:
+    0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  --shadow-action-menu:
+    0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0px 3px 14px 2px rgba(0, 0, 0, 0.12);
   --shadow-sm: none;
   --shadow: none;
   --shadow-md: none;
   --shadow-lg: none;
   --shadow-inner: none;
-
-  --color-action-hover: var(--action-hover);
-  --stroke-action-color: var(--action-stroke);
-
+  --color-destructive: rgb(198, 48, 49);
   --ring-width: 0px;
   --ring-offset-width: 0px;
   --color-ring: transparent;
@@ -49,55 +54,70 @@
 :root {
   --main-bg: rgba(245, 245, 247, 1);
   --main-text: rgba(46, 46, 46, 1);
-  --main-border: rgba(0, 0, 0, 0.23);
   --secondary-text: rgba(0, 0, 0, 0.6);
-  --main-red: rgba(198, 48, 49, 1);
-  --main-red-hover: rgb(138, 33, 34);
-  --background: var(--main-bg);
-  --foreground: var(--main-text);
-  --muted-foreground: var(--secondary-text);
-  --skeleton-bg: rgba(46, 46, 46, 0.11);
-
-  --border: var(--main-border);
-  --input: var(--main-border);
-  --action-hover: rgba(0, 0, 0, 0.04);
-  --action-stroke: rgba(0, 0, 0, 0.54);
-
-  --primary: var(--main-red);
-  --primary-foreground: #ffffff;
-
-  --destructive: var(--main-red);
-  --destructive-foreground: #ffffff;
-
-  --disabled-bg: rgba(0, 0, 0, 0.12);
-  --disabled-text: rgba(0, 0, 0, 0.26);
-
-  --shadow-btn:
-    0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  --action-btn: rgba(0, 0, 0, 0.54);
+  --disabled-btn-bg: rgba(0, 0, 0, 0.12);
+  --disabled-btn-color: rgba(0, 0, 0, 0.26);
+  --hover-action-create-btn: rgba(198, 48, 49, 0.04);
+  --action-menu-bg: rgba(255, 255, 255, 1);
+  --input-icon: rgba(0, 0, 0, 0.54);
+  --active-sidebar-bg: rgba(0, 0, 0, 0.04);
+  --main-border: rgba(0, 0, 0, 0.23);
+  --avatar-bg: rgba(189, 189, 189, 1);
 }
 
-@layer base {
-  html {
-    font-family: var(--font-roboto), sans-serif;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(156, 163, 175, 0.4) transparent;
-  }
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-  }
+.dark {
+  --main-bg: rgba(53, 53, 53, 1);
+  --main-text: rgba(255, 255, 255, 1);
 
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active {
-    transition: background-color 9999s ease-in-out 0s;
-    -webkit-text-fill-color: var(--main-text) !important;
-    -webkit-box-shadow: 0 0 0px 1000px var(--main-bg) inset !important;
-  }
+  --secondary-text: rgba(255, 255, 255, 0.7);
+  --action-btn: rgba(255, 255, 255, 1);
+  --disabled-btn-bg: rgba(255, 255, 255, 0.12);
+  --disabled-btn-color: rgba(255, 255, 255, 0.3);
+  --hover-action-create-btn: rgba(198, 48, 49, 0.08);
+  --action-menu-bg: rgba(47, 47, 47, 1);
+  --input-icon: rgba(255, 255, 255, 1);
 
-  input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-  }
+  --active-sidebar-bg: rgba(255, 255, 255, 0.08);
+
+  --main-border: rgba(255, 255, 255, 0.23);
+
+  --avatar-bg: rgba(117, 117, 117, 1);
+}
+
+html {
+  font-family: var(--font-roboto), sans-serif;
+}
+
+body {
+  background-color: var(--main-bg);
+  color: var(--main-text);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--main-border);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-text);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 9999s ease-in-out 0s;
+  -webkit-text-fill-color: var(--main-text) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--main-bg) inset !important;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }

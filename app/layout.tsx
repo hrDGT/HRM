@@ -4,6 +4,7 @@ import { Roboto } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
@@ -33,10 +34,20 @@ async function AppProviders({ children }: PropsWithChildren) {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang="en" className={`${robotoSans.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${robotoSans.variable} h-full antialiased`}
+    >
       <body className="font-sans">
         <Suspense>
-          <AppProviders>{children}</AppProviders>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+          >
+            <AppProviders>{children}</AppProviders>
+          </ThemeProvider>
         </Suspense>
       </body>
     </html>

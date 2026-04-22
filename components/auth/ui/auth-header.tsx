@@ -29,7 +29,7 @@ export function AuthHeader() {
         })}
         <div
           className={cn(
-            "absolute -bottom-0.5 left-0 h-0.5 w-1/2 bg-main-red transition-transform duration-300 ease-out",
+            "absolute -bottom-0.5 left-0 h-0.5 w-1/2 bg-primary transition-transform duration-300 ease-out",
             {
               "translate-x-full": isSignup,
               "translate-x-0": !isSignup,

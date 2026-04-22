@@ -60,11 +60,11 @@ export function BaseAlertModal({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
 
       <DialogContent
-        className="bg-white max-w-8/10 md:max-w-xl"
+        className="bg-main-bg max-w-8/10 md:max-w-xl"
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle className="text-xl">{title}</DialogTitle>
+          <DialogTitle className="text-xl text-main-text">{title}</DialogTitle>
 
           {description && (
             <DialogDescription className="text-main-text pt-2 text-base">
@@ -77,7 +77,7 @@ export function BaseAlertModal({
             <Button
               type="button"
               variant="ghost"
-              className="absolute right-2 top-2 size-8 p-0 text-main-text rounded-full hover:bg-action-hover"
+              className="absolute right-2 top-2 size-8 p-0 text-main-text rounded-full hover:bg-active-sidebar-bg"
             >
               <X className="size-5.5 stroke-action-color" />
             </Button>
@@ -90,7 +90,7 @@ export function BaseAlertModal({
             variant="outline"
             onClick={() => setIsOpen(false)}
             disabled={isPending}
-            className="min-w-50 min-h-12 text-secondary-text rounded-4xl uppercase hover:bg-action-hover"
+            className="min-w-50 min-h-12 text-secondary-text rounded-4xl uppercase hover:bg-modal-cancel-btn"
           >
             {t("actions.cancel")}
           </Button>
@@ -98,7 +98,7 @@ export function BaseAlertModal({
             type="button"
             onClick={() => onConfirm()}
             disabled={isPending}
-            className="min-w-50 min-h-12 rounded-4xl max-h-10 bg-main-red text-white uppercase shadow-btn hover:bg-main-red-hover border-transparent"
+            className="min-w-50 min-h-12 rounded-4xl max-h-10 bg-primary border-transparent text-white uppercase shadow-btn hover:bg-hover-action-submit-btn"
           >
             {isPending
               ? confirmingText || t("actions.confirming")

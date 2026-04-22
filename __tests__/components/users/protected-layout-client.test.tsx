@@ -11,7 +11,7 @@ import { UserRole } from "@/gqlcodegen/graphql";
 import { useUserStore } from "@/store/use-user-store";
 
 const locales = ["en", "de", "ru"] as const;
-type Locale = typeof locales[number];
+type Locale = (typeof locales)[number];
 
 const messagesMap: Record<Locale, any> = {
   en: messagesEn,
@@ -23,32 +23,51 @@ function renderWithLocale(ui: React.ReactElement, locale: Locale = "en") {
   return render(
     <NextIntlClientProvider locale={locale} messages={messagesMap[locale]}>
       {ui}
-    </NextIntlClientProvider>
+    </NextIntlClientProvider>,
   );
 }
 
 jest.mock("next/link", () => ({
   __esModule: true,
-  default: function MockLink({ href, children, className, ...props }: any) {
+  default: React.forwardRef<HTMLAnchorElement, any>(function MockLink(
+    { href, children, className, ...props },
+    ref,
+  ) {
     return (
-      <a href={href} className={className} data-testid="mock-link" {...props}>
+      <a
+        href={href}
+        className={className}
+        data-testid="mock-link"
+        ref={ref}
+        {...props}
+      >
         {children}
       </a>
     );
-  },
+  }),
 }));
 
 jest.mock("next/navigation", () => ({
   usePathname: () => "/users",
+  useRouter: () => ({
+    push: jest.fn(),
+    refresh: jest.fn(),
+  }),
 }));
 
 jest.mock("@/components/ui/avatar", () => ({
   Avatar: ({ children, className }: any) => (
-    <div data-testid="mock-avatar" className={className}>{children}</div>
+    <div data-testid="mock-avatar" className={className}>
+      {children}
+    </div>
   ),
-  AvatarImage: ({ src }: any) => <img data-testid="mock-avatar-image" src={src} />,
+  AvatarImage: ({ src }: any) => (
+    <img data-testid="mock-avatar-image" src={src} />
+  ),
   AvatarFallback: ({ children, className }: any) => (
-    <span data-testid="mock-avatar-fallback" className={className}>{children}</span>
+    <span data-testid="mock-avatar-fallback" className={className}>
+      {children}
+    </span>
   ),
 }));
 
@@ -87,7 +106,6 @@ describe("ProtectedLayoutClient", () => {
     useUserStore.setState({ user: null });
   });
 
-
   describe.each(locales)("locale: %s", (locale) => {
     const messages = messagesMap[locale];
     const users = messages.Users;
@@ -95,10 +113,12 @@ describe("ProtectedLayoutClient", () => {
     describe("sidebar rendering", () => {
       it("renders navigation items", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
+
         const links = screen.getAllByTestId("mock-link");
-        const linkHrefs = links.map((link: HTMLElement) => link.getAttribute("href"));
-        
+        const linkHrefs = links.map((link: HTMLElement) =>
+          link.getAttribute("href"),
+        );
+
         expect(linkHrefs).toContain("/users");
         expect(linkHrefs).toContain("/skills");
         expect(linkHrefs).toContain("/languages");
@@ -107,27 +127,29 @@ describe("ProtectedLayoutClient", () => {
 
       it("renders profile section with user initials", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
+
         const fallback = screen.getByTestId("mock-avatar-fallback");
         expect(fallback).toHaveTextContent("AB");
       });
 
       it("renders user display name", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
+
         expect(screen.getByText("Alice Brown")).toBeInTheDocument();
       });
 
       it("renders collapse/expand toggle button", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
-        const toggleBtn = screen.getByRole("button", { name: new RegExp(`${users.collapseMenu}|${users.expandMenu}`) });
+
+        const toggleBtn = screen.getByRole("button", {
+          name: new RegExp(`${users.collapseMenu}|${users.expandMenu}`),
+        });
         expect(toggleBtn).toBeInTheDocument();
       });
 
       it("displays navigation labels in correct locale", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
+
         expect(screen.getByText(users.title)).toBeInTheDocument();
         expect(screen.getByText(users.nav.skills)).toBeInTheDocument();
         expect(screen.getByText(users.nav.languages)).toBeInTheDocument();
@@ -138,25 +160,37 @@ describe("ProtectedLayoutClient", () => {
     describe("sidebar toggle", () => {
       it("collapses sidebar when toggle is clicked", async () => {
         const user = userEvent.setup();
-        const { container } = renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
-        const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
+        const { container } = renderWithLocale(
+          <ProtectedLayoutClient {...defaultProps} />,
+          locale,
+        );
+
+        const toggleBtn = screen.getByRole("button", {
+          name: users.collapseMenu,
+        });
         await user.click(toggleBtn);
-        
+
         const aside = container.querySelector("aside");
         expect(aside?.className).toContain("w-16");
       });
 
       it("expands sidebar when collapsed and toggle is clicked", async () => {
         const user = userEvent.setup();
-        const { container } = renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
-        const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
+        const { container } = renderWithLocale(
+          <ProtectedLayoutClient {...defaultProps} />,
+          locale,
+        );
+
+        const toggleBtn = screen.getByRole("button", {
+          name: users.collapseMenu,
+        });
         await user.click(toggleBtn);
-        
-        const expandBtn = screen.getByRole("button", { name: users.expandMenu });
+
+        const expandBtn = screen.getByRole("button", {
+          name: users.expandMenu,
+        });
         await user.click(expandBtn);
-        
+
         const aside = container.querySelector("aside");
         expect(aside?.className).toContain("w-56");
       });
@@ -164,13 +198,15 @@ describe("ProtectedLayoutClient", () => {
       it("hides nav labels when sidebar is collapsed", async () => {
         const user = userEvent.setup();
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
+
         const navLabel = screen.getByText(users.title);
         expect(navLabel).not.toHaveClass("hidden");
-        
-        const toggleBtn = screen.getByRole("button", { name: users.collapseMenu });
+
+        const toggleBtn = screen.getByRole("button", {
+          name: users.collapseMenu,
+        });
         await user.click(toggleBtn);
-        
+
         expect(navLabel).toHaveClass("hidden");
       });
     });
@@ -178,38 +214,53 @@ describe("ProtectedLayoutClient", () => {
     describe("profile link", () => {
       it("navigates to /users/me on profile click", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
-        const profileLink = screen.getAllByTestId("mock-link").find(
-          (link: HTMLElement) => link.getAttribute("href") === "/users/me"
-        );
-        
+
+        const profileLink = screen
+          .getAllByTestId("mock-link")
+          .find(
+            (link: HTMLElement) => link.getAttribute("href") === "/users/me",
+          );
+
         expect(profileLink).toBeInTheDocument();
       });
 
       it("displays fallback initials when no avatar", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
-        expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
-        expect(screen.queryByTestId("mock-avatar-image")).not.toBeInTheDocument();
+
+        expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent(
+          "AB",
+        );
+        expect(
+          screen.queryByTestId("mock-avatar-image"),
+        ).not.toBeInTheDocument();
       });
 
       it("displays avatar image when provided", () => {
         renderWithLocale(
           <ProtectedLayoutClient
             {...defaultProps}
-            initialUser={{ ...mockInitialUser, profile: { ...mockInitialUser.profile, avatar: "/avatar.jpg" } }}
+            initialUser={{
+              ...mockInitialUser,
+              profile: { ...mockInitialUser.profile, avatar: "/avatar.jpg" },
+            }}
           />,
-          locale
+          locale,
         );
-        
-        expect(screen.getByTestId("mock-avatar-image")).toHaveAttribute("src", "/avatar.jpg");
+
+        expect(screen.getByTestId("mock-avatar-image")).toHaveAttribute(
+          "src",
+          "/avatar.jpg",
+        );
       });
     });
 
     describe("edge cases", () => {
       it("handles null initialUser gracefully", () => {
-        renderWithLocale(<ProtectedLayoutClient {...defaultProps} initialUser={null} />, locale);
-        
+        renderWithLocale(
+          <ProtectedLayoutClient {...defaultProps} initialUser={null} />,
+          locale,
+        );
+
         const fallback = screen.getByTestId("mock-avatar-fallback");
         expect(fallback).toHaveTextContent("U");
         expect(screen.getByText(users.defaultUser)).toBeInTheDocument();
@@ -219,17 +270,21 @@ describe("ProtectedLayoutClient", () => {
         renderWithLocale(
           <ProtectedLayoutClient
             {...defaultProps}
-            initialUser={{ id: "2", role: UserRole.Employee, profile: { first_name: "", last_name: "", avatar: null } }}
+            initialUser={{
+              id: "2",
+              role: UserRole.Employee,
+              profile: { first_name: "", last_name: "", avatar: null },
+            }}
           />,
-          locale
+          locale,
         );
-        
+
         expect(screen.getByText(users.defaultUser)).toBeInTheDocument();
       });
 
       it("renders children in main content area", () => {
         renderWithLocale(<ProtectedLayoutClient {...defaultProps} />, locale);
-        
+
         expect(screen.getByTestId("mock-children")).toBeInTheDocument();
       });
     });

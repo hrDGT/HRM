@@ -47,7 +47,8 @@ function toEmployeeProfile(
   const parseDate = (d: string | null | undefined) => {
     if (!d) return undefined;
     try {
-      return new Date(d).toDateString();
+      const timestamp = isNaN(Number(d)) ? d : Number(d);
+      return new Date(timestamp).toDateString();
     } catch {
       return undefined;
     }

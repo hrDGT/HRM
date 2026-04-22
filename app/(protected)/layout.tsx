@@ -1,12 +1,12 @@
 import { PropsWithChildren } from "react";
 
+import { ProtectedLayoutClient } from "@/components/common/protected-layout-client";
+import { UserProvider } from "@/components/providers/user-provider";
 import { requireUser } from "@/lib/auth/require-user";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import { GET_USER_FOR_STORE } from "@/lib/user/user-queries";
 import type { UserRole } from "@/gqlcodegen/graphql";
 import { type StoreUser } from "@/store/use-user-store";
-import { UserProvider } from "@/components/providers/user-provider";
-import { ProtectedLayoutClient } from "@/components/common/protected-layout-client";
 
 export default async function ProtectedLayout({ children }: PropsWithChildren) {
   const currentUser = await requireUser();

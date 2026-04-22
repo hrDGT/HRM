@@ -1,14 +1,15 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidateTag } from "next/cache";
-import { gql } from "graphql-tag";
-import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
-import { GET_USER_SKILLS, ADD_PROFILE_SKILL, UPDATE_PROFILE_SKILL, DELETE_PROFILE_SKILL } from "@/lib/user/user-queries";
-import { fetchSkills } from "@/components/skills/queries/get-skills-query";
-import type { MasteryLevel } from "@/lib/users/skill-utils";
-import type { ProficiencyLevel } from "@/lib/users/language-utils";
+import { cookies } from "next/headers";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { gql } from "graphql-tag";
+
+import { fetchSkills } from "@/components/skills/queries/get-skills-query";
+import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
+import { ADD_PROFILE_SKILL, DELETE_PROFILE_SKILL, GET_USER_SKILLS, UPDATE_PROFILE_SKILL } from "@/lib/user/user-queries";
+import type { ProficiencyLevel } from "@/lib/users/language-utils";
+import type { MasteryLevel } from "@/lib/users/skill-utils";
 import type { UserRole } from "@/gqlcodegen/graphql";
 import { Mastery } from "@/gqlcodegen/graphql";
 
@@ -260,28 +261,28 @@ export async function getAvailableSkills() {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
- 
+
   const data = await fetchSkills(token, cookieHeader);
   return (data ?? []).map((s) => ({ id: s.id, name: s.name }));
 }
- 
+
 export async function addProfileSkill(userId: number, skillName: string, mastery: MasteryLevel) {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
- 
+
   await gqlRequestAuthed(
     ADD_PROFILE_SKILL,
     { skill: { userId: String(userId), name: skillName, mastery: mastery as unknown as Mastery } },
     { token, cookieHeader }
   );
 }
- 
+
 export async function updateProfileSkill(userId: number, skillName: string, mastery: MasteryLevel) {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
- 
+
   await gqlRequestAuthed(
     UPDATE_PROFILE_SKILL,
     { skill: { userId: String(userId), name: skillName, mastery: mastery as unknown as Mastery } },

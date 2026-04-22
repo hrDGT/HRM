@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { type TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { print } from "graphql";
 
+import { refreshTokensAction } from "@/lib/auth/auth-service";
+
 import { isUnauthorizedError } from "./gql-utils";
 
 export interface GraphQLError {
@@ -79,11 +81,22 @@ export async function gqlRequestAuthed<T, V>(
       next: options?.next,
     });
 
-  const response = await makeRequest(token);
-  const result: GraphQLResponse<T> = await response.json();
+  let response = await makeRequest(token);
+  let result: GraphQLResponse<T> = await response.json();
 
   if (isUnauthorizedError(result.errors)) {
-    throw new Error("Session expired. Please login again.");
+    const newToken = await refreshTokensAction();
+
+    if (newToken) {
+      response = await makeRequest(newToken);
+      result = await response.json();
+
+      if (isUnauthorizedError(result.errors)) {
+        throw new Error("Session expired. Please login again.");
+      }
+    } else {
+      throw new Error("Session expired. Please login again.");
+    }
   }
 
   if (result.errors) {

@@ -219,9 +219,12 @@
       "languages": "ЯЗЫКИ"
     },
     "nav": {
+      "projects": " Проекты",
+      "cvs": "Резюме",
+      "department": "Отделы",
+      "positions": "Должности",
       "skills": "Навыки",
-      "languages": "Языки",
-      "cvs": "Резюме"
+      "languages": "Языки"
     },
     "skillModal": {
       "addTitle": "Добавить навык",
@@ -238,6 +241,18 @@
     "fileSizeError": "Файл должен быть не более 1 МБ",
     "collapseMenu": "Свернуть меню",
     "expandMenu": "Развернуть меню",
-    "defaultUser": "Пользователь"
+    "defaultUser": "Пользователь",
+    "profileMenu": "Профиль",
+    "settingsMenu": "Настройки",
+    "logoutMenu": "Выйти"
+  },
+  "Settings": {
+    "title": "Настройки",
+    "appearance": "Внешний вид",
+    "dark": "Темная",
+    "light": "Светлая",
+    "deviceSettings": "Системные настройки",
+    "language": "Язык",
+    "resumeLanguage": "Язык резюме (Перевод)"
   }
 }

@@ -18,9 +18,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EmployeeProfile } from "@/lib/users/users-types";
-import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../actions";
-import { ProfileTabs } from "./profile-tabs";
 import { cn } from "@/lib/utils";
+
+import {
+  deleteAvatar,
+  updateProfile,
+  updateUserMeta,
+  uploadAvatar,
+} from "../actions";
+
+import { ProfileTabs } from "./profile-tabs";
 
 type UserProfileClientProps = {
   employee: EmployeeProfile;
@@ -32,8 +39,12 @@ type UserProfileClientProps = {
 };
 
 export function UserProfileClient({
-  employee, currentUserId, currentUserRole,
-  departments, positions, userId,
+  employee,
+  currentUserId,
+  currentUserRole,
+  departments,
+  positions,
+  userId,
 }: UserProfileClientProps) {
   const t = useTranslations("Users");
   const c = useTranslations("Common");
@@ -42,11 +53,16 @@ export function UserProfileClient({
   const TABS = [
     { id: "profile", label: t("tabs.profile"), href: `/users/${userId}` },
     { id: "skills", label: t("tabs.skills"), href: `/users/${userId}/skills` },
-    { id: "languages", label: t("tabs.languages"), href: `/users/${userId}/languages` },
+    {
+      id: "languages",
+      label: t("tabs.languages"),
+      href: `/users/${userId}/languages`,
+    },
   ];
-
-  const initialDeptId = departments.find((d) => d.name === employee.department)?.id ?? null;
-  const initialPosId = positions.find((p) => p.name === employee.position)?.id ?? null;
+  const initialDeptId =
+    departments.find((d) => d.name === employee.department)?.id ?? null;
+  const initialPosId =
+    positions.find((p) => p.name === employee.position)?.id ?? null;
 
   const [form, setForm] = useState({
     ...employee,
@@ -59,7 +75,9 @@ export function UserProfileClient({
   });
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(employee.avatar);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    employee.avatar,
+  );
   const [avatarFile, setAvatarFile] = useState<{
     base64: string;
     size: number;
@@ -68,7 +86,8 @@ export function UserProfileClient({
   const [error, setError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const canEdit = employee.id === currentUserId || currentUserRole?.toUpperCase() === "ADMIN";
+  const canEdit =
+    employee.id === currentUserId || currentUserRole?.toUpperCase() === "ADMIN";
 
   const set = (field: string, value: string | null) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -115,7 +134,12 @@ export function UserProfileClient({
     setError(null);
     try {
       if (avatarFile) {
-        await uploadAvatar(employee.id, avatarFile.base64, avatarFile.size, avatarFile.type);
+        await uploadAvatar(
+          employee.id,
+          avatarFile.base64,
+          avatarFile.size,
+          avatarFile.type,
+        );
         setAvatarFile(null);
       }
 
@@ -145,22 +169,31 @@ export function UserProfileClient({
     }
   };
 
-  const fieldWrapper = "relative rounded-lg border border-white/15 bg-[#353535] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
-  const fieldLabel = "absolute left-3 -top-2.5 z-10 bg-[#353535] px-1.5 text-[10px] uppercase tracking-wider text-zinc-500";
-  const fieldInput = "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
+  const fieldWrapper =
+    "relative bg-transparent border-main-border focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
+  const fieldLabel =
+    "absolute left-3 -top-2.5 z-10 px-1.5 text-xs text-secondary-text pointer-events-none select-none";
+  const fieldInput =
+    "w-full min-h-12 px-3 text-base focus-visible:border-main-text hover:border-main-text bg-transparent";
 
-  const fullName = [form.firstName, form.lastName].filter(Boolean).join(" ").trim();
+  const fullName = [form.firstName, form.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
   const nameDisplay = fullName || t("unnamedUser");
   const breadcrumbDisplay = fullName || form.email;
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
+    <div className="flex-1 flex flex-col overflow-y-auto">
       <div className="flex items-center gap-2 px-8 py-4 text-sm">
-        <Link href="/users" className="text-zinc-400 hover:text-zinc-200 transition-colors">
+        <Link
+          href="/users"
+          className="text-secondary-text text-base hover:underline transition-colors"
+        >
           {t("title")}
         </Link>
         <ChevronRight size={16} className="text-zinc-600" />
-        <span className="text-red-500">{breadcrumbDisplay}</span>
+        <span className="text-primary text-base">{breadcrumbDisplay}</span>
       </div>
 
       <div className="px-8 pb-6">
@@ -171,10 +204,13 @@ export function UserProfileClient({
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex justify-center items-center gap-6">
             <div className="relative group">
-              <Avatar className="h-24 w-24 flex-shrink-0">
-                {avatarPreview && <AvatarImage src={avatarPreview} alt={nameDisplay} />}
-                <AvatarFallback className="bg-zinc-700 text-zinc-300 text-3xl font-bold">
-                  {form.initials || (form.firstName?.[0] || "") + (form.lastName?.[0] || "")}
+              <Avatar className="h-30 w-30 shrink-0">
+                {avatarPreview && (
+                  <AvatarImage src={avatarPreview} alt={nameDisplay} />
+                )}
+                <AvatarFallback className="bg-avatar-bg text-main-bg text-3xl font-bold">
+                  {form.initials ||
+                    (form.firstName?.[0] || "") + (form.lastName?.[0] || "")}
                 </AvatarFallback>
               </Avatar>
 
@@ -186,7 +222,7 @@ export function UserProfileClient({
                   className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
                   title={t("deleteAvatarTitle")}
                 >
-                  <X className="w-10 h-10 text-red-500" />
+                  <X className="w-10 h-10 text-primary" />
                 </button>
               )}
             </div>
@@ -205,37 +241,57 @@ export function UserProfileClient({
                   onClick={() => fileInputRef.current?.click()}
                   className="space-y-1 text-left hover:opacity-80 transition-opacity cursor-pointer"
                 >
-                  <div className="flex items-center gap-2 text-zinc-200">
-                    <Upload size={18} className="text-zinc-400" />
-                    <span className="text-sm font-medium">{t("uploadAvatar")}</span>
+                  <div className="flex items-center gap-2 text-main-text">
+                    <Upload size={25} className="text-main-text" />
+                    <span className="text-xl font-medium">
+                      {t("uploadAvatar")}
+                    </span>
                   </div>
-                  <p className="text-xs text-zinc-500">{t("uploadHint")}</p>
+                  <p className="text-base text-secondary-text">
+                    {t("uploadHint")}
+                  </p>
                 </button>
               </>
             )}
           </div>
 
           <div className="text-center space-y-1">
-            <h1 className="text-xl font-semibold text-zinc-100">{nameDisplay}</h1>
-            <p className="text-sm text-zinc-400">{form.email}</p>
+            <h1 className="text-2xl font-semibold text-main-text">
+              {nameDisplay}
+            </h1>
+            <p className="text-base text-secondary-text">{form.email}</p>
             {employee.memberSince && (
-              <p className="text-xs text-zinc-500">{t("memberSince", { date: employee.memberSince })}</p>
+              <p className="text-base text-main-text">
+                {t("memberSince", { date: employee.memberSince })}
+              </p>
             )}
           </div>
 
-          {error && <p className="text-center text-sm text-red-400">{error}</p>}
+          {error && (
+            <p className="text-center text-sm text-destructive">{error}</p>
+          )}
 
           <fieldset
             disabled={!canEdit}
-            className="grid grid-cols-2 gap-4 pt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="grid grid-cols-2 gap-8 pt-4 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <div className={fieldWrapper}>
               <Label className={fieldLabel}>{c("fields.firstName")}</Label>
-              <Input value={form.firstName} onChange={(e) => set("firstName", e.target.value)} className={fieldInput} />
+              <Input
+                value={form.firstName}
+                onChange={(e) => set("firstName", e.target.value)}
+                className={fieldInput}
+                placeholder={c("fields.firstName")}
+              />
             </div>
             <div className={fieldWrapper}>
               <Label className={fieldLabel}>{c("fields.lastName")}</Label>
-              <Input value={form.lastName} onChange={(e) => set("lastName", e.target.value)} className={fieldInput} />
+              <Input
+                value={form.lastName}
+                onChange={(e) => set("lastName", e.target.value)}
+                className={fieldInput}
+                placeholder={c("fields.lastName")}
+              />
             </div>
 
             <div className={fieldWrapper}>
@@ -251,12 +307,20 @@ export function UserProfileClient({
                 }}
                 disabled={!canEdit}
               >
-                <SelectTrigger className={fieldInput}>
-                  <SelectValue placeholder={c("placeholders.selectDepartment")} />
+                <SelectTrigger className={cn(fieldInput, "cursor-pointer")}>
+                  <SelectValue
+                    placeholder={c("placeholders.selectDepartment")}
+                  />
                 </SelectTrigger>
-                <SelectContent className="bg-[#353535] border-white/10 text-zinc-200">
+                <SelectContent className="shadow-action-menu bg-action-menu-bg py-2">
                   {departments.map((d) => (
-                    <SelectItem key={d.id} value={d.id} className="focus:bg-white/5">{d.name}</SelectItem>
+                    <SelectItem
+                      key={d.id}
+                      value={d.id}
+                      className="p-2 text-base focus-visible:border-main-text hover:bg-active-sidebar-bg cursor-pointer data-[state=checked]:bg-select-checked"
+                    >
+                      {d.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -275,12 +339,18 @@ export function UserProfileClient({
                 }}
                 disabled={!canEdit}
               >
-                <SelectTrigger className={fieldInput}>
+                <SelectTrigger className={cn(fieldInput, "cursor-pointer")}>
                   <SelectValue placeholder={c("placeholders.selectPosition")} />
                 </SelectTrigger>
-                <SelectContent className="bg-[#353535] border-white/10 text-zinc-200">
+                <SelectContent className="shadow-action-menu bg-action-menu-bg py-2">
                   {positions.map((p) => (
-                    <SelectItem key={p.id} value={p.id} className="focus:bg-white/5">{p.name}</SelectItem>
+                    <SelectItem
+                      key={p.id}
+                      value={p.id}
+                      className="p-2 text-base focus-visible:border-main-text hover:bg-active-sidebar-bg cursor-pointer data-[state=checked]:bg-select-checked"
+                    >
+                      {p.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -294,10 +364,10 @@ export function UserProfileClient({
                   onClick={handleUpdate}
                   disabled={!isDirty || isSaving}
                   className={cn(
-                    "flex-1 uppercase text-xs tracking-widest rounded-4xl transition-all",
+                    "flex-1 uppercase text-sm tracking-widest rounded-4xl transition-all",
                     !isDirty || isSaving
-                      ? "bg-zinc-500 text-zinc-200 cursor-not-allowed border border-white/5"
-                      : "bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10"
+                      ? "disabled:pointer-events-none disabled:text-disabled-btn disabled:border-transparent disabled:shadow-none"
+                      : "uppercase min-w-50 min-h-12 rounded-4xl max-h-10 bg-primary border-transparent text-white shadow-btn hover:bg-hover-action-submit-btn w-full sm:w-auto",
                   )}
                 >
                   {isSaving ? c("actions.saving") : c("actions.update")}

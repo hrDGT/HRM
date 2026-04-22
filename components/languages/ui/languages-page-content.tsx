@@ -65,7 +65,7 @@ export function LanguagesPageContent({ initialLanguages, isAdmin }: Props) {
     : [];
 
   return (
-    <section className="max-w-7xl w-full mx-auto">
+    <section className="flex flex-col flex-1 min-h-0 w-full h-full">
       <DashboardHeader
         title={t("title")}
         searchValue={state.searchValue}
