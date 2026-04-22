@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type CVPreviewTabProps = {
+type CVPreviewProps = {
   cv: {
     name: string;
     education?: string | null;
@@ -17,7 +17,7 @@ type CVPreviewTabProps = {
   };
 };
 
-export function CVPreviewTab({ cv }: CVPreviewTabProps) {
+export function CVPreview({ cv }: CVPreviewProps) {
   const t = useTranslations("CVs");
   const previewRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);

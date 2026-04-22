@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
-import { CVPreviewTab } from "../_components/cv-preview-tab";
+import { CVPreview } from "../_components/cv-preview";
 
 const GET_CV_DETAILS = graphql(`
   query GetCVDetails($cvId: ID!) {
@@ -53,7 +53,7 @@ export default async function CVPreviewPage({ params }: { params: Promise<{ id: 
         <TabsNav tabs={TABS} />
       </div>
       <div className="flex-1 px-8 pb-8">
-        <CVPreviewTab cv={cv} />
+        <CVPreview cv={cv} />
       </div>
     </div>
   );

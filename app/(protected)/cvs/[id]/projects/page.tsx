@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
-import { CVProjectsTab } from "../_components/cv-projects-tab";
+import { CVProjects } from "../_components/cv-projects";
 
 const GET_CV_DETAILS = graphql(`
   query GetCVDetails($cvId: ID!) {
@@ -49,11 +49,11 @@ export default async function CVProjectsPage({ params }: { params: Promise<{ id:
         <ChevronRight size={16} className="text-zinc-600" />
         <span className="text-zinc-100">{cv.name}</span>
       </div>
-      <div className="px-8 pb-4 border-b border-white/10">
+      <div className="px-8 pb-4">
         <TabsNav tabs={TABS} />
       </div>
       <div className="flex-1 px-8 pb-8">
-        <CVProjectsTab cv={cv} canEdit={canEdit} />
+        <CVProjects cv={cv} canEdit={canEdit} />
       </div>
     </div>
   );

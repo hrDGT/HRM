@@ -3,24 +3,39 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search, Plus, EllipsisVertical } from "lucide-react";
+import { Search, Plus, EllipsisVertical, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { updateProjectAction, addProjectAction, removeProjectAction } from "../../actions";
 
-type CVProjectsTabProps = {
-  cv: { id: string; projects?: Array<{ id: string; name: string; description: string; domain: string; start_date: string; end_date?: string | null; environment?: string[]; responsibilities?: string[] }> | null };
+type CVProjectsProps = {
+  cv: {
+    id: string;
+    projects?: Array<{
+      id: string;
+      name: string;
+      description: string;
+      domain: string;
+      start_date: string;
+      end_date?: string | null;
+      environment?: string[];
+      responsibilities?: string[] }> | null
+    };
   canEdit: boolean;
 };
 
-export function CVProjectsTab({ cv, canEdit }: CVProjectsTabProps) {
+type SortField = "name" | "domain" | "start_date" | "end_date";
+
+export function CVProjects({ cv, canEdit }: CVProjectsProps) {
   const t = useTranslations("CVs");
   const c = useTranslations("Common");
   const router = useRouter();
   const projects = cv.projects ?? [];
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortField, setSortField] = useState<SortField>("start_date");
+  const [sortAsc, setSortAsc] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [projectMenuOpenId, setProjectMenuOpenId] = useState<string | null>(null);
@@ -29,8 +44,38 @@ export function CVProjectsTab({ cv, canEdit }: CVProjectsTabProps) {
 
   const filteredProjects = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    return projects.filter(p => p.name.toLowerCase().includes(q) || p.domain.toLowerCase().includes(q));
-  }, [projects, searchQuery]);
+    return projects
+      .filter(p => p.name.toLowerCase().includes(q) || p.domain.toLowerCase().includes(q))
+      .sort((a, b) => {
+        let aVal: string;
+        let bVal: string;
+        if (sortField === "start_date") {
+          aVal = a.start_date ?? "";
+          bVal = b.start_date ?? "";
+        } else if (sortField === "end_date") {
+          aVal = a.end_date ?? "";
+          bVal = b.end_date ?? "";
+        } else {
+          aVal = a[sortField] ?? "";
+          bVal = b[sortField] ?? "";
+        }
+        const cmp = aVal.localeCompare(bVal);
+        return sortAsc ? cmp : -cmp;
+      });
+  }, [projects, searchQuery, sortField, sortAsc]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) setSortAsc(p => !p);
+    else {
+      setSortField(field);
+      setSortAsc(true);
+    }
+  };
+
+  const SortIcon = ({ field }: { field: SortField }) =>
+    sortField === field ? (
+      sortAsc ? <ArrowUp size={14} className="ml-1 text-zinc-400" /> : <ArrowDown size={14} className="ml-1 text-zinc-400" />
+    ) : null;
 
   const openProjectModal = (projectId?: string) => {
     if (projectId) {
@@ -80,54 +125,95 @@ export function CVProjectsTab({ cv, canEdit }: CVProjectsTabProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-3">
         <div className="relative flex-1 max-w-xs">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-          <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={t("details.projectsTab.searchPlaceholder")} className="pl-9 h-10 bg-[#2a2a2a] border-white/10 text-zinc-200 rounded-4xl" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Input
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder={t("details.projectsTab.searchPlaceholder")}
+            className="pl-8 h-9 border-white/10 rounded-4xl text-sm text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:border-white/20"
+          />
         </div>
         {canEdit && (
-          <Button onClick={() => openProjectModal()} className="h-10 px-4 bg-zinc-700 hover:bg-zinc-600 text-zinc-100 rounded-4xl uppercase text-xs tracking-widest border border-white/10">
-            <Plus size={16} className="mr-2" /> {t("details.projectsTab.addProject")}
+          <Button
+            onClick={() => openProjectModal()}
+            className="h-9 px-3 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400 whitespace-nowrap"
+          >
+            <Plus size={14} className="mr-1.5" />
+            {t("details.projectsTab.addProject")}
           </Button>
         )}
       </div>
-      <div className="grid grid-cols-[2fr_1.5fr_1fr_auto] gap-4 px-4 py-3 border-b border-white/10 text-xs uppercase tracking-wider text-zinc-500">
-        <div>{t("details.projectsTab.tableHeaders.name")}</div>
-        <div>{t("details.projectsTab.tableHeaders.domain")}</div>
-        <div>{t("details.projectsTab.tableHeaders.startDate")}</div>
+
+      <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_auto] gap-4 px-4 py-3 border-b border-white/10 text-xs uppercase tracking-wider text-zinc-500">
+        <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("name")}>
+          {t("details.projectsTab.tableHeaders.name")} <SortIcon field="name" />
+        </div>
+        <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("domain")}>
+          {t("details.projectsTab.tableHeaders.domain")} <SortIcon field="domain" />
+        </div>
+        <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("start_date")}>
+          {t("details.projectsTab.tableHeaders.startDate")} <SortIcon field="start_date" />
+        </div>
+        <div className="flex items-center gap-1 cursor-pointer hover:text-zinc-300" onClick={() => handleSort("end_date")}>
+          {t("details.projectsTab.tableHeaders.endDate")} <SortIcon field="end_date" />
+        </div>
         <div className="w-10" />
       </div>
+
       <div className="divide-y divide-white/10">
-        {filteredProjects.map(proj => (
-          <div key={proj.id} className="py-5 px-4 hover:bg-white/2 transition-colors">
-            <div className="grid grid-cols-[2fr_1.5fr_1fr_auto] gap-4 items-start">
-              <h3 className="text-sm font-medium text-zinc-100 truncate">{proj.name}</h3>
-              <p className="text-sm text-zinc-400 truncate">{proj.domain}</p>
-              <p className="text-sm text-zinc-400">{proj.start_date} – {proj.end_date || t("details.projectsTab.present") || "Present"}</p>
-              <div className="relative">
-                <button onClick={() => setProjectMenuOpenId(projectMenuOpenId === proj.id ? null : proj.id)} className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
-                  <EllipsisVertical size={16} className="text-zinc-400" />
-                </button>
-                {projectMenuOpenId === proj.id && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setProjectMenuOpenId(null)} />
-                    <div className="absolute right-0 top-8 z-50 min-w-32 bg-[#353535] rounded-lg shadow-xl border border-white/10 py-1">
-                      {canEdit && <button onClick={() => openProjectModal(proj.id)} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5">{c("actions.update")}</button>}
-                      {canEdit && <button onClick={async () => { await removeProjectAction(proj.id); router.refresh(); setProjectMenuOpenId(null); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-white/5">{c("actions.delete")}</button>}
-                    </div>
-                  </>
-                )}
+        {filteredProjects.length === 0 ? (
+          <p className="py-12 text-center text-zinc-500 text-sm">{t("details.projectsTab.noProjects") || "No projects found"}</p>
+        ) : (
+          filteredProjects.map(proj => (
+            <div key={proj.id} className="group py-6 px-4 hover:bg-white/2 transition-[background-color]">
+              <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_auto] gap-4 items-start">
+                <h3 className="text-sm font-medium text-zinc-100 truncate pr-2">{proj.name}</h3>
+                <p className="text-sm text-zinc-400 truncate pr-2">{proj.domain}</p>
+                <p className="text-sm text-zinc-400 truncate">{proj.start_date}</p>
+                <p className="text-sm text-zinc-400 truncate">{proj.end_date}</p>
+                <div className="relative">
+                  <button
+                    onClick={() => setProjectMenuOpenId(projectMenuOpenId === proj.id ? null : proj.id)}
+                    className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
+                  >
+                    <EllipsisVertical size={16} className="text-zinc-400" />
+                  </button>
+                  {projectMenuOpenId === proj.id && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setProjectMenuOpenId(null)} />
+                      <div className="absolute right-0 top-8 z-50 min-w-32 bg-[#353535] rounded-lg shadow-xl border border-white/10 py-1">
+                        {canEdit && (
+                          <button onClick={() => openProjectModal(proj.id)} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5">
+                            {c("actions.update")}
+                          </button>
+                        )}
+                        {canEdit && (
+                          <button
+                            onClick={async () => { await removeProjectAction(proj.id); router.refresh(); setProjectMenuOpenId(null); }}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-white/5"
+                          >
+                            {c("actions.delete")}
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-500 line-clamp-2 max-w-4xl">{proj.description}</p>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-500 line-clamp-2">{proj.description}</p>
-          </div>
-        ))}
-        {filteredProjects.length === 0 && <p className="py-8 text-center text-zinc-500 text-sm">{t("details.projectsTab.noProjects") || "No projects found"}</p>}
+          ))
+        )}
       </div>
+
       {isProjectModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="w-full max-w-lg bg-[#353535] rounded-xl shadow-2xl border border-white/10 p-6 mx-4">
-            <h2 className="text-lg font-semibold text-zinc-100 mb-4">{editingProjectId ? t("details.projectsTab.projectModal.editTitle") : t("details.projectsTab.projectModal.addTitle")}</h2>
+            <h2 className="text-lg font-semibold text-zinc-100 mb-4">
+              {editingProjectId ? t("details.projectsTab.projectModal.editTitle") : t("details.projectsTab.projectModal.addTitle")}
+            </h2>
             <form onSubmit={handleProjectSubmit} className="space-y-4">
               <div className={fieldWrapper}><Label className={fieldLabel}>{t("details.projectsTab.projectModal.fields.project")}</Label><Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className={fieldInput} /></div>
               <div className={fieldWrapper}><Label className={fieldLabel}>{t("details.projectsTab.projectModal.fields.domain")}</Label><Input value={formData.domain} onChange={e => setFormData({...formData, domain: e.target.value})} className={fieldInput} /></div>
