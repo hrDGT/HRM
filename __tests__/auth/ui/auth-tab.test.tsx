@@ -27,14 +27,14 @@ describe("AuthTab Component", () => {
     expect(link).toHaveAttribute("href", "/auth/login");
   });
 
-  it("applies the active styling (text-main-red) when pathname matches href", () => {
+  it("applies the active styling (text-primary) when pathname matches href", () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/login");
 
     render(<AuthTab {...defaultProps} />);
 
     const link = screen.getByRole("link", { name: "Sign In" });
 
-    expect(link).toHaveClass("text-main-red");
+    expect(link).toHaveClass("text-primary");
     expect(link).not.toHaveClass("text-secondary-text");
   });
 
@@ -47,6 +47,6 @@ describe("AuthTab Component", () => {
 
     expect(link).toHaveClass("text-secondary-text");
     expect(link).toHaveClass("hover:text-main-text");
-    expect(link).not.toHaveClass("text-main-red");
+    expect(link).not.toHaveClass("text-primary");
   });
 });

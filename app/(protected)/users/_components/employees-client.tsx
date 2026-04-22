@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
+  ArrowDown,
   ChevronRight,
-  ChevronUp,
   MoreVertical,
   Plus,
   Search,
@@ -110,133 +110,145 @@ export function EmployeesClient({
 
   return (
     <>
-      <div className="px-6 pt-5 pb-4 border-white/5">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold">
-            {t("title")}
-          </p>
-          {currentUserRole === "Admin" && (
-            <Button
-              data-testid="create-user-button"
-              onClick={() => setIsCreateOpen(true)}
-              className="h-7 px-2 text-xs font-semibold tracking-wider bg-transparent border-0 shadow-none text-red-500 hover:text-red-400"
-            >
-              <Plus size={14} className="mr-1.5" />
-              {t("createUserButton")}
-            </Button>
-          )}
-        </div>
-        <div className="relative max-w-xs">
+      <div className="pt-4">
+        <h1 className="text-base text-secondary-text opacity-70 ml-4 mb-4">
+          {t("title")}
+        </h1>
+        <div className="relative flex justify-between items-center gap-x-4 mx-4 mb-4 min-h-12">
           <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+            size={20}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-input-icon"
           />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={c("placeholders.search")}
-            className="pl-8 h-9 border-white/10 rounded-4xl text-sm text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:border-white/20"
+            className="pl-10 h-10 w-max min-w-80 rounded-4xl text-base text-main-text placeholder:text-secondary-text placeholder:opacity-70 hover:border-main-text focus-visible:ring-1 focus-visible:ring-main-border focus-visible:border-main-border"
           />
+          {currentUserRole === "Admin" && (
+            <Button
+              data-testid="create-user-button"
+              onClick={() => setIsCreateOpen(true)}
+              className="gap-x-2 aspect-square text-primary text-sm uppercase rounded-xl hover:bg-hover-action-create-btn p-0 md:px-2"
+            >
+              <Plus className="mr-1.5 size-5" />
+              {t("createUserButton")}
+            </Button>
+          )}
         </div>
       </div>
 
       <div className="flex-1 overflow-auto">
-        <Table>
+        <Table className="table-fixed w-full">
           <TableHeader>
-            <TableRow className="border-white/5 hover:bg-transparent">
-              <TableHead className="w-10" />
-
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("firstName")}
-              >
-                <span className="flex items-center gap-1">
+            <TableRow className="border-main-border hover:bg-transparent">
+              <TableHead className="w-20" />
+              <TableHead className="p-4 text-main-text text-sm select-none transition-colors font-medium">
+                <div
+                  className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
+                  onClick={() => handleSort("firstName")}
+                >
                   {c("fields.firstName")}
                   {sortConfig?.field === "firstName" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
+                      <ArrowDown
                         size={12}
-                        className="text-zinc-300 rotate-180"
+                        className="size-4 transition-transform duration-200 stroke-secondary-text"
+                      />
+                    ) : (
+                      <ArrowDown
+                        size={12}
+                        className="size-4 transition-transform duration-200 stroke-secondary-text rotate-180"
                       />
                     ))}
-                </span>
+                </div>
               </TableHead>
 
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("lastName")}
-              >
-                <span className="flex items-center gap-1">
+              <TableHead className="p-4 text-main-text text-sm select-none transition-colors font-medium">
+                <div
+                  className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
+                  onClick={() => handleSort("lastName")}
+                >
                   {c("fields.lastName")}
                   {sortConfig?.field === "lastName" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
+                      <ArrowDown
                         size={12}
-                        className="text-zinc-300 rotate-180"
+                        className="size-4 transition-transform duration-200 stroke-secondary-text"
+                      />
+                    ) : (
+                      <ArrowDown
+                        size={12}
+                        className="size-4 transition-transform duration-200 stroke-secondary-text rotate-180"
                       />
                     ))}
-                </span>
+                </div>
               </TableHead>
 
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("email")}
-              >
-                <span className="flex items-center gap-1">
+              <TableHead className="p-4 text-main-text text-sm select-none hover:text-main-text transition-colors font-medium">
+                <div
+                  className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
+                  onClick={() => handleSort("email")}
+                >
                   {c("fields.email")}
                   {sortConfig?.field === "email" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
+                      <ArrowDown
                         size={12}
-                        className="text-zinc-300 rotate-180"
+                        className="size-4 transition-transform duration-200 stroke-secondary-text"
+                      />
+                    ) : (
+                      <ArrowDown
+                        size={12}
+                        className="size-4 transition-transform duration-200 stroke-secondary-text rotate-180"
                       />
                     ))}
-                </span>
+                </div>
               </TableHead>
 
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("department")}
-              >
-                <span className="flex items-center gap-1">
+              <TableHead className="p-4 text-main-text text-sm select-none hover:text-main-text transition-colors font-medium">
+                <div
+                  className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
+                  onClick={() => handleSort("department")}
+                >
                   {c("fields.department")}
                   {sortConfig?.field === "department" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
+                      <ArrowDown
                         size={12}
-                        className="text-zinc-300 rotate-180"
+                        className="size-4 transition-transform duration-200 stroke-secondary-text"
+                      />
+                    ) : (
+                      <ArrowDown
+                        size={12}
+                        className="size-4 transition-transform duration-200 stroke-secondary-text rotate-180"
                       />
                     ))}
-                </span>
+                </div>
               </TableHead>
 
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("position")}
-              >
-                <span className="flex items-center gap-1">
+              <TableHead className="p-4 text-main-text text-sm select-none hover:text-main-text transition-colors font-medium">
+                <div
+                  className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
+                  onClick={() => handleSort("position")}
+                >
                   {c("fields.position")}
                   {sortConfig?.field === "position" &&
                     (sortConfig.direction === "asc" ? (
-                      <ChevronUp size={12} className="text-zinc-300" />
-                    ) : (
-                      <ChevronUp
+                      <ArrowDown
                         size={12}
-                        className="text-zinc-300 rotate-180"
+                        className="size-4 transition-transform duration-200 stroke-secondary-text"
+                      />
+                    ) : (
+                      <ArrowDown
+                        size={12}
+                        className="size-4 transition-transform duration-200 stroke-secondary-text rotate-180"
                       />
                     ))}
-                </span>
+                </div>
               </TableHead>
 
-              <TableHead className="w-10" />
+              <TableHead className="text-right py-4 w-12.5 min-w-12.5 max-w-12.5" />
             </TableRow>
           </TableHeader>
 
@@ -249,64 +261,67 @@ export function EmployeesClient({
                 <TableRow
                   key={emp.id}
                   onClick={() => router.push(`/users/${emp.id}`)}
-                  className="border-white/5 hover:bg-white/[0.03] cursor-pointer transition-colors"
+                  className="border-main-border font-normal min-h-16.25 hover:bg-active-sidebar-bg cursor-pointer"
                 >
-                  <TableCell className="py-3">
-                    <Avatar className="h-8 w-8">
+                  <TableCell className="p-4 w-20">
+                    <Avatar className="h-10 w-10">
                       {emp.avatar && <AvatarImage src={emp.avatar} />}
-                      <AvatarFallback className="text-xs font-semibold bg-zinc-700 text-zinc-300">
+                      <AvatarFallback className="text-xl bg-avatar-bg text-main-bg">
                         {emp.initials}
                       </AvatarFallback>
                     </Avatar>
                   </TableCell>
 
-                  <TableCell className="text-sm text-zinc-200 py-3 font-medium">
+                  <TableCell className="text-sm text-main-text p-4">
                     {emp.firstName}
                   </TableCell>
 
-                  <TableCell className="text-sm text-zinc-200 py-3">
+                  <TableCell className="text-sm text-main-text p-4">
                     {emp.lastName}
                   </TableCell>
 
-                  <TableCell className="text-sm text-zinc-400 py-3">
+                  <TableCell className="text-sm text-main-text p-4">
                     {emp.email}
                   </TableCell>
 
-                  <TableCell className="py-3">
+                  <TableCell className="text-sm text-main-text p-4">
                     {emp.department ? (
                       <Badge
                         variant="outline"
-                        className="text-xs font-medium px-2 py-0.5 rounded-md border bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
+                        className="px-2 py-0.5 rounded-md border bg-active-sidebar-bg border-main-border"
                       >
                         {emp.department}
                       </Badge>
                     ) : (
-                      <span className="text-zinc-600 text-sm">—</span>
+                      <span className="text-secondary-text text-sm">—</span>
                     )}
                   </TableCell>
 
-                  <TableCell className="text-sm text-zinc-300 py-3">
+                  <TableCell className="text-sm text-main-text p-4">
                     {emp.position}
                   </TableCell>
 
-                  <TableCell className="py-3 text-right">
+                  <TableCell className="text-right py-4 w-12.5 min-w-12.5 max-w-12.5">
                     <div className="flex items-center justify-end gap-1">
                       {canShowDropdown ? (
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger
+                            asChild
+                            className="hover:bg-active-sidebar-bg rounded-full"
+                          >
                             <span
                               onClick={(e) => e.stopPropagation()}
-                              className="p-1.5 rounded-md text-zinc-500 hover:text-zinc-200 transition-colors cursor-pointer inline-flex"
+                              className="p-1.5 text-action-btn hover:accent-active-sidebar-bg transition-colors cursor-pointer inline-flex"
                             >
-                              <MoreVertical size={14} />
+                              <MoreVertical className="size-5" />
                             </span>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
                             align="end"
-                            className="bg-[#353535] border-white/10 text-zinc-200 text-sm min-w-35"
+                            className="bg-action-menu-bg w-full py-2 px-0 rounded-[4px] shadow-action-menu"
                           >
                             <DropdownMenuItem
-                              className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
+                              className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 router.push(`/users/${emp.id}`);
@@ -315,7 +330,7 @@ export function EmployeesClient({
                               {t("viewProfile")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
+                              className="py-1.5 px-4 cursor-pointer hover:bg-main-bg transition-colors text-base"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setEditingEmployee(emp);
@@ -326,7 +341,7 @@ export function EmployeesClient({
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
-                        <ChevronRight size={14} className="text-zinc-600" />
+                        <ChevronRight size={14} className="text-action-btn" />
                       )}
                     </div>
                   </TableCell>
@@ -337,7 +352,7 @@ export function EmployeesClient({
         </Table>
 
         {displayed.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
+          <div className="flex flex-col items-center justify-center py-20 text-secondary-text">
             <Users size={32} className="mb-3 opacity-40" />
             <p className="text-sm">{t("noResults")}</p>
           </div>

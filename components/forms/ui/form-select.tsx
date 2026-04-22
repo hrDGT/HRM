@@ -62,13 +62,16 @@ export function FormSelect<T extends FieldValues>({
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent className="bg-white py-2" sideOffset={5}>
+        <SelectContent
+          className="shadow-action-menu bg-action-menu-bg py-2"
+          sideOffset={5}
+        >
           <SelectGroup>
             {options.map((option) => (
               <SelectItem
                 key={option.value}
                 value={option.value}
-                className="p-2 text-base focus-visible:border-main-text hover:bg-action-hover cursor-pointer data-[state=checked]:bg-main-red/20"
+                className="p-2 text-base focus-visible:border-main-text hover:bg-active-sidebar-bg cursor-pointer data-[state=checked]:bg-select-checked"
                 aria-invalid={invalid}
               >
                 {option.label}

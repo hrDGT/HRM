@@ -27,8 +27,8 @@ export function DashboardHeader({
 }: Props) {
   const t = useTranslations("Common");
   return (
-    <header className="sticky top-0 bg-main-bg z-10 pt-4">
-      <h1 className="text-base text-secondary-text opacity-60 ml-4 mb-4">
+    <header className="shrink-0 bg-main-bg pt-4">
+      <h1 className="text-base text-secondary-text opacity-70 ml-4 mb-4">
         {title}
       </h1>
       <div className="flex justify-between items-center gap-x-4 mx-4 mb-4 min-h-12">

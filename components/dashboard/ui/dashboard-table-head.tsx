@@ -23,7 +23,7 @@ export function DashboardTableHead<T extends string>({
   return (
     <TableHead className="text-main-text font-medium p-4 select-none">
       <div
-        className="inline-flex items-center gap-x-1 cursor-pointer"
+        className="inline-flex items-center gap-x-1 cursor-pointer hover:text-secondary-text transition-colors"
         onClick={() => onSort(field)}
       >
         {headTitle}
@@ -31,7 +31,7 @@ export function DashboardTableHead<T extends string>({
         {isActive && (
           <ArrowDown
             className={cn(
-              "size-4 transition-transform duration-200 stroke-action-color",
+              "size-4 transition-transform duration-200 stroke-secondary-text",
               {
                 "rotate-180": sortOrder === "asc",
                 "rotate-0": sortOrder === "desc",

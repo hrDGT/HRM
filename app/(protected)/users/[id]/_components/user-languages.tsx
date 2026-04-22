@@ -1,18 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Trash2, Loader2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { getProficiencyColor, type ProficiencyLevel } from "@/lib/users/language-utils";
 import {
-  getUserLanguages,
-  deleteProfileLanguages,
+  getProficiencyColor,
+  type ProficiencyLevel,
+} from "@/lib/users/language-utils";
+import { cn } from "@/lib/utils";
+
+import {
   addProfileLanguage,
-  updateProfileLanguage,
+  deleteProfileLanguages,
   getAvailableLanguages,
+  getUserLanguages,
+  updateProfileLanguage,
 } from "../actions";
+
 import { LanguageModal } from "./language-modal";
 
 export type LanguageEntry = {
@@ -33,8 +39,12 @@ type ModalState =
 export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
   const t = useTranslations("Users");
   const [languages, setLanguages] = useState<LanguageEntry[]>([]);
-  const [availableLanguages, setAvailableLanguages] = useState<{ id: string; name: string }[]>([]);
-  const [selectedLanguages, setSelectedLanguages] = useState<Set<string>>(new Set());
+  const [availableLanguages, setAvailableLanguages] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<Set<string>>(
+    new Set(),
+  );
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -68,12 +78,18 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
     if (isSelectionMode) {
       setSelectedLanguages((prev) => {
         const next = new Set(prev);
-        next.has(language.name) ? next.delete(language.name) : next.add(language.name);
+        next.has(language.name)
+          ? next.delete(language.name)
+          : next.add(language.name);
         return next;
       });
       return;
     }
-    setModal({ type: "update", languageName: language.name, proficiency: language.proficiency });
+    setModal({
+      type: "update",
+      languageName: language.name,
+      proficiency: language.proficiency,
+    });
   };
 
   const handleToggleDeleteMode = () => {
@@ -86,12 +102,18 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
 
   const handleAddLanguage = () => setModal({ type: "add" });
 
-  const handleConfirmAdd = async (languageName: string, proficiency: ProficiencyLevel) => {
+  const handleConfirmAdd = async (
+    languageName: string,
+    proficiency: ProficiencyLevel,
+  ) => {
     await addProfileLanguage(userId, languageName, proficiency);
     await loadLanguages();
   };
 
-  const handleConfirmUpdate = async (languageName: string, proficiency: ProficiencyLevel) => {
+  const handleConfirmUpdate = async (
+    languageName: string,
+    proficiency: ProficiencyLevel,
+  ) => {
     await updateProfileLanguage(userId, languageName, proficiency);
     await loadLanguages();
   };
@@ -102,11 +124,15 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
     setError(null);
     try {
       await deleteProfileLanguages(userId, Array.from(selectedLanguages));
-      setLanguages((prev) => prev.filter((l) => !selectedLanguages.has(l.name)));
+      setLanguages((prev) =>
+        prev.filter((l) => !selectedLanguages.has(l.name)),
+      );
       setSelectedLanguages(new Set());
       setIsSelectionMode(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to remove languages");
+      setError(
+        err instanceof Error ? err.message : "Failed to remove languages",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -119,8 +145,8 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
 
   if (isLoading) {
     return (
-      <div className="px-8 pb-8 flex items-center justify-center min-h-[200px]">
-        <Loader2 className="w-6 h-6 text-zinc-500 animate-spin" />
+      <div className="px-8 pb-8 flex items-center justify-center min-h-50">
+        <Loader2 className="w-6 h-6 text-main-text animate-spin" />
       </div>
     );
   }
@@ -130,7 +156,7 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
       <div className="px-8 pb-8">
         <div className="max-w-5xl mx-auto space-y-8">
           {error && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-destructive text-sm">
               {error}
             </div>
           )}
@@ -144,14 +170,14 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
                   key={language.name}
                   onClick={() => handleLanguageClick(language)}
                   className={cn(
-                    "relative flex items-center gap-3 py-1",
-                    canEdit && "cursor-pointer"
+                    "relative flex items-center gap-3 py-2 px-4 hover:bg-active-sidebar-bg rounded-4xl",
+                    canEdit && "cursor-pointer",
                   )}
                 >
                   <span
                     className={cn(
-                      "text-s font-semibold px-2.5 py-1 rounded flex-shrink-0",
-                      isSelected ? "text-white" : "text-zinc-300"
+                      "text-sm font-semibold px-2.5 py-1 rounded shrink-0",
+                      isSelected ? "text-white" : "text-zinc-300",
                     )}
                     style={{
                       color: isSelected ? "#fff" : color,
@@ -159,8 +185,13 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
                   >
                     {language.proficiency}
                   </span>
-                  
-                  <span className={cn("text-s whitespace-nowrap transition-colors", isSelected ? "text-white" : "text-zinc-400")}>
+
+                  <span
+                    className={cn(
+                      "text-base whitespace-nowrap transition-colors",
+                      isSelected ? "text-main-text" : "text-secondary-text",
+                    )}
+                  >
                     {language.name}
                   </span>
                 </div>
@@ -169,13 +200,13 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
           </div>
 
           {languages.length === 0 && !isLoading && (
-            <div className="text-center py-12 text-zinc-500">
+            <div className="text-center py-12 text-secondary-text">
               <p className="text-sm">{t("noLanguages")}</p>
               {canEdit && (
                 <Button
                   onClick={handleAddLanguage}
                   variant="ghost"
-                  className="mt-2 text-xs text-red-500 hover:text-red-400 hover:bg-transparent"
+                  className="mt-2 text-sm text-red-500 hover:text-red-400 hover:bg-transparent"
                 >
                   <Plus size={14} className="mr-1" />
                   {t("addFirstLanguage")}
@@ -191,7 +222,7 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
                   onClick={handleAddLanguage}
                   variant="outline"
                   disabled={isSaving}
-                  className="h-10 px-5 text-sm font-semibold tracking-wider uppercase transition-all border-none bg-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/5 rounded-full"
+                  className="h-10 px-5 text-sm font-semibold tracking-wider uppercase transition-all border-none bg-transparent text-secondary-text hover:text-zinc-200 hover:bg-modal-cancel-btn rounded-full"
                 >
                   <Plus size={14} className="mr-2" />
                   {t("addLanguage")}
@@ -203,29 +234,33 @@ export function UserLanguages({ userId, canEdit }: UserLanguagesProps) {
                   onClick={handleCancelSelection}
                   variant="outline"
                   disabled={isSaving}
-                  className="h-10 px-5 text-sm font-semibold tracking-wider uppercase transition-all border-zinc-400/20 rounded-full bg-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
+                  className="h-10 px-5 text-sm font-semibold tracking-wider uppercase transition-all border-none bg-transparent text-secondary-text hover:text-zinc-200 hover:bg-modal-cancel-btn rounded-full"
                 >
                   {t("cancelSelection")}
                 </Button>
               )}
 
               <Button
-                onClick={isSelectionMode && selectedLanguages.size > 0 ? handleRemoveLanguages : handleToggleDeleteMode}
+                onClick={
+                  isSelectionMode && selectedLanguages.size > 0
+                    ? handleRemoveLanguages
+                    : handleToggleDeleteMode
+                }
                 disabled={isSaving}
                 variant="outline"
                 className={cn(
-                  "h-10 px-5 text-sm font-semibold tracking-wider uppercase border-none transition-all gap-2 rounded-full",
-                  isSelectionMode && selectedLanguages.size > 0
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : isSelectionMode
-                      ? "bg-transparent text-red-500/60 hover:text-red-400"
-                      : "bg-transparent text-zinc-400 hover:text-red-400 hover:bg-transparent"
+                  "h-10 px-5 text-sm text-primary font-semibold tracking-wider uppercase border-none transition-all gap-2 rounded-full hover:bg-hover-action-create-btn",
+                  isSelectionMode &&
+                    selectedLanguages.size > 0 &&
+                    "bg-red-500 text-white hover:bg-red-600",
                 )}
               >
                 {isSaving ? (
                   <Loader2 size={14} className="animate-spin" />
                 ) : (
-                  (!isSelectionMode || selectedLanguages.size === 0) && <Trash2 size={14} />
+                  (!isSelectionMode || selectedLanguages.size === 0) && (
+                    <Trash2 size={14} />
+                  )
                 )}
                 {t("removeSelected")}
                 {isSelectionMode && selectedLanguages.size > 0 && !isSaving && (

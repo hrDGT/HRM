@@ -50,7 +50,7 @@ export function CreateSkillModal({ categoryOptions }: Props) {
         <Button
           type="button"
           aria-label={t("createButton")}
-          className="gap-x-2 aspect-square text-main-red text-sm uppercase rounded-xl hover:bg-action-hover p-0 md:px-2"
+          className="gap-x-2 aspect-square text-primary text-sm uppercase rounded-xl hover:bg-hover-action-create-btn p-0 md:px-2"
         >
           <Plus className="size-5" />
           <span className="hidden md:block">{t("createButton")}</span>
