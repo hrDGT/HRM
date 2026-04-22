@@ -276,6 +276,28 @@
       "educationRequired": "Education is required",
       "descriptionRequired": "Description is required"
     },
+    "tabs": {
+      "skills": "SKILLS",
+      "profile": "PROFILE",
+      "languages": "LANGUAGES",
+      "cvs": "CVs"
+    },
+    "uncategorized": "Uncategorized",
+    "noSkills": "No skills added yet",
+    "addFirstSkill": "Add your first skill",
+    "addSkill": "Add Skill",
+    "updateSkill": "Update skill",
+    "cancelSelection": "Cancel",
+    "removeSelected": "Delete",
+    "skillModal": {
+      "addTitle": "Add skill",
+      "updateTitle": "Update skill",
+      "skill": "Skill",
+      "selectSkill": "Select skill",
+      "mastery": "Skill mastery",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
     "details": {
       "tabs": {
         "details": "DETAILS",

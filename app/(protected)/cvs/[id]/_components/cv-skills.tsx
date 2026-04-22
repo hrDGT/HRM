@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getMasteryVisuals, type MasteryLevel } from "@/lib/users/skill-utils";
 import {
-  getUserSkills,
-  deleteProfileSkills,
-  addProfileSkill,
-  updateProfileSkill,
+  getCVSkills,
+  deleteCVSkills,
+  addCVSkill,
+  updateCVSkill,
   getAvailableSkills,
 } from "../../actions";
 import { SkillModal } from "./skill-modal";
@@ -30,8 +30,8 @@ export type SkillCategory = {
   skills: SkillEntry[];
 };
 
-type UserSkillsProps = {
-  userId: number;
+type CVSkillsProps = {
+  cvId: string;
   canEdit: boolean;
 };
 
@@ -40,8 +40,8 @@ type ModalState =
   | { type: "add" }
   | { type: "update"; skillName: string; mastery: MasteryLevel };
 
-export function UserSkills({ userId, canEdit }: UserSkillsProps) {
-  const t = useTranslations("Users");
+export function CVSkills({ cvId, canEdit }: CVSkillsProps) {
+  const t = useTranslations("CVs");
   const [categories, setCategories] = useState<SkillCategory[]>([]);
   const [availableSkills, setAvailableSkills] = useState<{ id: string; name: string }[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<Set<string>>(new Set());
@@ -56,7 +56,7 @@ export function UserSkills({ userId, canEdit }: UserSkillsProps) {
     setError(null);
     try {
       const [skills, allSkills] = await Promise.all([
-        getUserSkills(userId),
+        getCVSkills(cvId),
         getAvailableSkills(),
       ]);
 
@@ -87,7 +87,7 @@ export function UserSkills({ userId, canEdit }: UserSkillsProps) {
 
   useEffect(() => {
     loadSkills();
-  }, [userId]);
+  }, [cvId]);
 
   const handleSkillClick = (skill: SkillEntry) => {
     if (!canEdit) return;
@@ -113,12 +113,12 @@ export function UserSkills({ userId, canEdit }: UserSkillsProps) {
   const handleAddSkill = () => setModal({ type: "add" });
 
   const handleConfirmAdd = async (skillName: string, mastery: MasteryLevel) => {
-    await addProfileSkill(userId, skillName, mastery);
+    await addCVSkill(cvId, skillName, mastery);
     await loadSkills();
   };
 
   const handleConfirmUpdate = async (skillName: string, mastery: MasteryLevel) => {
-    await updateProfileSkill(userId, skillName, mastery);
+    await updateCVSkill(cvId, skillName, mastery);
     await loadSkills();
   };
 
@@ -127,7 +127,7 @@ export function UserSkills({ userId, canEdit }: UserSkillsProps) {
     setIsSaving(true);
     setError(null);
     try {
-      await deleteProfileSkills(userId, Array.from(selectedSkills));
+      await deleteCVSkills(cvId, Array.from(selectedSkills));
       setCategories((prev) =>
         prev
           .map((cat) => ({
@@ -172,6 +172,7 @@ export function UserSkills({ userId, canEdit }: UserSkillsProps) {
             {categories.map((category) => (
               <div key={category.id || "uncategorized"} className="space-y-4">
                 <h3 className="text-sm font-medium text-zinc-200">
+                  {/* ✅ Теперь показываем categoryName вместо ID */}
                   {category.name || t("uncategorized")}
                   {category.parentName && (
                     <span className="ml-2 text-xs text-zinc-500">— {category.parentName}</span>

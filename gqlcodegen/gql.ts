@@ -15,8 +15,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "\n  query GetCVDetails($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id\n      name\n      education\n      description\n      created_at\n      user {\n        id\n        email\n      }\n      skills {\n        name\n        categoryId\n        mastery\n      }\n      projects {\n        id\n        name\n        description\n        domain\n        start_date\n        end_date\n        environment\n        responsibilities\n      }\n    }\n  }\n": typeof types.GetCvDetailsDocument,
+    "\n  query GetCVDetails($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id name education description created_at user { id email }\n      skills { name categoryId mastery }\n      projects { id name description domain start_date end_date environment responsibilities }\n    }\n  }\n": typeof types.GetCvDetailsDocument,
+    "\n  query GetCVDetailsForSkills($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id\n      name\n      user { id email }\n    }\n  }\n": typeof types.GetCvDetailsForSkillsDocument,
     "\n  query GetCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        email\n      }\n    }\n  }\n": typeof types.GetCVsDocument,
-    "\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        id\n        email\n      }\n    }\n  }\n": typeof types.GetUserCVsDocument,
+    "\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      created_at\n      user {\n        id\n      }\n    }\n  }\n": typeof types.GetUserCVsDocument,
     "\n  query GetUserProfile($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": typeof types.GetUserProfileDocument,
     "\n  query GetEmployeeLanguages($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": typeof types.GetEmployeeLanguagesDocument,
     "\n  query GetEmployee($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      is_verified\n      created_at\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n      role\n      cvs {\n        id\n        created_at\n      }\n    }\n  }\n": typeof types.GetEmployeeDocument,
@@ -52,8 +54,10 @@ type Documents = {
 };
 const documents: Documents = {
     "\n  query GetCVDetails($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id\n      name\n      education\n      description\n      created_at\n      user {\n        id\n        email\n      }\n      skills {\n        name\n        categoryId\n        mastery\n      }\n      projects {\n        id\n        name\n        description\n        domain\n        start_date\n        end_date\n        environment\n        responsibilities\n      }\n    }\n  }\n": types.GetCvDetailsDocument,
+    "\n  query GetCVDetails($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id name education description created_at user { id email }\n      skills { name categoryId mastery }\n      projects { id name description domain start_date end_date environment responsibilities }\n    }\n  }\n": types.GetCvDetailsDocument,
+    "\n  query GetCVDetailsForSkills($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id\n      name\n      user { id email }\n    }\n  }\n": types.GetCvDetailsForSkillsDocument,
     "\n  query GetCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        email\n      }\n    }\n  }\n": types.GetCVsDocument,
-    "\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        id\n        email\n      }\n    }\n  }\n": types.GetUserCVsDocument,
+    "\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      created_at\n      user {\n        id\n      }\n    }\n  }\n": types.GetUserCVsDocument,
     "\n  query GetUserProfile($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": types.GetUserProfileDocument,
     "\n  query GetEmployeeLanguages($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      role\n      profile {\n        first_name\n        last_name\n      }\n    }\n  }\n": types.GetEmployeeLanguagesDocument,
     "\n  query GetEmployee($userId: ID!) {\n    user(userId: $userId) {\n      id\n      email\n      is_verified\n      created_at\n      profile {\n        first_name\n        last_name\n        avatar\n      }\n      department_name\n      position_name\n      role\n      cvs {\n        id\n        created_at\n      }\n    }\n  }\n": types.GetEmployeeDocument,
@@ -109,11 +113,19 @@ export function graphql(source: "\n  query GetCVDetails($cvId: ID!) {\n    cv(cv
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query GetCVDetails($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id name education description created_at user { id email }\n      skills { name categoryId mastery }\n      projects { id name description domain start_date end_date environment responsibilities }\n    }\n  }\n"): (typeof documents)["\n  query GetCVDetails($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id name education description created_at user { id email }\n      skills { name categoryId mastery }\n      projects { id name description domain start_date end_date environment responsibilities }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetCVDetailsForSkills($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id\n      name\n      user { id email }\n    }\n  }\n"): (typeof documents)["\n  query GetCVDetailsForSkills($cvId: ID!) {\n    cv(cvId: $cvId) {\n      id\n      name\n      user { id email }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query GetCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        email\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        id\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      education\n      description\n      user {\n        id\n        email\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      created_at\n      user {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserCVs {\n    cvs {\n      id\n      name\n      created_at\n      user {\n        id\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -276,6 +276,28 @@
       "educationRequired": "Образование обязательно",
       "descriptionRequired": "Описание обязательно"
     },
+    "tabs": {
+      "skills": "НАВЫКИ",
+      "profile": "ПРОФИЛЬ",
+      "languages": "ЯЗЫКИ",
+      "cvs": "РЕЗЮМЕ"
+    },
+    "uncategorized": "Без категории",
+    "noSkills": "Навыки еще не добавлены",
+    "addFirstSkill": "Добавьте свой первый навык",
+    "addSkill": "Добавить навык",
+    "updateSkill": "Обновить навык",
+    "cancelSelection": "Отмена",
+    "removeSelected": "Удалить",
+    "skillModal": {
+      "addTitle": "Добавить навык",
+      "updateTitle": "Обновить навык",
+      "skill": "Навык",
+      "selectSkill": "Выберите навык",
+      "mastery": "Уровень владения",
+      "cancel": "Отмена",
+      "confirm": "Подтвердить"
+    },
     "details": {
       "tabs": {
         "details": "ДЕТАЛИ",

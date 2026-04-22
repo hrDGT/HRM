@@ -19,7 +19,7 @@ import type { EmployeeCard } from "@/lib/users/users-types";
 import {
   updateProfile,
   updateUserMeta,
-} from "@/app/(protected)/users/[id]/actions";
+} from "@/app/(protected)/users/actions";
 import { UserRole } from "@/gqlcodegen/graphql";
 
 const ROLES: UserRole[] = [UserRole.Employee, UserRole.Admin];

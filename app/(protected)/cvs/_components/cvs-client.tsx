@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Search, EllipsisVertical, X, Plus, ArrowUp, ArrowDown, Pencil, Trash2 } from "lucide-react";
@@ -24,16 +24,19 @@ type CVsClientProps = {
   initialCVs: CVItem[];
   currentUserRole: string;
   currentUserEmail: string;
+  currentUserId: string;
 };
 
 export function CVsClient({
   initialCVs,
   currentUserRole,
   currentUserEmail,
+  currentUserId,
 }: CVsClientProps) {
   const t = useTranslations("CVs");
   const c = useTranslations("Common");
   const router = useRouter();
+  
   const [cvs, setCvs] = useState<CVItem[]>(initialCVs);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState<"name" | "education" | "userEmail">("name");
@@ -47,6 +50,10 @@ export function CVsClient({
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [updatingCV, setUpdatingCV] = useState<CVItem | null>(null);
+
+  useEffect(() => {
+    setCvs(initialCVs);
+  }, [initialCVs]);
 
   const isAdmin = currentUserRole?.toUpperCase() === "ADMIN";
 
@@ -75,7 +82,7 @@ export function CVsClient({
   const handleCreate = async (data: CVFormData) => {
     setIsMutating(true);
     try {
-      await createCVAction(data);
+      await createCVAction(currentUserId, data);
       router.refresh();
       setIsCreateOpen(false);
     } catch (err) {
@@ -88,7 +95,16 @@ export function CVsClient({
   const handleUpdate = async (data: CVFormData & { id: string }) => {
     setIsMutating(true);
     try {
-      await updateCVAction({ name: data.name, education: data.education, description: data.description, id: data.id });
+      await updateCVAction({ id: data.id, name: data.name, education: data.education, description: data.description });
+      
+      setCvs((prev) =>
+        prev.map((cv) =>
+          cv.id === data.id
+            ? { ...cv, name: data.name, education: data.education, description: data.description }
+            : cv
+        )
+      );
+      
       router.refresh();
       setUpdatingCV(null);
     } catch (err) {
@@ -103,6 +119,9 @@ export function CVsClient({
     setIsMutating(true);
     try {
       await deleteCVAction(deleteModal.cvId);
+      
+      setCvs((prev) => prev.filter((cv) => cv.id !== deleteModal.cvId));
+      
       setDeleteModal({ isOpen: false, cvId: "", cvName: "" });
       router.refresh();
     } catch (err) {

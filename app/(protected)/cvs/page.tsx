@@ -52,6 +52,7 @@ export default async function CVsPage() {
       initialCVs={cvs}
       currentUserRole={currentUser.role}
       currentUserEmail={currentUser.email ?? ""}
+      currentUserId={currentUser.id}
     />
   );
 }

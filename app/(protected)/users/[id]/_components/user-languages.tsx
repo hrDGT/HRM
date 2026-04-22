@@ -12,7 +12,7 @@ import {
   addProfileLanguage,
   updateProfileLanguage,
   getAvailableLanguages,
-} from "../actions";
+} from "../../actions";
 import { LanguageModal } from "./language-modal";
 
 export type LanguageEntry = {

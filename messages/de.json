@@ -276,6 +276,28 @@
       "educationRequired": "Ausbildung ist erforderlich",
       "descriptionRequired": "Beschreibung ist erforderlich"
     },
+    "tabs": {
+      "skills": "FÄHIGKEITEN",
+      "profile": "PROFIL",
+      "languages": "SPRACHEN",
+      "cvs": "LEBENSLAUF"
+    },
+    "uncategorized": "Nicht kategorisiert",
+    "noSkills": "Noch keine Kenntnisse hinzugefügt",
+    "addFirstSkill": "Fügen Sie Ihre erste Kenntnis hinzu",
+    "addSkill": "Kenntnis hinzufügen",
+    "updateSkill": "Kenntnis aktualisieren",
+    "cancelSelection": "Stornieren",
+    "removeSelected": "Löschen",
+    "skillModal": {
+      "addTitle": "Kenntnis hinzufügen",
+      "updateTitle": "Kenntnis aktualisieren",
+      "skill": "Kenntnis",
+      "selectSkill": "Kenntnis auswählen",
+      "mastery": "Kenntnislevel",
+      "cancel": "Stornieren",
+      "confirm": "Bestätigen"
+    },
     "details": {
       "tabs": {
         "details": "DETAILS",

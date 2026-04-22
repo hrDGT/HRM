@@ -1,28 +1,75 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { getAuthProps } from "@/lib/auth/get-auth-props";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
-import { graphql } from "@/gqlcodegen";
+import { gql } from "graphql-tag";
+import { fetchSkills } from "@/components/skills/queries/get-skills-query";
+import type { MasteryLevel } from "@/lib/users/skill-utils";
 
 type CreateCvResult = { createCv: { id: string; name: string; education: string | null; description: string } };
-type CreateCvVars = { cv: { name: string; education: string; description: string } };
+type CreateCvVars = { cv: { userId: string; name: string; education: string; description: string } };
 
 type UpdateCvResult = { updateCv: { id: string; name: string; education: string | null; description: string } };
-type UpdateCvVars = { cv: { id: string; name: string; education: string; description: string } };
+type UpdateCvVars = { cv: { cvId: string; name: string; education: string; description: string } };
 
 type DeleteCvResult = { deleteCv: { affected: number } };
-type DeleteCvVars = { cv: { id: string } };
+type DeleteCvVars = { cv: { cvId: string } };
 
-type AddCvSkillResult = { addCvSkill: { id: string } };
-type AddCvSkillVars = { skill: { cvId: string; name: string; categoryId?: string; mastery: string } };
+const CREATE_CV_MUTATION = gql(`
+  mutation CreateCV($cv: CreateCvInput!) {
+    createCv(cv: $cv) {
+      id
+      name
+      education
+      description
+    }
+  }
+`) as TypedDocumentNode<CreateCvResult, CreateCvVars>;
 
-type UpdateCvSkillResult = { updateCvSkill: { id: string } };
-type UpdateCvSkillVars = { skill: { id: string; mastery: string } };
+const UPDATE_CV_MUTATION = gql(`
+  mutation UpdateCV($cv: UpdateCvInput!) {
+    updateCv(cv: $cv) {
+      id
+      name
+      education
+      description
+    }
+  }
+`) as TypedDocumentNode<UpdateCvResult, UpdateCvVars>;
 
-type DeleteCvSkillResult = { deleteCvSkill: { id: string } };
-type DeleteCvSkillVars = { skill: { cvId: string; name: string } };
+const DELETE_CV_MUTATION = gql(`
+  mutation DeleteCV($cv: DeleteCvInput!) {
+    deleteCv(cv: $cv) {
+      affected
+    }
+  }
+`) as TypedDocumentNode<DeleteCvResult, DeleteCvVars>;
+
+const ADD_CV_SKILL_MUTATION = gql(`
+  mutation AddCvSkill($skill: AddCvSkillInput!) {
+    addCvSkill(skill: $skill) {
+      id
+    }
+  }
+`) as TypedDocumentNode<{ addCvSkill: { id: string } }, any>;
+
+const UPDATE_CV_SKILL_MUTATION = gql(`
+  mutation UpdateCvSkill($skill: UpdateCvSkillInput!) {
+    updateCvSkill(skill: $skill) {
+      id
+    }
+  }
+`) as TypedDocumentNode<{ updateCvSkill: { id: string } }, any>;
+
+const DELETE_CV_SKILL_MUTATION = gql(`
+  mutation DeleteCvSkill($skill: DeleteCvSkillInput!) {
+    deleteCvSkill(skill: $skill) {
+      id
+    }
+  }
+`) as TypedDocumentNode<{ deleteCvSkill: { id: string } }, any>;
 
 type AddCvProjectResult = { addCvProject: { id: string } };
 type AddCvProjectVars = { project: { cvId: string; name: string; domain: string; startDate: string; endDate?: string; description: string; environment?: string[]; responsibilities?: string[] } };
@@ -33,98 +80,151 @@ type UpdateCvProjectVars = { project: { id: string; name: string; domain: string
 type RemoveCvProjectResult = { removeCvProject: { id: string } };
 type RemoveCvProjectVars = { project: { id: string } };
 
-const CREATE_CV_MUTATION = graphql(`
-  mutation CreateCV($cv: CreateCvInput!) { createCv(cv: $cv) { id name education description } }
-`) as TypedDocumentNode<CreateCvResult, CreateCvVars>;
-
-const UPDATE_CV_MUTATION = graphql(`
-  mutation UpdateCV($cv: UpdateCvInput!) { updateCv(cv: $cv) { id name education description } }
-`) as TypedDocumentNode<UpdateCvResult, UpdateCvVars>;
-
-const DELETE_CV_MUTATION = graphql(`
-  mutation DeleteCV($cv: DeleteCvInput!) { deleteCv(cv: $cv) { affected } }
-`) as TypedDocumentNode<DeleteCvResult, DeleteCvVars>;
-
-const ADD_CV_SKILL_MUTATION = graphql(`
-  mutation AddCvSkill($skill: AddCvSkillInput!) { addCvSkill(skill: $skill) { id } }
-`) as TypedDocumentNode<AddCvSkillResult, AddCvSkillVars>;
-
-const UPDATE_CV_SKILL_MUTATION = graphql(`
-  mutation UpdateCvSkill($skill: UpdateCvSkillInput!) { updateCvSkill(skill: $skill) { id } }
-`) as TypedDocumentNode<UpdateCvSkillResult, UpdateCvSkillVars>;
-
-const DELETE_CV_SKILL_MUTATION = graphql(`
-  mutation DeleteCvSkill($skill: DeleteCvSkillInput!) { deleteCvSkill(skill: $skill) { id } }
-`) as TypedDocumentNode<DeleteCvSkillResult, DeleteCvSkillVars>;
-
-const ADD_CV_PROJECT_MUTATION = graphql(`
-  mutation AddCvProject($project: AddCvProjectInput!) { addCvProject(project: $project) { id } }
+const ADD_CV_PROJECT_MUTATION = gql(`
+  mutation AddCvProject($project: AddCvProjectInput!) {
+    addCvProject(project: $project) {
+      id
+    }
+  }
 `) as TypedDocumentNode<AddCvProjectResult, AddCvProjectVars>;
 
-const UPDATE_CV_PROJECT_MUTATION = graphql(`
-  mutation UpdateCvProject($project: UpdateCvProjectInput!) { updateCvProject(project: $project) { id } }
+const UPDATE_CV_PROJECT_MUTATION = gql(`
+  mutation UpdateCvProject($project: UpdateCvProjectInput!) {
+    updateCvProject(project: $project) {
+      id
+    }
+  }
 `) as TypedDocumentNode<UpdateCvProjectResult, UpdateCvProjectVars>;
 
-const REMOVE_CV_PROJECT_MUTATION = graphql(`
-  mutation RemoveCvProject($project: RemoveCvProjectInput!) { removeCvProject(project: $project) { id } }
+const REMOVE_CV_PROJECT_MUTATION = gql(`
+  mutation RemoveCvProject($project: RemoveCvProjectInput!) {
+    removeCvProject(project: $project) {
+      id
+    }
+  }
 `) as TypedDocumentNode<RemoveCvProjectResult, RemoveCvProjectVars>;
 
-export async function createCVAction(cv: CreateCvVars["cv"]) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(CREATE_CV_MUTATION, { cv }, { token, cookieHeader });
+export async function createCVAction(userId: string, cv: Omit<CreateCvVars["cv"], "userId">) {
+  await gqlRequestAuthed(CREATE_CV_MUTATION, { cv: { userId, ...cv } });
   revalidatePath("/cvs");
 }
 
-export async function updateCVAction(cv: UpdateCvVars["cv"]) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(UPDATE_CV_MUTATION, { cv }, { token, cookieHeader });
+export async function updateCVAction(cv: { id: string; name: string; education: string; description: string }) {
+  await gqlRequestAuthed(UPDATE_CV_MUTATION, {
+    cv: {
+      cvId: cv.id,
+      name: cv.name,
+      education: cv.education,
+      description: cv.description,
+    }
+  });
   revalidatePath("/cvs");
 }
 
 export async function deleteCVAction(id: string) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(DELETE_CV_MUTATION, { cv: { id } }, { token, cookieHeader });
+  await gqlRequestAuthed(DELETE_CV_MUTATION, { cv: { cvId: id } });
   revalidatePath("/cvs");
 }
 
 export async function updateCVDetailsAction(cvId: string, data: { name: string; education: string; description: string }) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(UPDATE_CV_MUTATION, { cv: { id: cvId, ...data } }, { token, cookieHeader });
+  await gqlRequestAuthed(UPDATE_CV_MUTATION, {
+    cv: {
+      cvId,
+      name: data.name,
+      education: data.education,
+      description: data.description,
+    }
+  });
   revalidatePath(`/cvs/${cvId}`);
 }
 
-export async function addSkillAction(cvId: string, name: string, categoryId: string | undefined, mastery: string) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(ADD_CV_SKILL_MUTATION, { skill: { cvId, name, categoryId, mastery } }, { token, cookieHeader });
+export async function getCVSkills(cvId: string) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+
+  const GET_CV_SKILLS_QUERY = gql(`
+    query GetCVSkillsData($cvId: ID!) {
+      cv(cvId: $cvId) {
+        skills {
+          name
+          categoryId
+          mastery
+        }
+      }
+    }
+  `) as TypedDocumentNode<
+    { cv: { skills: Array<{ name: string; categoryId?: string | null; mastery: string }> } },
+    { cvId: string }
+  >;
+
+  const [skillsData, allSkills] = await Promise.all([
+    gqlRequestAuthed(GET_CV_SKILLS_QUERY, { cvId }, { token, cookieHeader }),
+    fetchSkills(token, cookieHeader),
+  ]);
+
+  const skillMetaMap = new Map(
+    (allSkills ?? []).map((s) => [
+      s.name,
+      {
+        categoryId: s.category?.id ?? null,
+        categoryName: s.category?.name ?? null,
+        categoryParentName: null,
+      },
+    ])
+  );
+
+  return (skillsData.cv?.skills ?? []).map((s) => {
+    const meta = skillMetaMap.get(s.name);
+    return {
+      name: s.name,
+      categoryId: meta?.categoryId ?? s.categoryId ?? null,
+      categoryName: meta?.categoryName ?? null,
+      categoryParentName: meta?.categoryParentName ?? null,
+      mastery: s.mastery as MasteryLevel,
+    };
+  });
+}
+
+export async function getAvailableSkills() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
+ 
+  const data = await fetchSkills(token, cookieHeader);
+  return (data ?? []).map((s) => ({ id: s.id, name: s.name }));
+}
+ 
+export async function addCVSkill(cvId: string, skillName: string, mastery: string) {
+  await gqlRequestAuthed(ADD_CV_SKILL_MUTATION, { skill: { cvId, name: skillName, mastery } });
   revalidatePath(`/cvs/${cvId}`);
 }
 
-export async function updateSkillAction(id: string, mastery: string) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(UPDATE_CV_SKILL_MUTATION, { skill: { id, mastery } }, { token, cookieHeader });
-  revalidatePath(`/cvs/${id}`);
+export async function updateCVSkill(cvId: string, skillName: string, mastery: string) {
+  await gqlRequestAuthed(UPDATE_CV_SKILL_MUTATION, { skill: { cvId, name: skillName, mastery } });
+  revalidatePath(`/cvs/${cvId}`);
 }
 
-export async function removeSkillAction(cvId: string, name: string) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(DELETE_CV_SKILL_MUTATION, { skill: { cvId, name } }, { token, cookieHeader });
+export async function deleteCVSkills(cvId: string, skillNames: string[]) {
+  await Promise.all(
+    skillNames.map((name) =>
+      gqlRequestAuthed(DELETE_CV_SKILL_MUTATION, { skill: { cvId, name } })
+    )
+  );
   revalidatePath(`/cvs/${cvId}`);
 }
 
 export async function addProjectAction(cvId: string, project: Omit<AddCvProjectVars["project"], "cvId">) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(ADD_CV_PROJECT_MUTATION, { project: { cvId, ...project } }, { token, cookieHeader });
+  await gqlRequestAuthed(ADD_CV_PROJECT_MUTATION, { project: { cvId, ...project } });
   revalidatePath(`/cvs/${cvId}`);
 }
 
 export async function updateProjectAction(projectId: string, project: Omit<UpdateCvProjectVars["project"], "id">) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(UPDATE_CV_PROJECT_MUTATION, { project: { id: projectId, ...project } }, { token, cookieHeader });
+  await gqlRequestAuthed(UPDATE_CV_PROJECT_MUTATION, { project: { id: projectId, ...project } });
   revalidatePath(`/cvs/${projectId}`);
 }
 
 export async function removeProjectAction(projectId: string) {
-  const { token, cookieHeader } = await getAuthProps();
-  await gqlRequestAuthed(REMOVE_CV_PROJECT_MUTATION, { project: { id: projectId } }, { token, cookieHeader });
+  await gqlRequestAuthed(REMOVE_CV_PROJECT_MUTATION, { project: { id: projectId } });
   revalidatePath(`/cvs/${projectId}`);
 }

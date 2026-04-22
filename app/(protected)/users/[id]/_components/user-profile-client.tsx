@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EmployeeProfile } from "@/lib/users/users-types";
-import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../actions";
+import { updateProfile, updateUserMeta, uploadAvatar, deleteAvatar } from "../../actions";
 import { TabsNav } from "@/components/common/tabs-nav";
 import { cn } from "@/lib/utils";
 

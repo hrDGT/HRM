@@ -9,7 +9,7 @@ import { EmployeeProfile } from "@/lib/users/users-types";
 import { graphql } from "@/gqlcodegen";
 
 import { UserProfileClient } from "./_components/user-profile-client";
-import { getDepartments, getPositions } from "./actions";
+import { getDepartments, getPositions } from "../actions";
 
 const GET_EMPLOYEE_QUERY = graphql(`
   query GetEmployee($userId: ID!) {

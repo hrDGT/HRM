@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EmployeeCard } from "@/lib/users/users-types";
-import { createUser } from "@/app/(protected)/users/[id]/actions";
+import { createUser } from "@/app/(protected)/users/actions";
 import { UserRole } from "@/gqlcodegen/graphql";
 
 const ROLES: UserRole[] = [UserRole.Employee, UserRole.Admin];

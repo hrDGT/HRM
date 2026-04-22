@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
-import { CVDetailsClient } from "./_components/cv-details-client";
+import { CVDetails } from "./_components/cv-details-client";
 
 const GET_CV_DETAILS = graphql(`
   query GetCVDetails($cvId: ID!) {
@@ -73,24 +73,16 @@ export default async function CVDetailsPage({ params }: { params: Promise<{ id: 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
       <div className="flex items-center gap-2 px-8 py-4 text-sm">
-        <Link href="/cvs" className="text-zinc-400 hover:text-zinc-200 transition-colors">
-          {t("details.breadcrumb.cvs")}
-        </Link>
+        <Link href="/cvs" className="text-zinc-400 hover:text-zinc-200 transition-colors">{t("details.breadcrumb.cvs")}</Link>
         <ChevronRight size={16} className="text-zinc-600" />
         <span className="text-zinc-100">{cv.name}</span>
       </div>
-
-      <div className="px-8 pb-4 border-b border-white/10">
+      <div className="px-8 pb-4">
         <TabsNav tabs={TABS} />
       </div>
-
-      <CVDetailsClient
-        cv={cv}
-        currentUserId={String(currentUser.id)}
-        currentUserRole={currentUser.role}
-        canEdit={canEdit}
-        activeTab="details"
-      />
+      <div className="flex-1 px-8 pb-8">
+        <CVDetails cv={cv} canEdit={canEdit} />
+      </div>
     </div>
   );
 }

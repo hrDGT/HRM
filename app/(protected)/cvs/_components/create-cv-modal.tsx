@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,13 +22,14 @@ export type CVFormData = z.infer<typeof cvSchema>;
 type CreateCVModalProps = {
   open: boolean;
   onClose: () => void;
-  onCreate: (data: CVFormData) => void;
+  onCreate: (data: CVFormData) => Promise<void>;
   isPending: boolean;
 };
 
 export function CreateCVModal({ open, onClose, onCreate, isPending }: CreateCVModalProps) {
   const c = useTranslations("Common");
   const t = useTranslations("CVs");
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<CVFormData>({
     resolver: zodResolver(cvSchema),
@@ -35,8 +37,15 @@ export function CreateCVModal({ open, onClose, onCreate, isPending }: CreateCVMo
   });
 
   const onSubmit = async (data: CVFormData) => {
-    await onCreate(data);
-    reset();
+    setLocalError(null);
+    try {
+      await onCreate(data);
+      reset();
+      onClose();
+    } catch (err) {
+      console.error("CV Creation failed:", err);
+      setLocalError(err instanceof Error ? err.message : "Failed to create CV");
+    }
   };
 
   const fieldWrapper = "group relative rounded-lg border border-white/15 bg-[#2c2c2c] focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500/20 transition-all duration-300";
@@ -46,19 +55,32 @@ export function CreateCVModal({ open, onClose, onCreate, isPending }: CreateCVMo
   return (
     <ModalWrapper open={open} onClose={onClose} title={t("dialog.createTitle")}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {localError && (
+          <div className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+            {localError}
+          </div>
+        )}
+        
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{t("fields.name")}</Label>
           <Input {...register("name")} className={fieldInput} placeholder={t("fields.name")} />
           {errors.name && <p className="text-xs text-red-400 mt-1 px-1">{errors.name.message}</p>}
         </div>
+
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{t("fields.education")}</Label>
           <Input {...register("education")} className={fieldInput} placeholder={t("fields.education")} />
           {errors.education && <p className="text-xs text-red-400 mt-1 px-1">{errors.education.message}</p>}
         </div>
+
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{t("fields.description")}</Label>
-          <textarea {...register("description")} rows={4} className={cn(fieldInput, "resize-none h-auto pt-3 pb-2 min-h-[80px]")} placeholder={t("fields.description")} />
+          <textarea 
+            {...register("description")} 
+            rows={4} 
+            className={cn(fieldInput, "resize-none h-auto pt-3 pb-2 min-h-[80px]")} 
+            placeholder={t("fields.description")} 
+          />
           {errors.description && <p className="text-xs text-red-400 mt-1 px-1">{errors.description.message}</p>}
         </div>
 
@@ -78,7 +100,7 @@ export function CreateCVModal({ open, onClose, onCreate, isPending }: CreateCVMo
               disabled={!isDirty || isPending}
               className={cn(
                 "flex-1 uppercase text-xs tracking-widest rounded-4xl transition-all duration-300",
-                !isDirty || isPending
+                (!isDirty || isPending)
                   ? "bg-zinc-600 text-zinc-400 cursor-not-allowed"
                   : "bg-red-500 hover:bg-red-600 text-zinc-100 cursor-pointer"
               )}

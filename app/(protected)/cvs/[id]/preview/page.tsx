@@ -7,35 +7,14 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
-import { CVDetailsClient } from "../_components/cv-details-client";
+import { CVPreviewTab } from "../_components/cv-preview-tab";
 
 const GET_CV_DETAILS = graphql(`
   query GetCVDetails($cvId: ID!) {
     cv(cvId: $cvId) {
-      id
-      name
-      education
-      description
-      created_at
-      user {
-        id
-        email
-      }
-      skills {
-        name
-        categoryId
-        mastery
-      }
-      projects {
-        id
-        name
-        description
-        domain
-        start_date
-        end_date
-        environment
-        responsibilities
-      }
+      id name education description created_at user { id email }
+      skills { name categoryId mastery }
+      projects { id name description domain start_date end_date environment responsibilities }
     }
   }
 `);
@@ -48,11 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function CVPreviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [currentUser, { token, cookieHeader }] = await Promise.all([
-    requireUser(),
-    getAuthProps(),
-  ]);
-
+  const [currentUser, { token, cookieHeader }] = await Promise.all([requireUser(), getAuthProps()]);
   const result = await gqlRequestAuthed(GET_CV_DETAILS, { cvId: id }, { token, cookieHeader }).catch(() => null);
   if (!result?.cv) notFound();
 
@@ -70,24 +45,16 @@ export default async function CVPreviewPage({ params }: { params: Promise<{ id: 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
       <div className="flex items-center gap-2 px-8 py-4 text-sm">
-        <Link href="/cvs" className="text-zinc-400 hover:text-zinc-200 transition-colors">
-          {t("details.breadcrumb.cvs")}
-        </Link>
+        <Link href="/cvs" className="text-zinc-400 hover:text-zinc-200 transition-colors">{t("details.breadcrumb.cvs")}</Link>
         <ChevronRight size={16} className="text-zinc-600" />
         <span className="text-zinc-100">{cv.name}</span>
       </div>
-
       <div className="px-8 pb-4 border-b border-white/10">
         <TabsNav tabs={TABS} />
       </div>
-
-      <CVDetailsClient
-        cv={cv}
-        currentUserId={String(currentUser.id)}
-        currentUserRole={currentUser.role}
-        canEdit={canEdit}
-        activeTab="preview"
-      />
+      <div className="flex-1 px-8 pb-8">
+        <CVPreviewTab cv={cv} />
+      </div>
     </div>
   );
 }

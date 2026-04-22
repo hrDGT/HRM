@@ -7,35 +7,14 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
-import { CVDetailsClient } from "../_components/cv-details-client";
+import { CVSkills } from "../_components/cv-skills";
 
-const GET_CV_DETAILS = graphql(`
-  query GetCVDetails($cvId: ID!) {
+const GET_CV_DETAILS_FOR_SKILLS = graphql(`
+  query GetCVDetailsForSkills($cvId: ID!) {
     cv(cvId: $cvId) {
       id
       name
-      education
-      description
-      created_at
-      user {
-        id
-        email
-      }
-      skills {
-        name
-        categoryId
-        mastery
-      }
-      projects {
-        id
-        name
-        description
-        domain
-        start_date
-        end_date
-        environment
-        responsibilities
-      }
+      user { id email }
     }
   }
 `);
@@ -43,17 +22,17 @@ const GET_CV_DETAILS = graphql(`
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const t = await getTranslations("CVs");
-  return { title: `${t("details.tabs.skills")}` };
+  const { token, cookieHeader } = await getAuthProps();
+  const result = await gqlRequestAuthed(GET_CV_DETAILS_FOR_SKILLS, { cvId: id }, { token, cookieHeader }).catch(() => null);
+  const cvName = result?.cv?.name ?? "CV";
+  return { title: `${cvName} | ${t("tabs.skills")}` };
 }
 
 export default async function CVSkillsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [currentUser, { token, cookieHeader }] = await Promise.all([
-    requireUser(),
-    getAuthProps(),
-  ]);
-
-  const result = await gqlRequestAuthed(GET_CV_DETAILS, { cvId: id }, { token, cookieHeader }).catch(() => null);
+  const [currentUser, { token, cookieHeader }] = await Promise.all([requireUser(), getAuthProps()]);
+  
+  const result = await gqlRequestAuthed(GET_CV_DETAILS_FOR_SKILLS, { cvId: id }, { token, cookieHeader }).catch(() => null);
   if (!result?.cv) notFound();
 
   const cv = result.cv;
@@ -70,24 +49,18 @@ export default async function CVSkillsPage({ params }: { params: Promise<{ id: s
   return (
     <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
       <div className="flex items-center gap-2 px-8 py-4 text-sm">
-        <Link href="/cvs" className="text-zinc-400 hover:text-zinc-200 transition-colors">
-          {t("details.breadcrumb.cvs")}
-        </Link>
+        <Link href="/cvs" className="text-zinc-400 hover:text-zinc-200 transition-colors">{t("details.breadcrumb.cvs")}</Link>
         <ChevronRight size={16} className="text-zinc-600" />
-        <span className="text-zinc-100">{cv.name}</span>
+        <Link href={`/cvs/${id}`} className="text-zinc-400 hover:text-zinc-200 transition-colors">{cv.name}</Link>
+        <ChevronRight size={16} className="text-zinc-600" />
+        <span className="text-red-500">{t("tabs.skills")}</span>
       </div>
 
-      <div className="px-8 pb-4 border-b border-white/10">
+      <div className="px-8 pb-6">
         <TabsNav tabs={TABS} />
       </div>
 
-      <CVDetailsClient
-        cv={cv}
-        currentUserId={String(currentUser.id)}
-        currentUserRole={currentUser.role}
-        canEdit={canEdit}
-        activeTab="skills"
-      />
+      <CVSkills cvId={id} canEdit={canEdit} />
     </div>
   );
 }

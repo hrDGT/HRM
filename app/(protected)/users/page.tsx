@@ -8,7 +8,7 @@ import { EmployeeCard } from "@/lib/users/users-types";
 import { graphql } from "@/gqlcodegen";
 
 import { EmployeesClient } from "./_components/employees-client";
-import { getDepartments, getPositions } from "./[id]/actions";
+import { getDepartments, getPositions } from "./actions";
 
 const GET_EMPLOYEES_QUERY = graphql(`
   query GetEmployees {
