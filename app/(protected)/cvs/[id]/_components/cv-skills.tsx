@@ -172,7 +172,6 @@ export function CVSkills({ cvId, canEdit }: CVSkillsProps) {
             {categories.map((category) => (
               <div key={category.id || "uncategorized"} className="space-y-4">
                 <h3 className="text-sm font-medium text-zinc-200">
-                  {/* ✅ Теперь показываем categoryName вместо ID */}
                   {category.name || t("uncategorized")}
                   {category.parentName && (
                     <span className="ml-2 text-xs text-zinc-500">— {category.parentName}</span>

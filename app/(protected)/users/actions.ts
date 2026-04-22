@@ -138,6 +138,14 @@ const GET_POSITIONS = gql`
   }
 ` as TypedDocumentNode<GetPositionsResult, Record<string, never>>;
 
+const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($userId: ID!) {
+    deleteUser(userId: $userId) {
+      affected
+    }
+  }
+` as TypedDocumentNode<{ deleteUser: { affected: number } }, { userId: string }>;
+
 export async function createUser(data: CreateUserInput) {
   const result = await gqlRequestAuthed(CREATE_USER_MUTATION, {
     user: {
@@ -401,4 +409,12 @@ export async function updateProfileLanguage(userId: number, languageName: string
     { language: { userId: String(userId), name: languageName, proficiency: proficiency as unknown as string } },
     { token, cookieHeader }
   );
+}
+
+export async function deleteUser(userId: string | number) {
+  const result = await gqlRequestAuthed(DELETE_USER_MUTATION, {
+    userId: String(userId),
+  });
+  revalidateTag("users", "default");
+  return result.deleteUser;
 }

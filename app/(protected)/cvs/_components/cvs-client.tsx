@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search, EllipsisVertical, X, Plus, ArrowUp, ArrowDown, Pencil, Trash2 } from "lucide-react";
+import { Search, EllipsisVertical, Plus, ArrowUp, ArrowDown, Pencil, Trash2, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { createCVAction, updateCVAction, deleteCVAction } from "../actions";
 import { CreateCVModal, CVFormData } from "./create-cv-modal";
 import { UpdateCVModal } from "./update-cv-modal";
+import { DeleteCVModal } from "./delete-cv-modal";
 
 type CVItem = {
   id: string;
@@ -119,10 +120,7 @@ export function CVsClient({
     setIsMutating(true);
     try {
       await deleteCVAction(deleteModal.cvId);
-      
       setCvs((prev) => prev.filter((cv) => cv.id !== deleteModal.cvId));
-      
-      setDeleteModal({ isOpen: false, cvId: "", cvName: "" });
       router.refresh();
     } catch (err) {
       console.error("Delete failed:", err);
@@ -201,8 +199,7 @@ export function CVsClient({
               return (
                 <div
                   key={cv.id}
-                  onClick={() => router.push(`/cvs/${cv.id}`)}
-                  className="group py-6 px-4 hover:bg-white/2 cursor-pointer"
+                  className="group py-6 px-4"
                 >
                   <div className="grid grid-cols-[2fr_1.5fr_1.5fr_auto] gap-4 items-start">
                     <h3 className="text-sm font-medium text-zinc-100 truncate pr-2">{cv.name}</h3>
@@ -215,7 +212,7 @@ export function CVsClient({
                           e.stopPropagation();
                           setOpenMenuId(openMenuId === cv.id ? null : cv.id);
                         }}
-                        className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
+                        className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors cursor-pointer"
                       >
                         <EllipsisVertical size={16} className="text-zinc-400" />
                       </button>
@@ -223,6 +220,17 @@ export function CVsClient({
                         <>
                           <div className="fixed inset-0 z-40" onClick={() => setOpenMenuId(null)} />
                           <div className="absolute right-0 top-8 z-50 min-w-32 bg-[#353535] rounded-lg shadow-xl border border-white/10 py-1">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/cvs/${cv.id}`);
+                                setOpenMenuId(null);
+                              }}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5 cursor-pointer"
+                            >
+                              <FileText size={14} /> {t("actions.view")}
+                            </button>
+                            
                             {canEdit && (
                               <button
                                 onClick={(e) => {
@@ -230,7 +238,7 @@ export function CVsClient({
                                   setUpdatingCV(cv);
                                   setOpenMenuId(null);
                                 }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-200 hover:bg-white/5 cursor-pointer"
                               >
                                 <Pencil size={14} /> {t("actions.edit")}
                               </button>
@@ -242,7 +250,7 @@ export function CVsClient({
                                   setDeleteModal({ isOpen: true, cvId: cv.id, cvName: cv.name });
                                   setOpenMenuId(null);
                                 }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-white/5"
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-white/5 cursor-pointer"
                               >
                                 <Trash2 size={14} /> {t("actions.delete")}
                               </button>
@@ -277,38 +285,13 @@ export function CVsClient({
         isPending={isMutating}
       />
 
-      {deleteModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md bg-[#353535] rounded-xl shadow-2xl border border-white/10 p-6 mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-zinc-100">{t("dialog.deleteTitle")}</h2>
-              <button onClick={() => setDeleteModal({ isOpen: false, cvId: "", cvName: "" })} className="text-zinc-400 hover:text-zinc-200">
-                <X size={20} />
-              </button>
-            </div>
-            <p className="text-sm text-zinc-400 mb-6">
-              {t("dialog.deleteMessage", { name: deleteModal.cvName })}
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setDeleteModal({ isOpen: false, cvId: "", cvName: "" })}
-                disabled={isMutating}
-                className="border-white/10 text-zinc-300 hover:bg-white/5"
-              >
-                {t("actions.cancel")}
-              </Button>
-              <Button
-                onClick={handleDelete}
-                disabled={isMutating}
-                className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30"
-              >
-                {isMutating ? t("actions.deleting") : t("actions.confirmDelete")}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteCVModal
+        open={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, cvId: "", cvName: "" })}
+        onDelete={handleDelete}
+        isPending={isMutating}
+        cvName={deleteModal.cvName}
+      />
     </div>
   );
 }

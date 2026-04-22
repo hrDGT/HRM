@@ -161,7 +161,8 @@
       "confirm": "Подтвердить",
       "confirming": "Подтверждение...",
       "saving": "Сохранение...",
-      "delete": "Удалить"
+      "delete": "Удалить",
+      "deleting": "Удаление..."
     },
     "placeholders": {
       "search": "Поиск",
@@ -240,7 +241,11 @@
     "fileSizeError": "Файл должен быть не более 1 МБ",
     "collapseMenu": "Свернуть меню",
     "expandMenu": "Развернуть меню",
-    "defaultUser": "Пользователь"
+    "defaultUser": "Пользователь",
+    "dialog": {
+      "deleteUserTitle": "Удалить пользователя",
+      "deleteUserMessage": "Вы уверены, что хотите удалить пользователя \"{name}\"?"
+    }
   },
   "CVs": {
     "title": "Резюме",
@@ -263,7 +268,8 @@
       "update": "Обновить",
       "create": "Создать",
       "deleting": "Удаление...",
-      "confirmDelete": "Подтвердить"
+      "confirmDelete": "Подтвердить",
+      "view": "Просмотр"
     },
     "dialog": {
       "createTitle": "Создать резюме",

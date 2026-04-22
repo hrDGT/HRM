@@ -161,7 +161,8 @@
       "confirm": "Bestätigen",
       "confirming": "Wird bestätigt...",
       "saving": "Wird gespeichert...",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "deleting": "Wird gelöscht..."
     },
     "placeholders": {
       "search": "Suchen",
@@ -240,7 +241,11 @@
     "fileSizeError": "Datei darf nicht größer als 1MB sein",
     "collapseMenu": "Menü einklappen",
     "expandMenu": "Menü ausklappen",
-    "defaultUser": "Nutzer"
+    "defaultUser": "Mitarbeiter",
+    "dialog": {
+      "deleteUserTitle": "Löschen bestätigen",
+      "deleteUserMessage": "Möchten Sie wirklich den Nutzer \"{name}\"?"
+    }
   },
   "CVs": {
     "title": "Lebensläufe",
@@ -263,7 +268,8 @@
       "update": "Aktualisieren",
       "create": "Erstellen",
       "deleting": "Wird gelöscht...",
-      "confirmDelete": "Bestätigen"
+      "confirmDelete": "Bestätigen",
+      "view": "Ansehen"
     },
     "dialog": {
       "createTitle": "Lebenslauf erstellen",

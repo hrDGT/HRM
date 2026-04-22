@@ -8,8 +8,11 @@ import {
   ArrowUp,
   ChevronRight,
   MoreVertical,
+  Pencil,
   Plus,
   Search,
+  Trash2,
+  User,
   Users,
 } from "lucide-react";
 
@@ -33,8 +36,10 @@ import {
 } from "@/components/ui/table";
 import type { EmployeeCard } from "@/lib/users/users-types";
 
+import { deleteUser } from "../actions";
 import { CreateUserModal } from "./create-user-modal";
 import { UpdateUserModal } from "./update-user-modal";
+import { DeleteUserModal } from "./delete-user-modal";
 
 type Props = {
   employees: EmployeeCard[];
@@ -60,10 +65,16 @@ export function EmployeesClient({
     field: string;
     direction: "asc" | "desc";
   } | null>(null);
-  const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(
-    null,
-  );
+  const [editingEmployee, setEditingEmployee] = useState<EmployeeCard | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  
+  const [isMutating, setIsMutating] = useState(false);
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; userId: string | number; userName: string }>({
+    isOpen: false,
+    userId: "",
+    userName: "",
+  });
+
   const router = useRouter();
 
   const handleUpdate = (updated: EmployeeCard) => {
@@ -108,6 +119,19 @@ export function EmployeesClient({
 
   const showActions = (empId: string | number) =>
     empId === currentUserId || currentUserRole === "Admin";
+
+  const handleDeleteUser = async () => {
+    if (!deleteModal.userId) return;
+    setIsMutating(true);
+    try {
+      await deleteUser(deleteModal.userId);
+      setEmployees((prev) => prev.filter((e) => e.id !== deleteModal.userId));
+    } catch (err) {
+      console.error("Delete user failed:", err);
+    } finally {
+      setIsMutating(false);
+    }
+  };
 
   const SortIndicator = ({ field }: { field: string }) => {
     if (sortConfig?.field !== field) return null;
@@ -157,71 +181,34 @@ export function EmployeesClient({
           <TableHeader>
             <TableRow className="border-white/5 hover:bg-transparent">
               <TableHead className="w-10" />
-
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("firstName")}
-              >
-                <span className="flex items-center gap-1">
-                  {c("fields.firstName")}
-                  <SortIndicator field="firstName" />
-                </span>
+              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors" onClick={() => handleSort("firstName")}>
+                <span className="flex items-center gap-1">{c("fields.firstName")}<SortIndicator field="firstName" /></span>
               </TableHead>
-
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("lastName")}
-              >
-                <span className="flex items-center gap-1">
-                  {c("fields.lastName")}
-                  <SortIndicator field="lastName" />
-                </span>
+              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors" onClick={() => handleSort("lastName")}>
+                <span className="flex items-center gap-1">{c("fields.lastName")}<SortIndicator field="lastName" /></span>
               </TableHead>
-
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("email")}
-              >
-                <span className="flex items-center gap-1">
-                  {c("fields.email")}
-                  <SortIndicator field="email" />
-                </span>
+              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors" onClick={() => handleSort("email")}>
+                <span className="flex items-center gap-1">{c("fields.email")}<SortIndicator field="email" /></span>
               </TableHead>
-
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("department")}
-              >
-                <span className="flex items-center gap-1">
-                  {c("fields.department")}
-                  <SortIndicator field="department" />
-                </span>
+              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors" onClick={() => handleSort("department")}>
+                <span className="flex items-center gap-1">{c("fields.department")}<SortIndicator field="department" /></span>
               </TableHead>
-
-              <TableHead
-                className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors"
-                onClick={() => handleSort("position")}
-              >
-                <span className="flex items-center gap-1">
-                  {c("fields.position")}
-                  <SortIndicator field="position" />
-                </span>
+              <TableHead className="text-zinc-400 text-xs font-semibold uppercase tracking-wider cursor-pointer select-none hover:text-zinc-200 transition-colors" onClick={() => handleSort("position")}>
+                <span className="flex items-center gap-1">{c("fields.position")}<SortIndicator field="position" /></span>
               </TableHead>
-
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {displayed.map((emp) => {
-              const isCurrentUser = emp.id === currentUserId;
               const canShowDropdown = showActions(emp.id);
+              const canDelete = canShowDropdown && emp.id !== currentUserId;
 
               return (
                 <TableRow
                   key={emp.id}
-                  onClick={() => router.push(`/users/${emp.id}`)}
-                  className="border-white/5 hover:bg-white/[0.03] cursor-pointer transition-colors"
+                  className="border-white/5"
                 >
                   <TableCell className="py-3">
                     <Avatar className="h-8 w-8">
@@ -231,36 +218,19 @@ export function EmployeesClient({
                       </AvatarFallback>
                     </Avatar>
                   </TableCell>
-
-                  <TableCell className="text-sm text-zinc-200 py-3 font-medium">
-                    {emp.firstName}
-                  </TableCell>
-
-                  <TableCell className="text-sm text-zinc-200 py-3">
-                    {emp.lastName}
-                  </TableCell>
-
-                  <TableCell className="text-sm text-zinc-400 py-3">
-                    {emp.email}
-                  </TableCell>
-
+                  <TableCell className="text-sm text-zinc-200 py-3 font-medium">{emp.firstName}</TableCell>
+                  <TableCell className="text-sm text-zinc-200 py-3">{emp.lastName}</TableCell>
+                  <TableCell className="text-sm text-zinc-400 py-3">{emp.email}</TableCell>
                   <TableCell className="py-3">
                     {emp.department ? (
-                      <Badge
-                        variant="outline"
-                        className="text-xs font-medium px-2 py-0.5 rounded-md border bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
-                      >
+                      <Badge variant="outline" className="text-xs font-medium px-2 py-0.5 rounded-md border bg-zinc-500/10 text-zinc-400 border-zinc-500/20">
                         {emp.department}
                       </Badge>
                     ) : (
                       <span className="text-zinc-600 text-sm">—</span>
                     )}
                   </TableCell>
-
-                  <TableCell className="text-sm text-zinc-300 py-3">
-                    {emp.position}
-                  </TableCell>
-
+                  <TableCell className="text-sm text-zinc-300 py-3">{emp.position}</TableCell>
                   <TableCell className="py-3 text-right">
                     <div className="flex items-center justify-end gap-1">
                       {canShowDropdown ? (
@@ -277,24 +247,35 @@ export function EmployeesClient({
                             align="end"
                             className="bg-[#353535] border-white/10 text-zinc-200 text-sm min-w-35"
                           >
-                            <DropdownMenuItem
-                              className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/users/${emp.id}`);
-                              }}
+                            <DropdownMenuItem 
+                              className="bg-[#353535] cursor-pointer hover:bg-white/5 focus:bg-white/5 gap-2" 
+                              onClick={(e) => { e.stopPropagation(); router.push(`/users/${emp.id}`); }}
                             >
-                              {t("viewProfile")}
+                              <User size={14} /> {t("viewProfile")}
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="cursor-pointer hover:bg-white/5 focus:bg-white/5"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingEmployee(emp);
-                              }}
+                            
+                            <DropdownMenuItem 
+                              className="bg-[#353535] cursor-pointer hover:bg-white/5 focus:bg-white/5 gap-2" 
+                              onClick={(e) => { e.stopPropagation(); setEditingEmployee(emp); }}
                             >
-                              {t("updateAction")}
+                              <Pencil size={14} /> {t("updateAction")}
                             </DropdownMenuItem>
+                            
+                            {canDelete && (
+                              <DropdownMenuItem 
+                                className="bg-[#353535] cursor-pointer hover:bg-white/5 focus:bg-white/5 text-red-400 gap-2" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteModal({ 
+                                    isOpen: true, 
+                                    userId: emp.id, 
+                                    userName: `${emp.firstName} ${emp.lastName}` 
+                                  });
+                                }}
+                              >
+                                <Trash2 size={14} /> {c("actions.delete")}
+                              </DropdownMenuItem>
+                            )}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
@@ -333,6 +314,14 @@ export function EmployeesClient({
         onCreate={handleCreate}
         departments={departments}
         positions={positions}
+      />
+
+      <DeleteUserModal
+        open={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, userId: "", userName: "" })}
+        onDelete={handleDeleteUser}
+        isPending={isMutating}
+        userName={deleteModal.userName}
       />
     </>
   );

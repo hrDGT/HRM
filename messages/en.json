@@ -161,7 +161,8 @@
       "confirm": "Confirm",
       "confirming": "Confirming...",
       "saving": "Saving...",
-      "delete": "Delete"
+      "delete": "Delete",
+      "deleting": "Deleting..."
     },
     "placeholders": {
       "search": "Search",
@@ -240,7 +241,11 @@
     "fileSizeError": "File must be no more than 1MB",
     "collapseMenu": "Collapse menu",
     "expandMenu": "Expand menu",
-    "defaultUser": "User"
+    "defaultUser": "User",
+    "dialog": {
+      "deleteUserTitle": "Delete User",
+      "deleteUserMessage": "Are you sure you want to delete user \"{name}\"?"
+    }
   },
   "CVs": {
     "title": "CVs",
@@ -263,7 +268,8 @@
       "update": "Update",
       "create": "Create",
       "deleting": "Deleting...",
-      "confirmDelete": "Confirm"
+      "confirmDelete": "Confirm",
+      "view": "View"
     },
     "dialog": {
       "createTitle": "Create CV",
