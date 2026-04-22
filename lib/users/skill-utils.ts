@@ -8,34 +8,33 @@ export const MASTERY_ORDER: MasteryLevel[] = [
   "Expert",
 ];
 
+const MASTERY_COLORS = [
+  "158, 158, 158",
+  "3, 169, 244",
+  "76, 175, 80",
+  "255, 179, 0",
+  "198, 48, 49",
+];
+
 export function getMasteryProgress(mastery: MasteryLevel): number {
   const index = MASTERY_ORDER.indexOf(mastery);
   if (index === -1) return 0;
-  return (index / (MASTERY_ORDER.length - 1)) * 100;
+
+  return ((index + 1) / MASTERY_ORDER.length) * 100;
 }
 
 export function getMasteryColor(mastery: MasteryLevel): string {
   const index = MASTERY_ORDER.indexOf(mastery);
-  if (index === -1) return "rgb(0, 206, 48)";
+  if (index === -1) return `rgb(${MASTERY_COLORS[0]})`;
 
-  const ratio = index / (MASTERY_ORDER.length - 1);
-  const r = Math.round(0 + 206 * ratio);
-  const g = Math.round(206 - 206 * ratio);
-  const b = 48;
-
-  return `rgb(${r}, ${g}, ${b})`;
+  return `rgb(${MASTERY_COLORS[index]})`;
 }
 
 export function getMasteryDimColor(mastery: MasteryLevel): string {
   const index = MASTERY_ORDER.indexOf(mastery);
-  if (index === -1) return "rgb(0, 100, 25)";
+  if (index === -1) return `rgba(${MASTERY_COLORS[0]}, 0.2)`;
 
-  const ratio = index / (MASTERY_ORDER.length - 1);
-  const r = Math.round((206 * ratio) * 0.5);
-  const g = Math.round((206 - 206 * ratio) * 0.5);
-  const b = Math.round(48 * 0.5);
-
-  return `rgb(${r}, ${g}, ${b})`;
+  return `rgba(${MASTERY_COLORS[index]}, 0.2)`;
 }
 
 export function getMasteryVisuals(mastery: MasteryLevel) {

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import { cn } from "@/lib/utils";
 
 type Tab = {
@@ -30,13 +31,15 @@ export function ProfileTabs({ tabs, userId }: ProfileTabsProps) {
             key={tab.id}
             href={tab.href}
             className={cn(
-              "pb-3 text-xs font-semibold tracking-wider transition-colors relative cursor-pointer",
-              isActive ? "text-red-500" : "text-zinc-500 hover:text-zinc-300"
+              "pt-3 px-4 text-sm font-medium tracking-wider transition-colors relative cursor-pointer",
+              isActive
+                ? "text-primary"
+                : "text-main-text hover:text-secondary-text",
             )}
           >
             {tab.label}
             {isActive && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500" />
+              <div className="absolute -bottom-2 left-0 right-0 h-0.5 bg-primary" />
             )}
           </Link>
         );

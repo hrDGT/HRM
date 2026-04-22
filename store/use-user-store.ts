@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+
 import { UserRole } from "@/gqlcodegen/graphql";
 
 export type StoreUser = {

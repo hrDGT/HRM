@@ -1,14 +1,19 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type {
+  ResultOf,
+  TypedDocumentNode,
+} from "@graphql-typed-document-node/core";
+import { ChevronRight } from "lucide-react";
+
+import { getAuthProps } from "@/lib/auth/get-auth-props";
 import { requireUser } from "@/lib/auth/require-user";
 import { gqlRequestAuthed } from "@/lib/gql/graphql-client";
 import { graphql } from "@/gqlcodegen";
-import type { ResultOf, TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { UserSkills } from "../_components/user-skills";
-import { getAuthProps } from "@/lib/auth/get-auth-props";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+
 import { ProfileTabs } from "../_components/profile-tabs";
+import { UserSkills } from "../_components/user-skills";
 
 const GET_EMPLOYEE_SKILLS_QUERY = graphql(`
   query GetEmployeeSkills($userId: ID!) {
@@ -26,7 +31,11 @@ const GET_EMPLOYEE_SKILLS_QUERY = graphql(`
 
 type GetEmployeeSkillsResult = ResultOf<typeof GET_EMPLOYEE_SKILLS_QUERY>;
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const userId = Number(id);
   if (isNaN(userId)) return {};
@@ -46,7 +55,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: `${name} — ${t("tabs.skills")}` };
 }
 
-export default async function UserSkillsPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function UserSkillsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const userId = Number(id);
   if (isNaN(userId)) notFound();
@@ -56,34 +69,50 @@ export default async function UserSkillsPage({ params }: { params: Promise<{ id:
     getAuthProps(),
   ]);
 
-  const result = await gqlRequestAuthed(GET_EMPLOYEE_SKILLS_QUERY, { userId: String(userId) }, { token, cookieHeader });
+  const result = await gqlRequestAuthed(
+    GET_EMPLOYEE_SKILLS_QUERY,
+    { userId: String(userId) },
+    { token, cookieHeader },
+  );
 
   if (!result.user) notFound();
 
   const firstName = result.user.profile?.first_name ?? "";
   const lastName = result.user.profile?.last_name ?? "";
   const fullName = `${firstName} ${lastName}`.trim() || result.user.email;
-  const canEdit = result.user.id === currentUser.id || currentUser.role?.toUpperCase() === "ADMIN";
+  const canEdit =
+    result.user.id === currentUser.id ||
+    currentUser.role?.toUpperCase() === "ADMIN";
 
   const t = await getTranslations("Users");
   const TABS = [
     { id: "profile", label: t("tabs.profile"), href: `/users/${id}` },
     { id: "skills", label: t("tabs.skills"), href: `/users/${id}/skills` },
-    { id: "languages", label: t("tabs.languages"), href: `/users/${id}/languages` },
+    {
+      id: "languages",
+      label: t("tabs.languages"),
+      href: `/users/${id}/languages`,
+    },
   ];
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto bg-[#353535]">
-      <div className="flex items-center gap-2 px-8 py-4 text-sm">
-        <Link href="/users" className="text-zinc-400 hover:text-zinc-200 transition-colors">
+    <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+      <div className="flex items-center gap-2 px-8 py-4 text-sm shrink-0">
+        <Link
+          href="/users"
+          className="text-secondary-text text-base hover:underline transition-colors"
+        >
           {t("title")}
         </Link>
-        <ChevronRight size={16} className="text-zinc-600" />
-        <Link href={`/users/${id}`} className="text-zinc-400 hover:text-zinc-200 transition-colors">
+        <ChevronRight size={16} className="text-disabled-btn" />
+        <Link
+          href={`/users/${id}`}
+          className="text-secondary-text text-base hover:underline transition-colors"
+        >
           {fullName}
         </Link>
-        <ChevronRight size={16} className="text-zinc-600" />
-        <span className="text-red-500">{t("tabs.skills")}</span>
+        <ChevronRight size={16} className="text-disabled-btn" />
+        <span className="text-primary">{t("tabs.skills")}</span>
       </div>
 
       <div className="px-8 pb-6">

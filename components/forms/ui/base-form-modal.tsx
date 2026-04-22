@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useId, useState } from "react";
-import { DefaultValues, FieldValues } from "react-hook-form";
+import { DefaultValues, FieldValues, useFormContext } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { ZodType } from "zod";
@@ -71,11 +71,13 @@ export function BaseFormModal<T extends FieldValues>({
       {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
 
       <DialogContent
-        className="bg-white max-w-8/10 md:max-w-xl"
+        className="bg-main-bg max-w-8/10 md:max-w-xl"
         showCloseButton={false}
       >
         <DialogHeader>
-          <DialogTitle className="text-xl">{actionTitle}</DialogTitle>
+          <DialogTitle className="text-xl text-main-text">
+            {actionTitle}
+          </DialogTitle>
 
           <DialogDescription className="sr-only">
             {actionTitle}
@@ -85,7 +87,7 @@ export function BaseFormModal<T extends FieldValues>({
             <Button
               type="button"
               variant="ghost"
-              className="absolute right-2 top-2 size-8 p-0 text-main-text rounded-full hover:bg-action-hover"
+              className="absolute right-2 top-2 size-8 p-0 text-main-text rounded-full hover:bg-active-sidebar-bg"
             >
               <X className="size-5.5 stroke-action-color" />
             </Button>
@@ -106,7 +108,7 @@ export function BaseFormModal<T extends FieldValues>({
               variant="outline"
               onClick={() => setIsOpen(false)}
               disabled={isPending}
-              className="min-w-50 min-h-12 text-secondary-text rounded-4xl uppercase hover:bg-action-hover"
+              className="min-w-50 min-h-12 text-secondary-text rounded-4xl uppercase hover:bg-modal-cancel-btn"
             >
               {t("actions.cancel")}
             </Button>

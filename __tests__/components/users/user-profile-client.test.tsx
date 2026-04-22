@@ -22,7 +22,7 @@ function renderWithLocale(ui: React.ReactElement, locale: Locale = "en") {
   return render(
     <NextIntlClientProvider locale={locale} messages={messagesMap[locale]}>
       {ui}
-    </NextIntlClientProvider>
+    </NextIntlClientProvider>,
   );
 }
 
@@ -223,14 +223,20 @@ describe("UserProfileClient", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
         expect(screen.getByText(users.title)).toBeInTheDocument();
         const breadcrumbs = screen.getAllByText("Alice Brown");
-        expect(breadcrumbs[0]).toHaveClass("text-red-500");
+        expect(breadcrumbs[0]).toHaveClass("text-primary");
       });
 
       it("renders tab navigation", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
-        expect(screen.getByRole("link", { name: users.tabs.profile })).toBeInTheDocument();
-        expect(screen.getByRole("link", { name: users.tabs.skills })).toBeInTheDocument();
-        expect(screen.getByRole("link", { name: users.tabs.languages })).toBeInTheDocument();
+        expect(
+          screen.getByRole("link", { name: users.tabs.profile }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole("link", { name: users.tabs.skills }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole("link", { name: users.tabs.languages }),
+        ).toBeInTheDocument();
       });
 
       it("renders profile form with employee data", () => {
@@ -242,7 +248,9 @@ describe("UserProfileClient", () => {
 
       it("renders avatar with initials fallback", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
-        expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent("AB");
+        expect(screen.getByTestId("mock-avatar-fallback")).toHaveTextContent(
+          "AB",
+        );
       });
 
       it("shows member since info when available", () => {
@@ -271,8 +279,10 @@ describe("UserProfileClient", () => {
 
       it("highlights active profile tab", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
-        const profileTab = screen.getByRole("link", { name: users.tabs.profile });
-        expect(profileTab.className).toContain("text-red-500");
+        const profileTab = screen.getByRole("link", {
+          name: users.tabs.profile,
+        });
+        expect(profileTab.className).toContain("text-primary");
       });
     });
 
@@ -280,7 +290,7 @@ describe("UserProfileClient", () => {
       it("enables editing for current user", () => {
         renderWithLocale(
           <UserProfileClient {...defaultProps} currentUserId={1} />,
-          locale
+          locale,
         );
         const inputs = screen.getAllByTestId("mock-input");
         expect(inputs[0]).not.toBeDisabled();
@@ -293,7 +303,7 @@ describe("UserProfileClient", () => {
             currentUserId={999}
             currentUserRole="Admin"
           />,
-          locale
+          locale,
         );
         const inputs = screen.getAllByTestId("mock-input");
         expect(inputs[0]).not.toBeDisabled();
@@ -306,7 +316,7 @@ describe("UserProfileClient", () => {
             currentUserId={999}
             currentUserRole="Employee"
           />,
-          locale
+          locale,
         );
         const inputs = screen.getAllByTestId("mock-input");
         expect(inputs[0]).toBeDisabled();
@@ -339,7 +349,7 @@ describe("UserProfileClient", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
         const contents = screen.getAllByTestId("mock-select-content");
         const items = Array.from(
-          contents[0].querySelectorAll('[data-testid^="mock-select-item-"]')
+          contents[0].querySelectorAll('[data-testid^="mock-select-item-"]'),
         );
         expect(items[0]?.textContent).toBe("React");
         expect(items[1]?.textContent).toBe(".NET");
@@ -366,7 +376,7 @@ describe("UserProfileClient", () => {
             currentUserId={999}
             currentUserRole="Employee"
           />,
-          locale
+          locale,
         );
         expect(screen.queryByText(users.uploadAvatar)).not.toBeInTheDocument();
       });
@@ -382,7 +392,8 @@ describe("UserProfileClient", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
         const buttons = screen.getAllByTestId("mock-button");
         const updateBtn = buttons.find(
-          (btn: HTMLElement) => btn.textContent?.trim() === common.actions.update
+          (btn: HTMLElement) =>
+            btn.textContent?.trim() === common.actions.update,
         );
         expect(updateBtn).toBeInTheDocument();
       });
@@ -391,7 +402,8 @@ describe("UserProfileClient", () => {
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
         const buttons = screen.getAllByTestId("mock-button");
         const updateBtn = buttons.find(
-          (btn: HTMLElement) => btn.textContent?.trim() === common.actions.update
+          (btn: HTMLElement) =>
+            btn.textContent?.trim() === common.actions.update,
         );
         expect(updateBtn).toBeDisabled();
       });
@@ -404,7 +416,8 @@ describe("UserProfileClient", () => {
         await user.type(inputs[0], "Alicia");
         const buttons = screen.getAllByTestId("mock-button");
         const updateBtn = buttons.find(
-          (btn: HTMLElement) => btn.textContent?.trim() === common.actions.update
+          (btn: HTMLElement) =>
+            btn.textContent?.trim() === common.actions.update,
         );
         expect(updateBtn).not.toBeDisabled();
       });
@@ -421,7 +434,8 @@ describe("UserProfileClient", () => {
         await user.type(inputs[0], "Alicia");
         const buttons = screen.getAllByTestId("mock-button");
         const updateBtn = buttons.find(
-          (btn: HTMLElement) => btn.textContent?.trim() === common.actions.update
+          (btn: HTMLElement) =>
+            btn.textContent?.trim() === common.actions.update,
         );
         await user.click(updateBtn!);
         await waitFor(() => {
@@ -438,7 +452,8 @@ describe("UserProfileClient", () => {
         await user.type(inputs[0], "Alicia");
         const buttons = screen.getAllByTestId("mock-button");
         const updateBtn = buttons.find(
-          (btn: HTMLElement) => btn.textContent?.trim() === common.actions.update
+          (btn: HTMLElement) =>
+            btn.textContent?.trim() === common.actions.update,
         );
         await user.click(updateBtn!);
         await waitFor(() => {
@@ -449,7 +464,7 @@ describe("UserProfileClient", () => {
       it("displays saving state in correct locale", async () => {
         const user = userEvent.setup();
         mockUpdateProfile.mockImplementation(
-          () => new Promise((resolve) => setTimeout(resolve, 100))
+          () => new Promise((resolve) => setTimeout(resolve, 100)),
         );
         renderWithLocale(<UserProfileClient {...defaultProps} />, locale);
         const inputs = screen.getAllByTestId("mock-input");
@@ -457,7 +472,8 @@ describe("UserProfileClient", () => {
         await user.type(inputs[0], "Alicia");
         const buttons = screen.getAllByTestId("mock-button");
         const updateBtn = buttons.find(
-          (btn: HTMLElement) => btn.textContent?.trim() === common.actions.update
+          (btn: HTMLElement) =>
+            btn.textContent?.trim() === common.actions.update,
         );
         await user.click(updateBtn!);
         expect(screen.getByText(common.actions.saving)).toBeInTheDocument();
@@ -471,7 +487,7 @@ describe("UserProfileClient", () => {
             {...defaultProps}
             employee={{ ...mockEmployee, firstName: "", lastName: "" }}
           />,
-          locale
+          locale,
         );
         expect(screen.getByText(users.unnamedUser)).toBeInTheDocument();
       });
@@ -486,7 +502,7 @@ describe("UserProfileClient", () => {
               position: "Unknown",
             }}
           />,
-          locale
+          locale,
         );
         const wrappers = screen.getAllByTestId("mock-select-wrapper");
         expect(wrappers[0]).toHaveAttribute("data-value", "");

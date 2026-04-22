@@ -7,6 +7,13 @@ import { signUpUserAction } from "@/components/auth/actions/signup-action";
 import { setAuthCookies } from "@/lib/auth/auth-cookies";
 import { gqlFetch } from "@/lib/gql/graphql-client";
 
+jest.mock("next/headers", () => ({
+  cookies: jest.fn(),
+  headers: jest.fn().mockResolvedValue({
+    get: jest.fn().mockReturnValue("http://localhost:3000"),
+  }),
+}));
+
 jest.mock("next-intl/server", () => ({
   getTranslations: jest.fn(() => Promise.resolve((key: string) => key)),
 }));

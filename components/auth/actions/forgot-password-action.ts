@@ -1,5 +1,6 @@
 "use server"
 
+import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
 import { type ForgotPasswordFormValues } from "@/components/auth/schemas/forgot-password-schema";
@@ -20,7 +21,18 @@ export async function forgotPasswordAction(
 ): Promise<ActionState> {
   const t = await getTranslations("Auth.forgotPassword");
   try {
-    await gqlFetch(FORGOT_PASSWORD_MUTATION, { auth: data });
+    const headersList = await headers();
+    const origin = headersList.get("origin") || headersList.get("host");
+
+    const baseUrl = origin ? (origin.startsWith('http') ? origin : `http://${origin}`) : 'http://localhost:3000';
+
+    await gqlFetch(
+      FORGOT_PASSWORD_MUTATION,
+      { auth: data },
+      {
+        headers: { origin: baseUrl }
+      }
+    );
 
     return { success: true };
   } catch (err) {

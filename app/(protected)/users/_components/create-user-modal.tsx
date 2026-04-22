@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EmployeeCard } from "@/lib/users/users-types";
+import { cn } from "@/lib/utils";
 import { createUser } from "@/app/(protected)/users/[id]/actions";
 import { UserRole } from "@/gqlcodegen/graphql";
 
@@ -101,21 +102,22 @@ export function CreateUserModal({
   };
 
   const fieldWrapper =
-    "relative rounded-lg border border-white/15 bg-[#1e1e1e] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
+    "relative bg-transparent border-main-border focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20 transition-all";
   const fieldLabel =
-    "absolute left-3 -top-2.5 z-10 bg-[#1e1e1e] px-1.5 text-xs text-zinc-400 pointer-events-none select-none";
+    "absolute left-3 -top-2.5 z-10 px-1.5 text-xs text-secondary-text pointer-events-none select-none";
   const fieldInput =
-    "w-full h-11 min-h-11 border-0 bg-transparent px-3 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0";
+    "w-full min-h-12 px-3 text-base focus-visible:border-main-text hover:border-main-text bg-transparent";
 
   return (
     <ModalWrapper open={open} onClose={onClose} title={t("createModalTitle")}>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div className={fieldWrapper}>
           <Label className={fieldLabel}>{c("fields.email")}</Label>
           <Input
             value={form.email}
             onChange={(e) => set("email", e.target.value)}
             className={fieldInput}
+            placeholder={c("fields.email")}
           />
         </div>
 
@@ -136,6 +138,7 @@ export function CreateUserModal({
             value={form.firstName}
             onChange={(e) => set("firstName", e.target.value)}
             className={fieldInput}
+            placeholder={c("fields.firstName")}
           />
         </div>
 
@@ -145,6 +148,7 @@ export function CreateUserModal({
             value={form.lastName}
             onChange={(e) => set("lastName", e.target.value)}
             className={fieldInput}
+            placeholder={c("fields.lastName")}
           />
         </div>
 
@@ -154,15 +158,15 @@ export function CreateUserModal({
             value={form.departmentId}
             onValueChange={(v) => set("departmentId", v)}
           >
-            <SelectTrigger className={fieldInput}>
+            <SelectTrigger className={cn(fieldInput, "cursor-pointer")}>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
+            <SelectContent className="shadow-action-menu bg-action-menu-bg py-2">
               {departments.map((d) => (
                 <SelectItem
                   key={d.id}
                   value={d.id}
-                  className="focus:bg-white/5"
+                  className="p-2 text-base focus-visible:border-main-text hover:bg-active-sidebar-bg cursor-pointer data-[state=checked]:bg-select-checked"
                 >
                   {d.name}
                 </SelectItem>
@@ -177,15 +181,15 @@ export function CreateUserModal({
             value={form.positionId}
             onValueChange={(v) => set("positionId", v)}
           >
-            <SelectTrigger className={fieldInput}>
+            <SelectTrigger className={cn(fieldInput, "cursor-pointer")}>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
+            <SelectContent className="shadow-action-menu bg-action-menu-bg py-2">
               {positions.map((p) => (
                 <SelectItem
                   key={p.id}
                   value={p.id}
-                  className="focus:bg-white/5"
+                  className="p-2 text-base focus-visible:border-main-text hover:bg-active-sidebar-bg cursor-pointer data-[state=checked]:bg-select-checked"
                 >
                   {p.name}
                 </SelectItem>
@@ -200,12 +204,16 @@ export function CreateUserModal({
             value={form.role}
             onValueChange={(v) => set("role", v as UserRole)}
           >
-            <SelectTrigger className={fieldInput}>
+            <SelectTrigger className={cn(fieldInput, "cursor-pointer")}>
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#1e1e1e] border-white/10 text-zinc-200">
+            <SelectContent className="shadow-action-menu bg-action-menu-bg py-2">
               {ROLES.map((r) => (
-                <SelectItem key={r} value={r} className="focus:bg-white/5">
+                <SelectItem
+                  key={r}
+                  value={r}
+                  className="p-2 text-base focus-visible:border-main-text hover:bg-active-sidebar-bg cursor-pointer data-[state=checked]:bg-select-checked"
+                >
                   {r}
                 </SelectItem>
               ))}
@@ -214,12 +222,12 @@ export function CreateUserModal({
         </div>
       </div>
 
-      <div className="flex justify-end w-full mt-6 pt-4 border-white/10">
-        <div className="w-1/2 flex gap-3">
+      <div className="mt-6">
+        <div className="flex flex-col justify-center items-center w-full sm:flex-row sm:justify-end gap-3">
           <Button
             variant="outline"
             onClick={onClose}
-            className="flex-1 uppercase text-xs tracking-widest text-zinc-400 hover:text-zinc-200 bg-transparent hover:bg-white/5 border-white/10 rounded-4xl"
+            className="w-full min-w-50 min-h-12 text-secondary-text rounded-4xl uppercase hover:bg-modal-cancel-btn sm:w-auto"
           >
             {c("actions.cancel")}
           </Button>
@@ -228,7 +236,7 @@ export function CreateUserModal({
             disabled={
               !form.email || !form.password || !form.firstName || !form.lastName
             }
-            className="flex-1 uppercase text-xs tracking-widest bg-zinc-700 hover:bg-zinc-600 text-zinc-100 border border-white/10 rounded-4xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full uppercase min-w-50 min-h-12 rounded-4xl max-h-10 bg-primary border-transparent text-white shadow-btn hover:bg-hover-action-submit-btn sm:w-auto"
           >
             {c("actions.create")}
           </Button>

@@ -219,9 +219,12 @@
       "languages": "LANGUAGES"
     },
     "nav": {
+      "projects": " Projects",
+      "cvs": "CVs",
+      "department": "Department",
+      "positions": "Positions",
       "skills": "Skills",
-      "languages": "Languages",
-      "cvs": "CVs"
+      "languages": "Languages"
     },
     "skillModal": {
       "addTitle": "Add skill",
@@ -238,6 +241,18 @@
     "fileSizeError": "File must be no more than 1MB",
     "collapseMenu": "Collapse menu",
     "expandMenu": "Expand menu",
-    "defaultUser": "User"
+    "defaultUser": "User",
+    "profileMenu": "Profile",
+    "settingsMenu": "Settings",
+    "logoutMenu": "Logout"
+  },
+  "Settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "dark": "Dark",
+    "light": "Light",
+    "deviceSettings": "Device settings",
+    "language": "Language",
+    "resumeLanguage": "Resume language (Translation)"
   }
 }
