@@ -8,13 +8,20 @@ import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { TabsNav } from "@/components/common/tabs-nav";
 import { CVPreview } from "../_components/cv-preview";
+import { getCVSkills } from "../../actions";
 
-const GET_CV_DETAILS = graphql(`
-  query GetCVDetails($cvId: ID!) {
+const GET_CV_PREVIEW_DETAILS = graphql(`
+  query GetCVPreviewDetails($cvId: ID!) {
     cv(cvId: $cvId) {
-      id name education description created_at user { id email }
+      id
+      name
+      education
+      description
+      created_at
+      user { id email }
+      languages { name }
       skills { name categoryId mastery }
-      projects { id name description domain start_date end_date environment responsibilities }
+      projects { id name description domain start_date end_date environment }
     }
   }
 `);
@@ -28,11 +35,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function CVPreviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [currentUser, { token, cookieHeader }] = await Promise.all([requireUser(), getAuthProps()]);
-  const result = await gqlRequestAuthed(GET_CV_DETAILS, { cvId: id }, { token, cookieHeader }).catch(() => null);
+  
+  const result = await gqlRequestAuthed(GET_CV_PREVIEW_DETAILS, { cvId: id }, { token, cookieHeader }).catch(() => null);
   if (!result?.cv) notFound();
 
   const cv = result.cv;
   const canEdit = cv.user?.id === String(currentUser.id) || currentUser.role?.toUpperCase() === "ADMIN";
+
+  const enrichedSkills = await getCVSkills(id).catch(() => []);
 
   const t = await getTranslations("CVs");
   const TABS = [
@@ -49,11 +59,11 @@ export default async function CVPreviewPage({ params }: { params: Promise<{ id: 
         <ChevronRight size={16} className="text-zinc-600" />
         <span className="text-zinc-100">{cv.name}</span>
       </div>
-      <div className="px-8 pb-4 border-b border-white/10">
+      <div className="px-8 pb-4">
         <TabsNav tabs={TABS} />
       </div>
       <div className="flex-1 px-8 pb-8">
-        <CVPreview cv={cv} />
+        <CVPreview cv={cv} skills={enrichedSkills} />
       </div>
     </div>
   );
